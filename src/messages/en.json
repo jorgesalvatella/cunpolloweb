@@ -1,0 +1,60 @@
+{
+  "metadata": {
+    "title": "CUNPOLLO - Chicken that Saves Your Day",
+    "description": "Fresh, delicious, and fast roasted chicken with the largest kids' play area in Cancún. Check our menu, location, and hours."
+  },
+  "nav": {
+    "home": "Home",
+    "menu": "Menu",
+    "location": "Location",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Chicken that Saves Your Day",
+    "subtitle": "Fresh, delicious, and fast chicken with all the sides. Every bite is a treat you'll want to repeat.",
+    "playArea": "With the largest kids' play area in Cancún",
+    "cta": "View Menu",
+    "ctaSecondary": "Get Directions"
+  },
+  "menuPreview": {
+    "title": "Our Menu",
+    "subtitle": "Our customers' favorites",
+    "viewAll": "View Full Menu"
+  },
+  "menu": {
+    "title": "Menu",
+    "pageTitle": "Our Menu",
+    "pageSubtitle": "Artisan roasted chicken and much more",
+    "all": "All",
+    "currency": "MXN",
+    "popular": "Popular",
+    "spicy": "Spicy",
+    "new": "New",
+    "close": "Close",
+    "addToOrder": "Add to Order",
+    "ingredients": "Ingredients",
+    "description": "Description"
+  },
+  "location": {
+    "title": "Find Us",
+    "subtitle": "Come visit us",
+    "address": "Address",
+    "hours": "Hours",
+    "weekdays": "Monday to Friday",
+    "weekends": "Saturday & Sunday",
+    "phone": "Phone",
+    "getDirections": "Get Directions"
+  },
+  "cta": {
+    "title": "Craving Chicken?",
+    "subtitle": "Visit us today and taste the best roasted chicken in town.",
+    "button": "View Menu",
+    "phone": "Call Us"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "followUs": "Follow Us",
+    "hours": "Hours",
+    "contact": "Contact"
+  }
+}

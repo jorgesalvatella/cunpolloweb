@@ -1,0 +1,60 @@
+{
+  "metadata": {
+    "title": "CUNPOLLO - Pollo que Salva tu Día",
+    "description": "Pollo rostizado fresco, sabroso y rápido con el área de juegos infantil más grande de Cancún. Consulta nuestro menú, ubicación y horarios."
+  },
+  "nav": {
+    "home": "Inicio",
+    "menu": "Menú",
+    "location": "Ubicación",
+    "contact": "Contacto"
+  },
+  "hero": {
+    "title": "Pollo que Salva tu Día",
+    "subtitle": "Pollos y acompañamientos frescos, sabrosos y rápidos. Cada mordida es un gustito que quieres repetir.",
+    "playArea": "Con el área de juegos infantil más grande de Cancún",
+    "cta": "Ver Menú",
+    "ctaSecondary": "Cómo Llegar"
+  },
+  "menuPreview": {
+    "title": "Nuestro Menú",
+    "subtitle": "Los favoritos de nuestros clientes",
+    "viewAll": "Ver Menú Completo"
+  },
+  "menu": {
+    "title": "Menú",
+    "pageTitle": "Nuestro Menú",
+    "pageSubtitle": "Pollo rostizado artesanal y mucho más",
+    "all": "Todos",
+    "currency": "MXN",
+    "popular": "Popular",
+    "spicy": "Picante",
+    "new": "Nuevo",
+    "close": "Cerrar",
+    "addToOrder": "Agregar al Pedido",
+    "ingredients": "Ingredientes",
+    "description": "Descripción"
+  },
+  "location": {
+    "title": "Encuéntranos",
+    "subtitle": "Ven a visitarnos",
+    "address": "Dirección",
+    "hours": "Horarios",
+    "weekdays": "Lunes a Viernes",
+    "weekends": "Sábados y Domingos",
+    "phone": "Teléfono",
+    "getDirections": "Cómo Llegar"
+  },
+  "cta": {
+    "title": "¿Antojo de Pollo?",
+    "subtitle": "Visítanos hoy y prueba el mejor pollo rostizado de la ciudad.",
+    "button": "Ver Menú",
+    "phone": "Llámanos"
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados.",
+    "followUs": "Síguenos",
+    "hours": "Horarios",
+    "contact": "Contacto"
+  }
+}

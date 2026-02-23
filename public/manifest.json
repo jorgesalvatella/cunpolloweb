@@ -1,0 +1,21 @@
+{
+  "name": "CUNPOLLO - El Mejor Pollo Rostizado",
+  "short_name": "CUNPOLLO",
+  "description": "Pollo rostizado artesanal. Menú digital, ubicación y más.",
+  "start_url": "/es",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#E8A317",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
