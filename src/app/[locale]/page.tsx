@@ -1,5 +1,3 @@
-export const runtime = "edge";
-
 import { setRequestLocale } from "next-intl/server";
 import { RestaurantJsonLd } from "@/components/seo/JsonLd";
 import HeroSection from "@/components/landing/HeroSection";
