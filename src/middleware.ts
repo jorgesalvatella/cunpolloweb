@@ -1,8 +1,2 @@
-import createMiddleware from "next-intl/middleware";
-import { routing } from "@/i18n/routing";
-
-export default createMiddleware(routing);
-
-export const config = {
-  matcher: ["/", "/(es|en)/:path*", "/((?!api|_next|_vercel|.*\\..*).*)"],
-};
+// Middleware disabled for static export (Cloudflare Pages)
+// Locale routing is handled by [locale] folder structure + generateStaticParams
