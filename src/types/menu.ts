@@ -18,7 +18,7 @@ export type MenuItem = {
   name: BilingualText;
   description: BilingualText;
   price: number;
-  image?: string;
+  image: string;
   tags: MenuItemTag[];
   available: boolean;
 };

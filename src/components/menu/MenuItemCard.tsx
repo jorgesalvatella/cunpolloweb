@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import Badge from "@/components/ui/Badge";
@@ -33,8 +34,14 @@ export default function MenuItemCard({
       onClick={() => onSelect(item)}
       className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow text-left cursor-pointer w-full border border-gold-400/20"
     >
-      <div className="h-28 sm:h-40 bg-red-50 flex items-center justify-center">
-        <span className="text-3xl sm:text-5xl">🍗</span>
+      <div className="h-28 sm:h-40 bg-red-50 relative overflow-hidden">
+        <Image
+          src={item.image}
+          alt={item.name[locale]}
+          fill
+          className="object-cover"
+          sizes="(max-width: 640px) 50vw, 25vw"
+        />
       </div>
       <div className="p-2.5 sm:p-4">
         <div className="flex items-start justify-between gap-1 sm:gap-2 mb-0.5 sm:mb-1">

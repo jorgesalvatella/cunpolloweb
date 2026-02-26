@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { Link } from "@/i18n/navigation";
@@ -55,8 +56,14 @@ export default function MenuPreview() {
               whileHover={{ y: -4 }}
               className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow"
             >
-              <div className="h-32 sm:h-48 bg-red-50 flex items-center justify-center">
-                <span className="text-4xl sm:text-6xl">🍗</span>
+              <div className="h-32 sm:h-48 bg-red-50 relative overflow-hidden">
+                <Image
+                  src={item.image}
+                  alt={item.name[locale]}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 50vw, 25vw"
+                />
               </div>
               <div className="p-3 sm:p-5">
                 <div className="flex items-start justify-between gap-1 sm:gap-2 mb-1 sm:mb-2">

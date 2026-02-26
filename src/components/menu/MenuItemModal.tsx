@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import Badge from "@/components/ui/Badge";
@@ -47,8 +48,14 @@ export default function MenuItemModal({
             className="bg-white rounded-t-2xl sm:rounded-3xl w-full max-w-lg max-h-[90vh] sm:max-h-[80vh] overflow-y-auto"
           >
             {/* Image area */}
-            <div className="h-44 sm:h-56 bg-red-50 flex items-center justify-center relative">
-              <span className="text-6xl sm:text-8xl">🍗</span>
+            <div className="h-44 sm:h-56 bg-red-50 relative overflow-hidden">
+              <Image
+                src={item.image}
+                alt={item.name[locale]}
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 512px"
+              />
               <button
                 onClick={onClose}
                 className="absolute top-3 right-3 sm:top-4 sm:right-4 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center text-dark hover:bg-white transition-colors cursor-pointer"

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useCart } from "@/context/CartContext";
 import { getMenuItemById } from "@/data";
@@ -18,8 +19,14 @@ export default function CartItemRow({ item }: { item: CartItem }) {
 
   return (
     <div className="flex items-center gap-4 py-4 border-b border-gray-100">
-      <div className="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center shrink-0">
-        <span className="text-2xl">🍗</span>
+      <div className="w-12 h-12 bg-red-50 rounded-lg relative overflow-hidden shrink-0">
+        <Image
+          src={menuItem.image}
+          alt={menuItem.name[locale]}
+          fill
+          className="object-cover"
+          sizes="48px"
+        />
       </div>
 
       <div className="flex-1 min-w-0">
