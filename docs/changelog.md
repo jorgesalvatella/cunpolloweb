@@ -52,3 +52,12 @@
 - `CLAUDE.md` con regla de actualización obligatoria de docs
 - Carpeta `docs/` con architecture, features, api, database, env-vars, setup, changelog
 - Memory files actualizados: `MEMORY.md`, `ordering-system.md`
+
+### Deploy e Infraestructura
+- Supabase schema aplicado via MCP (tabla `orders` con RLS, Realtime, triggers)
+- Deploy a Vercel con env vars configuradas (production)
+- Dominio `cunpollo.com` migrado de Cloudflare Pages a Vercel
+- DNS en Cloudflare con proxy ON + SSL Full (Strict)
+- Repo GitHub conectado a Vercel para auto-deploy en push a `main`
+- `.mcp.json` excluido de git (contiene tokens)
+- Secret scanner actualizado (excluir pnpm-lock.yaml falsos positivos)

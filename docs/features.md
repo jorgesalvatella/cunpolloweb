@@ -20,7 +20,7 @@
 - Datos estáticos en `src/data/menu-items.ts`
 
 ### Sistema de Pedidos (Paga y Recoge)
-- **Estado**: Implementado, pendiente configurar servicios externos
+- **Estado**: Desplegado en producción (T1 Pagos pendiente de API key real)
 - **Feature flag**: `FEATURES.ORDERING_ENABLED` en `src/lib/constants.ts` (actualmente `true`)
 - Carrito client-side con persistencia en localStorage
 - Checkout con pago por tarjeta (T1 Pagos)
@@ -28,7 +28,7 @@
 - Sin delivery, sin cuentas de usuario, sin notificaciones
 
 ### Dashboard Admin
-- **Estado**: Implementado, pendiente configurar Supabase
+- **Estado**: Desplegado en producción (Supabase configurado)
 - Login por contraseña simple (cookie HTTP-only)
 - Lista de pedidos en real-time (Supabase Realtime)
 - Progresión de status: pagado → preparando → listo → entregado
@@ -38,11 +38,8 @@
 
 | Item | Descripción | Bloqueado por |
 |------|-------------|---------------|
-| Supabase proyecto | Crear proyecto y ejecutar schema.sql | Manual |
-| T1 Pagos API key | Obtener credenciales sandbox | Registro en t1pagos.com |
-| Variables de entorno | Configurar `.env.local` | Supabase + T1 |
-| Deploy Vercel | Conectar repo, config env vars | Manual |
-| Prueba e2e | Flujo completo con tarjeta sandbox | Todo lo anterior |
+| T1 Pagos API key | Obtener credenciales reales | Registro en t1pagos.com |
+| Prueba e2e | Flujo completo con tarjeta sandbox | T1 Pagos key real |
 
 ## Desactivadas
 
