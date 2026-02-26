@@ -21,6 +21,18 @@ export const metadata: Metadata = {
     siteName: "CUNPOLLO",
     locale: "es_MX",
     alternateLocale: "en_US",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 820,
+        height: 360,
+        alt: "CUNPOLLO - Pollo que salva tu día",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og-image.jpg"],
   },
 };
 
