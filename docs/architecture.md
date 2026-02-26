@@ -113,7 +113,8 @@ cunpolloweb/
     │   ├── constants.ts               # FEATURES flags + RESTAURANT info
     │   ├── utils.ts                   # cn() helper (clsx + tailwind-merge)
     │   ├── fonts.ts                   # Font config
-    │   ├── t1pagos.ts                 # T1 Pagos API wrapper (server-only)
+    │   ├── t1pagos.ts                 # ClaroPagos (T1 Pagos) API wrapper (server-only)
+    │   ├── twilio.ts                  # Twilio WhatsApp notifications (server-only)
     │   ├── admin-auth.ts              # Auth admin por cookie
     │   └── supabase/
     │       ├── client.ts              # Supabase browser client (anon key)
@@ -137,11 +138,11 @@ cunpolloweb/
   CartPage → CheckoutForm → POST /api/orders
 
 [Servidor]
-  POST /api/orders → validar items → Supabase INSERT → T1 Pagos tokenize → T1 Pagos charge → Supabase UPDATE → response
+  POST /api/orders → validar items → Supabase INSERT → T1 Pagos tokenize → T1 Pagos charge → Supabase UPDATE → WhatsApp notify (fire-and-forget) → response
 
 [Admin]
   /admin/login → POST /api/admin/login → cookie
   /admin → GET /api/admin/orders → Supabase SELECT
-  OrderCard → PATCH /api/admin/orders/[id] → Supabase UPDATE
+  OrderCard → PATCH /api/admin/orders/[id] → Supabase UPDATE → WhatsApp notify (fire-and-forget)
   Supabase Realtime → auto-refresh dashboard
 ```

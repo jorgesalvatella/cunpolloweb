@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifyAdmin } from "@/lib/admin-auth";
 import { supabaseAdmin } from "@/lib/supabase/server";
+import { notifyCustomerStatusChange } from "@/lib/twilio";
 
 export async function PATCH(
   request: Request,
@@ -28,6 +29,8 @@ export async function PATCH(
   if (error) {
     return NextResponse.json({ error: "Error al actualizar" }, { status: 500 });
   }
+
+  notifyCustomerStatusChange(data);
 
   return NextResponse.json(data);
 }

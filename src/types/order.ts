@@ -52,6 +52,7 @@ export type CreateOrderRequest = {
     cvv: string;
     holderName: string;
   };
+  deviceFingerprint?: string;
 };
 
 export type CreateOrderResponse = {

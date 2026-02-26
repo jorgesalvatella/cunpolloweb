@@ -28,10 +28,11 @@ Editar `.env.local` con los valores reales (ver `docs/env-vars.md`).
 3. Pegar y ejecutar el contenido de `supabase/schema.sql`
 4. Copiar URL, anon key y service role key a `.env.local`
 
-### 4. Configurar T1 Pagos (opcional para dev)
+### 4. Configurar T1 Pagos / ClaroPagos (opcional para dev)
 1. Registrarse en [t1pagos.com](https://t1pagos.com)
-2. Obtener API key de sandbox
-3. Agregar a `.env.local`
+2. Acceder al panel admin sandbox: `https://admin.sandbox.claropagos.com/login`
+3. Obtener Bearer token
+4. Agregar `T1_PAGOS_BEARER_TOKEN` a `.env.local`
 
 ### 5. Ejecutar
 ```bash
@@ -71,7 +72,7 @@ Configuradas en Vercel Dashboard → Settings → Environment Variables (product
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
-- `T1_PAGOS_API_KEY`
+- `T1_PAGOS_BEARER_TOKEN`
 - `T1_PAGOS_BASE_URL`
 - `ADMIN_PASSWORD`
 

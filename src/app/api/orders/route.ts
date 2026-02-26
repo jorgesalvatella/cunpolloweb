@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import { tokenizeCard, createCharge } from "@/lib/t1pagos";
+import { notifyCustomerStatusChange, notifyAdminNewOrder } from "@/lib/twilio";
 import { getMenuItemById } from "@/data";
 import type { CreateOrderRequest, OrderItem } from "@/types/order";
 
@@ -79,11 +80,10 @@ export async function POST(request: Request) {
     try {
       const chargeRes = await createCharge({
         token,
-        amount: total * 100, // centavos
+        amount: total,
         description: `CUNPOLLO Pedido #${order.order_number}`,
-        reference: order.id,
-        customerName: body.customerName,
-        customerPhone: body.customerPhone,
+        orderId: order.id,
+        deviceFingerprint: body.deviceFingerprint,
       });
 
       await supabaseAdmin
@@ -94,6 +94,18 @@ export async function POST(request: Request) {
           payment_reference: chargeRes.id,
         })
         .eq("id", order.id);
+
+      // Fetch complete order for notifications
+      const { data: fullOrder } = await supabaseAdmin
+        .from("orders")
+        .select()
+        .eq("id", order.id)
+        .single();
+
+      if (fullOrder) {
+        notifyCustomerStatusChange(fullOrder);
+        notifyAdminNewOrder(fullOrder);
+      }
 
       return NextResponse.json({
         orderId: order.id,

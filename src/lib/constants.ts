@@ -2,6 +2,7 @@ export const FEATURES = {
   ORDERING_ENABLED: true,
   DELIVERY_ENABLED: false,
   PWA_ENABLED: false,
+  WHATSAPP_NOTIFICATIONS: true,
 } as const;
 
 export const RESTAURANT = {

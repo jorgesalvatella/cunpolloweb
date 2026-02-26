@@ -21,12 +21,18 @@
 - Datos estáticos en `src/data/menu-items.ts` (datos extraídos de Rappi)
 
 ### Sistema de Pedidos (Paga y Recoge)
-- **Estado**: Desplegado en producción (T1 Pagos pendiente de API key real)
+- **Estado**: Desplegado en produccion (pendiente Bearer token real de ClaroPagos)
 - **Feature flag**: `FEATURES.ORDERING_ENABLED` en `src/lib/constants.ts` (actualmente `true`)
 - Carrito client-side con persistencia en localStorage
-- Checkout con pago por tarjeta (T1 Pagos)
-- Confirmación con animación y "Te esperamos en ~20 min"
-- Sin delivery, sin cuentas de usuario, sin notificaciones
+- Checkout con pago por tarjeta via ClaroPagos (T1 Pagos)
+- API real: `POST /v1/tarjeta` (tokenizacion) + `POST /v1/cargo` (cobro)
+- Auth: Bearer token, no SDK (fetch directo al REST API)
+- Montos en pesos MXN (no centavos)
+- Device fingerprint (CyberSource) opcional — se envia si esta disponible
+- Webhook safety net en `/api/webhooks/t1pagos` (eventos: cargo.exitoso, cargo.fallido, cargo.cancelado)
+- Confirmacion con animacion y "Te esperamos en ~20 min"
+- Sin delivery, sin cuentas de usuario
+- Notificaciones WhatsApp via Twilio (ver seccion abajo)
 
 ### Dashboard Admin
 - **Estado**: Desplegado en producción (Supabase configurado)
@@ -35,12 +41,25 @@
 - Progresión de status: pagado → preparando → listo → entregado
 - Ruta `/admin` (fuera del sistema i18n)
 
+### Notificaciones WhatsApp
+- **Estado**: Implementado (pendiente credenciales Twilio reales)
+- **Feature flag**: `FEATURES.WHATSAPP_NOTIFICATIONS` en `src/lib/constants.ts` (actualmente `true`)
+- **Archivo**: `src/lib/twilio.ts` — wrapper sin SDK, fetch directo al REST API de Twilio
+- **Cliente**: recibe WhatsApp en cada cambio de status (paid, preparing, ready, picked_up, cancelled)
+- **Admin/Cocina**: recibe WhatsApp cuando entra un pedido nuevo
+- Fire-and-forget: errores se loguean pero nunca bloquean el flujo del pedido
+- Soporta multiples numeros admin via `ADMIN_WHATSAPP_PHONES` (separados por coma)
+- Sin dependencias nuevas (0 paquetes agregados)
+
 ## Pendientes / Por Configurar
 
 | Item | Descripción | Bloqueado por |
 |------|-------------|---------------|
-| T1 Pagos API key | Obtener credenciales reales | Registro en t1pagos.com |
-| Prueba e2e | Flujo completo con tarjeta sandbox | T1 Pagos key real |
+| ClaroPagos Bearer token | Obtener token real del panel admin | Registro en t1pagos.com + admin.claropagos.com |
+| Prueba e2e pago | Flujo completo con tarjeta sandbox | Bearer token real |
+| Device fingerprint | Integrar CyberSource JS en checkout | Guia oficial de T1 Pagos |
+| Twilio credenciales | Obtener Account SID y Auth Token reales | Registro en twilio.com |
+| Twilio WhatsApp sender | Registrar numero de WhatsApp Business | Aprobacion de Twilio/Meta |
 
 ## Desactivadas
 

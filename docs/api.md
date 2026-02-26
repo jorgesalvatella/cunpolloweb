@@ -42,11 +42,11 @@ Crea una orden y procesa el pago.
 - `500` — Error interno
 
 **Flujo interno:**
-1. Valida items contra menú (recalcula precios server-side)
+1. Valida items contra menu (recalcula precios server-side)
 2. INSERT en Supabase (status: pending)
-3. Tokeniza tarjeta via T1 Pagos
-4. Crea cargo con token
-5. Si OK → UPDATE a paid, responde con orderId
+3. Tokeniza tarjeta via ClaroPagos (`POST /v1/tarjeta`)
+4. Crea cargo con token (`POST /v1/cargo`)
+5. Si OK → UPDATE a paid + WhatsApp notify (fire-and-forget) → responde con orderId
 6. Si falla → UPDATE a cancelled/failed, responde con error
 
 ---
@@ -62,11 +62,14 @@ Consulta una orden por UUID (sin auth, el UUID actúa como token).
 ## Webhook
 
 ### `POST /api/webhooks/t1pagos`
-Safety net para eventos asíncronos de T1 Pagos.
+Safety net para eventos asincronos de ClaroPagos (T1 Pagos).
 
 **Eventos manejados:**
-- `cargo.exitoso` → Actualiza orden a paid/success
+- `cargo.exitoso` → Actualiza orden a paid/success + WhatsApp notify
 - `cargo.fallido` → Actualiza orden a cancelled/failed
+- `cargo.cancelado` → Actualiza orden a cancelled/failed
+
+**Payload:** Estructura `WebhookPayload` con `tipo`, `datos.id`, `datos.pedido.id_externo`
 
 Siempre responde `200 { "ok": true }`.
 

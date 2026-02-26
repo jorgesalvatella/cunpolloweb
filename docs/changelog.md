@@ -1,5 +1,56 @@
 # Changelog
 
+## 2026-02-26 — Integracion real T1 Pagos (ClaroPagos API)
+
+### Reescrito: `src/lib/t1pagos.ts`
+- Base URL corregida: `https://api.sandbox.claropagos.com/v1` (antes era URL inventada)
+- Auth: Bearer Token via header `Authorization` (antes era `X-API-Key`)
+- Tokenizacion (`POST /v1/tarjeta`): campos reales `pan`, `expiracion_mes`, `expiracion_anio`, `cvv2`, `nombre`
+- Cargo (`POST /v1/cargo`): campos reales `monto`, `moneda`, `descripcion`, `metodo_pago`, `tarjeta.token`, `pedido`, `capturar`
+- Monto en pesos MXN (no centavos como Stripe)
+- Response wrapper `{ status, data, http_code, error }` correctamente parseado
+- Device fingerprint (CyberSource) opcional en `pedido.device_fingerprint`
+
+### Reescrito: `src/app/api/webhooks/t1pagos/route.ts`
+- Payload tipado segun docs reales de ClaroPagos
+- Evento `tipo` (antes `evento`), datos en `datos` con estructura real
+- Order ID via `datos.pedido.id_externo` (fallback a `datos.orden_id`)
+- Maneja `cargo.exitoso`, `cargo.fallido`, `cargo.cancelado`
+- Integra WhatsApp notify en webhook exitoso
+
+### Archivos modificados
+- `src/app/api/orders/route.ts` — Monto en pesos (no centavos), `orderId` en vez de `reference`, `deviceFingerprint` opcional
+- `src/types/order.ts` — `deviceFingerprint?: string` en `CreateOrderRequest`
+- `.env.example` — `T1_PAGOS_BEARER_TOKEN` (antes `T1_PAGOS_API_KEY`), URL corregida
+
+### Documentacion actualizada
+- `docs/env-vars.md` — Variable renombrada, URLs corregidas
+- `docs/setup.md` — Instrucciones actualizadas para ClaroPagos
+- `docs/api.md` — Flujo interno y webhook actualizados
+- `docs/features.md` — Detalles de integracion real
+- `docs/architecture.md` — Descripcion actualizada
+
+## 2026-02-26 — Notificaciones WhatsApp via Twilio
+
+### Nuevo archivo: `src/lib/twilio.ts`
+- Wrapper server-only para Twilio REST API (sin SDK, fetch directo con Basic Auth)
+- `notifyCustomerStatusChange(order)` — mensaje al cliente segun status del pedido
+- `notifyAdminNewOrder(order)` — resumen del pedido nuevo al equipo
+- Fire-and-forget: errores se loguean, nunca bloquean el flujo
+- Soporta multiples numeros admin via `ADMIN_WHATSAPP_PHONES` (separados por coma)
+- `Promise.allSettled` para envio a multiples admins
+
+### Archivos modificados
+- `src/lib/constants.ts` — Nuevo feature flag `WHATSAPP_NOTIFICATIONS: true`
+- `src/app/api/orders/route.ts` — Notifica cliente + admin despues del pago exitoso
+- `src/app/api/admin/orders/[id]/route.ts` — Notifica cliente en cambio de status
+- `.env.example` — Variables Twilio placeholder (SID, Token, From, Admin phones)
+
+### Documentacion
+- `docs/env-vars.md` — Seccion Twilio WhatsApp con tabla de variables
+- `docs/architecture.md` — `twilio.ts` en mapa + flujo actualizado
+- `docs/features.md` — Nueva feature "Notificaciones WhatsApp"
+
 ## 2026-02-26 — Sistema de Pedidos "Paga y Recoge"
 
 ### Fase 0: Migración de Infraestructura
