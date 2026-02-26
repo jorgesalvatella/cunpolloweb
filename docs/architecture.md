@@ -99,8 +99,8 @@ cunpolloweb/
     │   └── CartContext.tsx             # Context del carrito (localStorage)
     ├── data/
     │   ├── index.ts                   # Exports: getMenuItems, getMenuItemById, etc.
-    │   ├── menu-items.ts              # Datos del menú (16 items)
-    │   └── categories.ts             # Categorías del menú
+    │   ├── menu-items.ts              # Datos del menú (33 items, datos de Rappi)
+    │   └── categories.ts             # 7 categorías del menú
     ├── hooks/
     │   ├── useMediaQuery.ts           # Hook para media queries
     │   └── useScrollDirection.ts      # Hook para dirección de scroll

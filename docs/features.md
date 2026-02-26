@@ -15,9 +15,10 @@
 ### Menú Completo
 - **Estado**: Producción
 - Filtros por categoría (tabs)
-- 16 items en 4 categorías: pollos, complementos, bebidas, combos
-- Modal con detalle, tags (popular/picante/nuevo), precios
-- Datos estáticos en `src/data/menu-items.ts`
+- 33 items en 7 categorías: especialidad, lo-mero-bueno, antojitos, acompañamientos, bebidas, postres, combos
+- Modal con detalle, tags (popular/picante/nuevo), precios reales
+- Imágenes reales de productos (WebP, extraídas de Rappi) en `public/images/menu/`
+- Datos estáticos en `src/data/menu-items.ts` (datos extraídos de Rappi)
 
 ### Sistema de Pedidos (Paga y Recoge)
 - **Estado**: Desplegado en producción (T1 Pagos pendiente de API key real)

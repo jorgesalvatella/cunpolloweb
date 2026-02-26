@@ -53,6 +53,15 @@
 - Carpeta `docs/` con architecture, features, api, database, env-vars, setup, changelog
 - Memory files actualizados: `MEMORY.md`, `ordering-system.md`
 
+### Menú Real con Datos de Rappi
+- Menú actualizado de 16 a 33 items con precios reales
+- 7 categorías: especialidad, lo-mero-bueno, antojitos, acompañamientos, bebidas, postres, combos
+- 17 imágenes de productos descargadas de Rappi CDN, convertidas a WebP (600x600)
+- Imágenes almacenadas en `public/images/menu/`
+- Reemplazados placeholders emoji por `next/image` en: MenuItemCard, MenuItemModal, MenuPreview, CartItemRow
+- Campo `image` en tipo `MenuItem` cambiado de opcional a requerido
+- OG image configurada para social sharing (1200x630)
+
 ### Deploy e Infraestructura
 - Supabase schema aplicado via MCP (tabla `orders` con RLS, Realtime, triggers)
 - Deploy a Vercel con env vars configuradas (production)
