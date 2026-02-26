@@ -3,7 +3,9 @@
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import Badge from "@/components/ui/Badge";
+import { useState } from "react";
 import { FEATURES } from "@/lib/constants";
+import { useCart } from "@/context/CartContext";
 import type { MenuItem, MenuItemTag } from "@/types/menu";
 import type { Locale } from "@/i18n/config";
 
@@ -16,6 +18,9 @@ export default function MenuItemModal({
 }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("menu");
+  const { addItem } = useCart();
+  const [quantity, setQuantity] = useState(1);
+  const [added, setAdded] = useState(false);
 
   const tagLabels: Record<MenuItemTag, string> = {
     popular: t("popular"),
@@ -86,9 +91,41 @@ export default function MenuItemModal({
               </p>
 
               {FEATURES.ORDERING_ENABLED && (
-                <button className="w-full mt-4 px-6 py-3 bg-gold-500 text-white font-semibold rounded-lg hover:bg-gold-600 transition-colors">
-                  {t("addToOrder")}
-                </button>
+                <div className="mt-4">
+                  <div className="flex items-center justify-center gap-4 mb-3">
+                    <button
+                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                      className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-dark hover:bg-gray-200 transition-colors cursor-pointer font-bold"
+                    >
+                      -
+                    </button>
+                    <span className="text-lg font-bold w-8 text-center">{quantity}</span>
+                    <button
+                      onClick={() => setQuantity((q) => q + 1)}
+                      className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-dark hover:bg-gray-200 transition-colors cursor-pointer font-bold"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => {
+                      addItem(item.id, quantity);
+                      setAdded(true);
+                      setTimeout(() => {
+                        setAdded(false);
+                        setQuantity(1);
+                        onClose();
+                      }, 800);
+                    }}
+                    className={`w-full px-6 py-3 font-semibold rounded-lg transition-colors cursor-pointer ${
+                      added
+                        ? "bg-green-500 text-white"
+                        : "bg-gold-500 text-white hover:bg-gold-600"
+                    }`}
+                  >
+                    {added ? "✓" : `${t("addToOrder")} — $${item.price * quantity}`}
+                  </button>
+                </div>
               )}
             </div>
           </motion.div>

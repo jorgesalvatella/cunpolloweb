@@ -1,14 +1,13 @@
 import type { ReactNode } from "react";
 import { routing } from "@/i18n/routing";
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { CartProvider } from "@/context/CartContext";
+import CartFloatingButton from "@/components/cart/CartFloatingButton";
 
 export default async function LocaleLayout({
   children,
@@ -28,9 +27,12 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <Header />
-      <main className="flex-1">{children}</main>
-      <Footer />
+      <CartProvider>
+        <Header />
+        <main className="flex-1">{children}</main>
+        <Footer />
+        <CartFloatingButton />
+      </CartProvider>
     </NextIntlClientProvider>
   );
 }

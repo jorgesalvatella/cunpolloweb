@@ -1,26 +1,60 @@
-// Phase 3 preparation - Order types
-
 export type CartItem = {
   menuItemId: string;
   quantity: number;
   notes?: string;
 };
 
+export type OrderItem = {
+  menuItemId: string;
+  name: string;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
+};
+
 export type OrderStatus =
   | "pending"
-  | "confirmed"
+  | "paid"
   | "preparing"
   | "ready"
-  | "delivered"
+  | "picked_up"
   | "cancelled";
+
+export type PaymentStatus =
+  | "pending"
+  | "processing"
+  | "success"
+  | "failed";
 
 export type Order = {
   id: string;
-  items: CartItem[];
-  status: OrderStatus;
+  order_number: number;
+  customer_name: string;
+  customer_phone: string;
+  items: OrderItem[];
+  subtotal: number;
   total: number;
-  createdAt: string;
+  status: OrderStatus;
+  payment_reference: string | null;
+  payment_status: PaymentStatus;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CreateOrderRequest = {
+  items: CartItem[];
   customerName: string;
   customerPhone: string;
-  deliveryAddress?: string;
+  card: {
+    number: string;
+    expMonth: string;
+    expYear: string;
+    cvv: string;
+    holderName: string;
+  };
+};
+
+export type CreateOrderResponse = {
+  orderId: string;
+  orderNumber: number;
 };

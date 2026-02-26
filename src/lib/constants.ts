@@ -1,5 +1,5 @@
 export const FEATURES = {
-  ORDERING_ENABLED: false,
+  ORDERING_ENABLED: true,
   DELIVERY_ENABLED: false,
   PWA_ENABLED: false,
 } as const;
