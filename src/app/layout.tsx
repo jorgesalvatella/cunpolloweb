@@ -24,8 +24,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/og-image.jpg",
-        width: 820,
-        height: 360,
+        width: 1200,
+        height: 630,
         alt: "CUNPOLLO - Pollo que salva tu día",
       },
     ],
