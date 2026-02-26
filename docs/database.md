@@ -1,8 +1,9 @@
 # Base de Datos — Supabase
 
 ## Proyecto
-- **Nombre sugerido**: cunpollo-orders
-- **Schema**: `supabase/schema.sql`
+- **Ref**: `hsdimsfuvdxlpeshhfzm`
+- **URL**: `https://hsdimsfuvdxlpeshhfzm.supabase.co`
+- **Schema**: `supabase/schema.sql` (aplicado en producción 2026-02-26)
 
 ## Tabla: `orders`
 
@@ -62,7 +63,13 @@ pending → processing → success
 - Service role: acceso completo (usado por API routes del server)
 - Anon: lectura pública (para que el cliente consulte su orden por UUID)
 
-## Cómo aplicar
+## Cómo aplicar (referencia)
+Schema ya aplicado en producción. Para un proyecto nuevo:
 1. Ir al SQL Editor en el dashboard de Supabase
 2. Pegar el contenido de `supabase/schema.sql`
 3. Ejecutar
+
+O via Supabase MCP:
+```
+apply_migration(name: "create_orders_table", query: <contenido de schema.sql>)
+```
