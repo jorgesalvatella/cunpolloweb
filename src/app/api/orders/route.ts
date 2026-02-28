@@ -14,13 +14,33 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Datos incompletos" }, { status: 400 });
     }
 
+    // Validate customer input
+    const name = String(body.customerName).trim();
+    const phone = String(body.customerPhone).replace(/[\s\-()]/g, "");
+    if (name.length < 2 || name.length > 100) {
+      return NextResponse.json({ error: "Nombre debe tener 2-100 caracteres" }, { status: 400 });
+    }
+    if (!/^\+?[0-9]{10,15}$/.test(phone)) {
+      return NextResponse.json({ error: "Telefono invalido" }, { status: 400 });
+    }
+
+    // Limit total items per order
+    if (body.items.length > 50) {
+      return NextResponse.json({ error: "Demasiados productos en el pedido" }, { status: 400 });
+    }
+
     // Validate items and recalculate prices server-side
     const orderItems: OrderItem[] = [];
     for (const item of body.items) {
+      // Validate quantity
+      if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 100) {
+        return NextResponse.json({ error: "Cantidad invalida (1-100)" }, { status: 400 });
+      }
+
       const menuItem = getMenuItemById(item.menuItemId);
       if (!menuItem || !menuItem.available) {
         return NextResponse.json(
-          { error: `Producto no disponible: ${item.menuItemId}` },
+          { error: "Uno o mas productos no estan disponibles" },
           { status: 400 }
         );
       }
@@ -40,8 +60,8 @@ export async function POST(request: Request) {
     const { data: order, error: dbError } = await supabaseAdmin
       .from("orders")
       .insert({
-        customer_name: body.customerName,
-        customer_phone: body.customerPhone,
+        customer_name: name,
+        customer_phone: phone,
         items: orderItems,
         subtotal,
         total,
@@ -67,8 +87,8 @@ export async function POST(request: Request) {
         holderName: body.card.holderName,
       });
       token = tokenRes.token;
-    } catch (err) {
-      console.error("Tokenize error:", err);
+    } catch {
+      console.error("[Payment] Tokenization failed for order:", order.id);
       await supabaseAdmin
         .from("orders")
         .update({ payment_status: "failed", status: "cancelled" })
@@ -111,16 +131,15 @@ export async function POST(request: Request) {
         orderId: order.id,
         orderNumber: order.order_number,
       });
-    } catch (err) {
-      console.error("Charge error:", err);
+    } catch {
+      console.error("[Payment] Charge failed for order:", order.id);
       await supabaseAdmin
         .from("orders")
         .update({ payment_status: "failed", status: "cancelled" })
         .eq("id", order.id);
       return NextResponse.json({ error: "Error al procesar el pago" }, { status: 400 });
     }
-  } catch (err) {
-    console.error("Order error:", err);
+  } catch {
     return NextResponse.json({ error: "Error interno" }, { status: 500 });
   }
 }

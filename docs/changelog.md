@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-02-28 — Security hardening del sistema de pedidos
+
+### Archivos modificados
+- `src/app/api/orders/route.ts` — Validacion de cantidad (1-100), limite de items (50), sanitizacion de nombre/telefono, logs sin datos sensibles de tarjeta
+- `src/app/api/orders/[id]/route.ts` — Validacion UUID, select limitado (sin customer_name/phone en respuesta publica)
+- `src/app/api/webhooks/t1pagos/route.ts` — Webhook auth fail-secure (rechaza si no hay credenciales configuradas)
+- `src/lib/admin-auth.ts` — Hash HMAC-SHA256 (reemplaza djb2 debil), comparacion constant-time para password
+- `src/components/cart/CartItemRow.tsx` — Layout mobile mejorado, nombre completo visible sin truncar
+
+### Resumen de fixes
+| Severidad | Issue | Fix |
+|-----------|-------|-----|
+| CRITICO | Webhook acepta todo sin auth configurada | Fail-secure: rechaza si no hay credenciales |
+| CRITICO | Hash djb2 debil para admin cookie | HMAC-SHA256 + timing-safe comparison |
+| ALTO | Sin validacion de cantidad en items | Rango 1-100, tipo entero |
+| ALTO | Sin validacion de nombre/telefono | Largo, formato, sanitizacion |
+| ALTO | Logs podrian filtrar datos de tarjeta | Logs limpios solo con order ID |
+| ALTO | /api/orders/[id] expone datos de cliente | Select limitado, validacion UUID |
+| MEDIO | Mensaje de error filtra menuItemId | Error generico |
+
 ## 2026-02-28 — Migracion de imagenes del menu a Vercel Blob Storage
 
 ### Objetivo

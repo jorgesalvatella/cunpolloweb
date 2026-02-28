@@ -33,7 +33,10 @@ const WEBHOOK_USER = process.env.T1_WEBHOOK_USER;
 const WEBHOOK_PASS = process.env.T1_WEBHOOK_PASS;
 
 function verifyBasicAuth(request: Request): boolean {
-  if (!WEBHOOK_USER || !WEBHOOK_PASS) return true; // skip if not configured
+  if (!WEBHOOK_USER || !WEBHOOK_PASS) {
+    console.warn("[Webhook] Auth credentials not configured — rejecting request");
+    return false;
+  }
 
   const auth = request.headers.get("Authorization");
   if (!auth?.startsWith("Basic ")) return false;

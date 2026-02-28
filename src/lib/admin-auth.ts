@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import crypto from "crypto";
 
 const COOKIE_NAME = "cunpollo-admin";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "";
@@ -12,18 +13,15 @@ export async function verifyAdmin(): Promise<boolean> {
 
 export function validatePassword(password: string): boolean {
   if (!ADMIN_PASSWORD) return false;
-  return password === ADMIN_PASSWORD;
+  // Constant-time comparison to prevent timing attacks
+  const a = Buffer.from(password);
+  const b = Buffer.from(ADMIN_PASSWORD);
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
 }
 
 export function hashPassword(password: string): string {
-  // Simple hash for cookie value - not cryptographic, just to avoid storing plain password in cookie
-  let hash = 0;
-  for (let i = 0; i < password.length; i++) {
-    const char = password.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash |= 0;
-  }
-  return `admin_${Math.abs(hash).toString(36)}`;
+  return crypto.createHmac("sha256", "cunpollo-admin-salt").update(password).digest("hex");
 }
 
 export function getAdminCookieName(): string {
