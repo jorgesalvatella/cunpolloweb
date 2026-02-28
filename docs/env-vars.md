@@ -9,8 +9,10 @@ Archivo de referencia: `.env.example`
 | `NEXT_PUBLIC_SUPABASE_URL` | Public | URL del proyecto Supabase | Supabase Dashboard → Settings → API |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public | Anon key de Supabase | Supabase Dashboard → Settings → API |
 | `SUPABASE_SERVICE_ROLE_KEY` | Secret | Service role key de Supabase | Supabase Dashboard → Settings → API |
-| `T1_PAGOS_BEARER_TOKEN` | Secret | Bearer token de T1 Pagos (ClaroPagos) | Panel admin ClaroPagos |
-| `T1_PAGOS_BASE_URL` | Server | Base URL de la API | `https://api.sandbox.claropagos.com/v1` (sandbox) o `https://api.claropagos.com/v1` (prod) |
+| `T1_PAGOS_API_KEY` | Secret | API Key de T1 Pagos | Panel admin T1 Pagos |
+| `T1_PAGOS_BASE_URL` | Server | Base URL de la API | `https://api.sandbox.t1pagos.com/v2` (sandbox) o `https://api.t1pagos.com/v2` (prod) |
+| `T1_WEBHOOK_USER` | Secret | Usuario Basic Auth para webhook | Definir manualmente, configurar en panel T1 |
+| `T1_WEBHOOK_PASS` | Secret | Password Basic Auth para webhook | Definir manualmente, configurar en panel T1 |
 | `ADMIN_PASSWORD` | Secret | Contraseña del dashboard admin | Definir manualmente |
 
 ## Twilio WhatsApp
@@ -26,7 +28,8 @@ Archivo de referencia: `.env.example`
 
 - Las variables `NEXT_PUBLIC_*` se exponen al browser — no poner secretos ahí
 - `SUPABASE_SERVICE_ROLE_KEY` tiene acceso total a la DB — nunca exponerlo al cliente
-- `T1_PAGOS_BASE_URL` por defecto usa sandbox si no se configura
+- `T1_PAGOS_BASE_URL` por defecto usa sandbox v2 si no se configura
+- `T1_WEBHOOK_USER` y `T1_WEBHOOK_PASS` son opcionales — si no se configuran, el webhook acepta todo
 - `ADMIN_PASSWORD` puede ser cualquier string, se usa para el login de `/admin`
 - Las variables de Twilio son opcionales — si no se configuran, las notificaciones se desactivan silenciosamente
 - `TWILIO_WHATSAPP_FROM` usa el numero sandbox de Twilio por defecto (`+14155238886`)
@@ -44,4 +47,4 @@ cp .env.example .env.local
 Agregar cada variable en Vercel Dashboard → Settings → Environment Variables:
 - Marcar las `NEXT_PUBLIC_*` para todos los environments
 - Marcar las secretas solo para Production y Preview
-- Para produccion, cambiar `T1_PAGOS_BASE_URL` a `https://api.claropagos.com/v1`
+- Para produccion, cambiar `T1_PAGOS_BASE_URL` a `https://api.t1pagos.com/v2`

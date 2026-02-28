@@ -1,5 +1,32 @@
 # Changelog
 
+## 2026-02-27 — Migracion a T1 Pagos API v2
+
+### Corregido: `src/lib/t1pagos.ts`
+- Base URL: `https://api.sandbox.t1pagos.com/v2` (antes: `claropagos.com/v1`)
+- Auth: `X-API-Key` header (antes: `Authorization: Bearer`)
+- Env var: `T1_PAGOS_API_KEY` (antes: `T1_PAGOS_BEARER_TOKEN`)
+- Tokenizacion response: `data.tarjeta.token` (nested, antes: `data.token`)
+- Cargo response: `data.cargo.id` (nested, antes: `data.id`)
+- Monto como string (antes: number)
+- Device fingerprint ahora requerido
+
+### Corregido: `src/app/api/webhooks/t1pagos/route.ts`
+- Campo evento: `tipo_evento` (antes: `tipo`)
+- Estructura datos: `data.cargo` (antes: `datos`)
+- Agregada verificacion Basic HTTP auth (`T1_WEBHOOK_USER` / `T1_WEBHOOK_PASS`)
+
+### Archivos modificados
+- `src/types/order.ts` — `deviceFingerprint` ahora requerido
+- `src/app/api/orders/route.ts` — valida `deviceFingerprint` como campo requerido
+- `src/components/checkout/CheckoutForm.tsx` — genera device fingerprint (UUID placeholder, TODO: CyberSource SDK)
+- `.env.example` — variables renombradas y nuevas (webhook auth)
+
+### Documentacion actualizada
+- `docs/env-vars.md` — variables T1 Pagos v2, webhook auth
+- `docs/api.md` — endpoints v2, payload webhook v2, basic auth
+- `docs/features.md` — estado actualizado, pendientes actualizados
+
 ## 2026-02-26 — Integracion real T1 Pagos (ClaroPagos API)
 
 ### Reescrito: `src/lib/t1pagos.ts`

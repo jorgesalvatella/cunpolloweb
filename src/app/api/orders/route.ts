@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const body: CreateOrderRequest = await request.json();
 
     // Validate required fields
-    if (!body.items?.length || !body.customerName || !body.customerPhone || !body.card) {
+    if (!body.items?.length || !body.customerName || !body.customerPhone || !body.card || !body.deviceFingerprint) {
       return NextResponse.json({ error: "Datos incompletos" }, { status: 400 });
     }
 

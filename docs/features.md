@@ -21,15 +21,15 @@
 - Datos estáticos en `src/data/menu-items.ts` (datos extraídos de Rappi)
 
 ### Sistema de Pedidos (Paga y Recoge)
-- **Estado**: Desplegado en produccion (pendiente Bearer token real de ClaroPagos)
+- **Estado**: Desplegado en produccion (pendiente API Key real de T1 Pagos)
 - **Feature flag**: `FEATURES.ORDERING_ENABLED` en `src/lib/constants.ts` (actualmente `true`)
 - Carrito client-side con persistencia en localStorage
-- Checkout con pago por tarjeta via ClaroPagos (T1 Pagos)
-- API real: `POST /v1/tarjeta` (tokenizacion) + `POST /v1/cargo` (cobro)
-- Auth: Bearer token, no SDK (fetch directo al REST API)
-- Montos en pesos MXN (no centavos)
-- Device fingerprint (CyberSource) opcional — se envia si esta disponible
-- Webhook safety net en `/api/webhooks/t1pagos` (eventos: cargo.exitoso, cargo.fallido, cargo.cancelado)
+- Checkout con pago por tarjeta via T1 Pagos (API v2)
+- API: `POST /v2/tarjeta` (tokenizacion) + `POST /v2/cargo` (cobro)
+- Auth: `X-API-Key` header, no SDK (fetch directo al REST API)
+- Montos como string en pesos MXN (no centavos)
+- Device fingerprint requerido — se genera client-side (TODO: integrar CyberSource SDK)
+- Webhook safety net en `/api/webhooks/t1pagos` con Basic HTTP auth (eventos: cargo.exitoso, cargo.fallido, cargo.cancelado)
 - Confirmacion con animacion y "Te esperamos en ~20 min"
 - Sin delivery, sin cuentas de usuario
 - Notificaciones WhatsApp via Twilio (ver seccion abajo)
@@ -55,9 +55,10 @@
 
 | Item | Descripción | Bloqueado por |
 |------|-------------|---------------|
-| ClaroPagos Bearer token | Obtener token real del panel admin | Registro en t1pagos.com + admin.claropagos.com |
-| Prueba e2e pago | Flujo completo con tarjeta sandbox | Bearer token real |
-| Device fingerprint | Integrar CyberSource JS en checkout | Guia oficial de T1 Pagos |
+| T1 Pagos API Key | Obtener API Key real del panel admin | Registro en t1pagos.com |
+| Prueba e2e pago | Flujo completo con tarjeta sandbox (4242424242424242) | API Key real |
+| CyberSource SDK | Reemplazar UUID placeholder con SDK real de device fingerprint | Guia oficial de T1 Pagos |
+| Webhook auth | Configurar user/pass de Basic Auth en panel T1 Pagos | API Key real |
 | Twilio credenciales | Obtener Account SID y Auth Token reales | Registro en twilio.com |
 | Twilio WhatsApp sender | Registrar numero de WhatsApp Business | Aprobacion de Twilio/Meta |
 

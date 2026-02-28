@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useCart } from "@/context/CartContext";
@@ -24,6 +24,13 @@ export default function CheckoutForm() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [deviceFingerprint, setDeviceFingerprint] = useState("");
+
+  useEffect(() => {
+    // Generate a device fingerprint for fraud prevention (T1 Pagos requirement).
+    // TODO: Replace with CyberSource SDK when credentials are available.
+    setDeviceFingerprint(crypto.randomUUID());
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,6 +64,7 @@ export default function CheckoutForm() {
             cvv: card.cvv,
             holderName: card.holderName,
           },
+          deviceFingerprint,
         }),
       });
 

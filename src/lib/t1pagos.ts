@@ -1,20 +1,20 @@
-// T1 Pagos (ClaroPagos) API wrapper — server-only
-// Docs: https://docs.t1pagos.com/docs/cargo-tarjeta.html
+// T1 Pagos API wrapper — server-only
+// Docs: https://docs.t1pagos.com/docs/t1pagos_documentation.html
 
 const T1_BASE_URL =
-  process.env.T1_PAGOS_BASE_URL || "https://api.sandbox.claropagos.com/v1";
-const T1_BEARER_TOKEN = process.env.T1_PAGOS_BEARER_TOKEN!;
+  process.env.T1_PAGOS_BASE_URL || "https://api.sandbox.t1pagos.com/v2";
+const T1_API_KEY = process.env.T1_PAGOS_API_KEY!;
 
 // ------------------------------------------------------------------
-// Types — ClaroPagos response wrapper
+// Types — T1 Pagos response wrapper
 // ------------------------------------------------------------------
 
 type T1Response<T> = {
   status: "success" | "fail" | "error";
   http_code: number;
   data: T;
-  datetime: string;
-  timestamp: number;
+  datetime?: string;
+  timestamp?: number;
   error?: {
     code: string;
     type: string;
@@ -35,13 +35,14 @@ export type TokenizeCardParams = {
 };
 
 type TokenizeData = {
-  token: string;
-  marca: string;
-  terminacion: string;
-  iin: string;
-  nombre: string;
-  expiracion_mes: string;
-  expiracion_anio: string;
+  tarjeta: {
+    token: string;
+    pan: string;
+    marca: string;
+    terminacion: string;
+    iin: string;
+    cliente_id: string;
+  };
 };
 
 export type TokenizeResult = {
@@ -59,19 +60,16 @@ export type ChargeParams = {
   amount: number; // pesos MXN (NOT centavos)
   description: string;
   orderId: string;
-  deviceFingerprint?: string;
+  deviceFingerprint: string;
 };
 
 type ChargeData = {
-  id: string;
-  monto: number;
-  estatus: string;
-  codigo: string;
-  descripcion: string;
-  orden_id: string;
-  tarjeta: {
-    marca: string;
-    terminacion: string;
+  cargo: {
+    id: string;
+    monto: string;
+    estatus: string;
+    codigo: string;
+    descripcion: string;
   };
 };
 
@@ -92,7 +90,7 @@ async function t1Fetch<T>(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${T1_BEARER_TOKEN}`,
+      "X-API-Key": T1_API_KEY,
     },
     body: JSON.stringify(body),
   });
@@ -112,7 +110,7 @@ async function t1Fetch<T>(
 // ------------------------------------------------------------------
 
 /**
- * Tokenize a card via POST /v1/tarjeta
+ * Tokenize a card via POST /v2/tarjeta
  * Returns a token that can be used for charges.
  */
 export async function tokenizeCard(
@@ -127,40 +125,34 @@ export async function tokenizeCard(
   });
 
   return {
-    token: res.data.token,
-    brand: res.data.marca,
-    last4: res.data.terminacion,
+    token: res.data.tarjeta.token,
+    brand: res.data.tarjeta.marca,
+    last4: res.data.tarjeta.terminacion,
   };
 }
 
 /**
- * Create a charge via POST /v1/cargo
+ * Create a charge via POST /v2/cargo
  * Amount is in MXN pesos (e.g. 250.00), NOT centavos.
  */
 export async function createCharge(
   params: ChargeParams
 ): Promise<ChargeResult> {
-  const pedido: Record<string, unknown> = {
-    id_externo: params.orderId,
-  };
-  if (params.deviceFingerprint) {
-    pedido.device_fingerprint = params.deviceFingerprint;
-  }
-
   const res = await t1Fetch<ChargeData>("/cargo", {
-    monto: params.amount,
-    moneda: "MXN",
+    monto: String(params.amount),
     descripcion: params.description,
     metodo_pago: "tarjeta",
-    capturar: true,
     tarjeta: {
       token: params.token,
     },
-    pedido,
+    pedido: {
+      id_externo: params.orderId,
+      device_fingerprint: params.deviceFingerprint,
+    },
   });
 
   return {
-    id: res.data.id,
-    status: res.data.estatus,
+    id: res.data.cargo.id,
+    status: res.data.cargo.estatus,
   };
 }

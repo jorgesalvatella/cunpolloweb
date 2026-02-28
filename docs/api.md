@@ -20,12 +20,13 @@ Crea una orden y procesa el pago.
   "customerName": "Juan Pérez",
   "customerPhone": "+529981234567",
   "card": {
-    "number": "4111111111111111",
+    "number": "4242424242424242",
     "expMonth": "12",
-    "expYear": "2026",
+    "expYear": "26",
     "cvv": "123",
     "holderName": "JUAN PEREZ"
-  }
+  },
+  "deviceFingerprint": "uuid-device-fingerprint"
 }
 ```
 
@@ -44,8 +45,8 @@ Crea una orden y procesa el pago.
 **Flujo interno:**
 1. Valida items contra menu (recalcula precios server-side)
 2. INSERT en Supabase (status: pending)
-3. Tokeniza tarjeta via ClaroPagos (`POST /v1/tarjeta`)
-4. Crea cargo con token (`POST /v1/cargo`)
+3. Tokeniza tarjeta via T1 Pagos (`POST /v2/tarjeta`)
+4. Crea cargo con token (`POST /v2/cargo`) — monto como string, device_fingerprint requerido
 5. Si OK → UPDATE a paid + WhatsApp notify (fire-and-forget) → responde con orderId
 6. Si falla → UPDATE a cancelled/failed, responde con error
 
@@ -69,9 +70,11 @@ Safety net para eventos asincronos de ClaroPagos (T1 Pagos).
 - `cargo.fallido` → Actualiza orden a cancelled/failed
 - `cargo.cancelado` → Actualiza orden a cancelled/failed
 
-**Payload:** Estructura `WebhookPayload` con `tipo`, `datos.id`, `datos.pedido.id_externo`
+**Auth:** Basic HTTP auth (configurable via `T1_WEBHOOK_USER` / `T1_WEBHOOK_PASS`). Si no se configuran, acepta todo.
 
-Siempre responde `200 { "ok": true }`.
+**Payload (v2):** Estructura con `tipo_evento`, `data.cargo.id`, `data.cargo.pedido.id_externo`
+
+Siempre responde `200 { "ok": true }` (excepto `401` si falla auth).
 
 ---
 
