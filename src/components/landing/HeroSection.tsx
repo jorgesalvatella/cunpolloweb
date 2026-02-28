@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Link } from "@/i18n/navigation";
@@ -8,6 +9,15 @@ import { FEATURES } from "@/lib/constants";
 
 export default function HeroSection() {
   const t = useTranslations("hero");
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.muted = true;
+      video.play().catch(() => {});
+    }
+  }, []);
 
   return (
     <section className="relative min-h-[100svh] flex items-center bg-red-600 overflow-hidden">
@@ -95,11 +105,15 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="lg:flex-1 flex justify-center"
           >
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <video
+              ref={videoRef}
               autoPlay
               muted
               loop
               playsInline
+              webkit-playsinline=""
+              preload="auto"
               className="w-48 sm:w-64 md:w-72 lg:w-96 h-auto drop-shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
             >
               <source src="/images/mascot-animation.mp4" type="video/mp4" />
