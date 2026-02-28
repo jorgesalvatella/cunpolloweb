@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-02-28 — Migracion de imagenes del menu a Vercel Blob Storage
+
+### Objetivo
+Mover las 33 imagenes del menu (`.webp`) de `public/images/menu/` a Vercel Blob Storage para entrega via CDN edge global y desacoplar las imagenes del bundle de deploy.
+
+### Archivos modificados
+- `package.json` — Agregado `@vercel/blob` como dependencia
+- `next.config.ts` — Agregado `images.remotePatterns` para `*.public.blob.vercel-storage.com`
+- `src/data/menu-items.ts` — Reemplazadas 39 rutas locales `/images/menu/*.webp` con URLs de Vercel Blob
+- `.env.example` — Agregado placeholder `BLOB_READ_WRITE_TOKEN`
+- `docs/env-vars.md` — Documentada nueva variable
+- `docs/changelog.md` — Este entry
+
+### Archivos nuevos
+- `scripts/upload-menu-images.ts` — Script para subir imagenes a Vercel Blob
+
+### Archivos eliminados
+- `public/images/menu/` — 33 archivos `.webp` eliminados del repo (ahora en Blob Storage)
+
+### Notas
+- Blob Store ID: `store_IGWU4bQZUcdjJKUP`
+- URL base: `https://igwu4bqzucdjjkup.public.blob.vercel-storage.com/menu/`
+- `BLOB_READ_WRITE_TOKEN` solo necesario para el script de upload, no en runtime
+- Next.js Image optimization funciona con las URLs remotas via `remotePatterns`
+
 ## 2026-02-27 — UX/UI Overhaul: Sales Conversion & Clarity
 
 ### Objetivo

@@ -26,6 +26,7 @@ export default function CartItemRow({ item }: { item: CartItem }) {
           fill
           className="object-cover"
           sizes="48px"
+          unoptimized
         />
       </div>
 

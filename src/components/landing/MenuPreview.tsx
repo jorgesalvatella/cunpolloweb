@@ -64,6 +64,7 @@ export default function MenuPreview() {
                   height={500}
                   className="w-full h-auto rounded-lg"
                   sizes="(max-width: 640px) 50vw, 25vw"
+                  unoptimized
                 />
               </div>
               <div className="p-3 sm:p-5">

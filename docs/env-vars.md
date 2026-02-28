@@ -24,6 +24,12 @@ Archivo de referencia: `.env.example`
 | `TWILIO_WHATSAPP_FROM` | Server | Numero de WhatsApp remitente | Formato: `whatsapp:+14155238886` (sandbox) |
 | `ADMIN_WHATSAPP_PHONES` | Server | Numeros WhatsApp del equipo | Separados por coma: `whatsapp:+521234567890,whatsapp:+529876543210` |
 
+## Vercel Blob Storage
+
+| Variable | Tipo | Descripcion | Donde obtener |
+|----------|------|-------------|---------------|
+| `BLOB_READ_WRITE_TOKEN` | Secret | Token de lectura/escritura para Vercel Blob | Vercel Dashboard → Storage → Blob Store → Settings |
+
 ## Notas
 
 - Las variables `NEXT_PUBLIC_*` se exponen al browser — no poner secretos ahí
