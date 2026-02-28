@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-02-27 — UX/UI Overhaul: Sales Conversion & Clarity
+
+### Objetivo
+Reorientar toda la UX hacia la conversion de ventas. CTAs activos ("Pedir Ahora" en vez de "Ver Menu"), quick-add en tarjetas de menu, carrito flotante con total, copy orientado a accion, y consistencia visual (rounded-full buttons).
+
+### Archivos modificados
+- `src/messages/es.json` — Nuevos keys: hero.ctaOrder, hero.trustLine, video.*, nav.order, cart.pickupEstimate, checkout.step*, checkout.securePayment, location.orderPickup/open/closed, footer.orderNow/weekdays/weekends, menu.added. Actualizados: menuPreview.*, cta.*
+- `src/messages/en.json` — Mismos keys en ingles
+- `src/components/landing/HeroSection.tsx` — CTA "Pedir Ahora" (si ordering enabled), trust line "Listo en ~20 min", boton py-4 text-lg
+- `src/components/layout/Header.tsx` — Boton "Pedir" pill en nav (rojo on scroll, blanco on transparent). En mobile menu con fondo dorado
+- `src/components/menu/MenuItemCard.tsx` — Boton "+" quick-add dorado (bottom-right imagen), checkmark verde al agregar. Descripcion visible en mobile (line-clamp-1)
+- `src/components/landing/MenuPreview.tsx` — Titulo "Los Mas Pedidos", CTA "Ver Todo y Pedir" con bg-red-600 rounded-full
+- `src/components/landing/CTASection.tsx` — Titulo "Pide y Recoge en 20 Min", botones rounded-full
+- `src/components/cart/CartFloatingButton.tsx` — Muestra "$total MXN" + badge count, pill mas ancha
+- `src/app/[locale]/cart/page.tsx` — Pickup estimate, emoji reemplazado por SVG, checkout button rounded-full py-4 text-lg, continue shopping como text link
+- `src/components/landing/VideoSection.tsx` — Heading "Asi Preparamos tu Pollo" + subtitle
+- `src/components/landing/LocationSection.tsx` — Boton "Pide para Recoger" dorado, indicador abierto/cerrado (13:00-21:00), botones rounded-full
+- `src/components/layout/Footer.tsx` — Boton "Hacer Pedido" dorado, texto Lun-Vie/Sab-Dom internacionalizado
+- `src/app/[locale]/checkout/page.tsx` — Progress steps (Menu > Carrito > Pago), botones rounded-full
+- `src/components/checkout/CheckoutForm.tsx` — Boton rounded-full, "Pago seguro con encriptacion SSL"
+- `src/components/menu/MenuItemModal.tsx` — Boton rounded-full
+- `src/components/menu/CategoryTabs.tsx` — Tap targets py-2.5 → py-3
+- `src/components/cart/CartItemRow.tsx` — Quantity buttons w-8 h-8 → w-10 h-10
+
 ## 2026-02-27 — Migracion a T1 Pagos API v2
 
 ### Corregido: `src/lib/t1pagos.ts`

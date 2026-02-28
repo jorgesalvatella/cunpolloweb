@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import Container from "@/components/ui/Container";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { cn } from "@/lib/utils";
@@ -13,8 +13,13 @@ import { useCart } from "@/context/CartContext";
 export default function Header() {
   const t = useTranslations("nav");
   const { itemCount } = useCart();
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // On non-home pages, always use the solid (scrolled) style
+  const solid = !isHome || scrolled;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -32,7 +37,7 @@ export default function Header() {
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled
+        solid
           ? "bg-white/95 backdrop-blur-md shadow-md"
           : "bg-transparent"
       )}
@@ -58,15 +63,28 @@ export default function Header() {
                 href={link.href}
                 className={cn(
                   "font-medium transition-colors hover:text-gold-500 text-sm lg:text-base",
-                  scrolled ? "text-dark" : "text-white"
+                  solid ? "text-dark" : "text-white"
                 )}
               >
                 {link.label}
               </Link>
             ))}
+            {FEATURES.ORDERING_ENABLED && (
+              <Link
+                href="/menu"
+                className={cn(
+                  "px-5 py-2 rounded-full font-semibold text-sm transition-all",
+                  solid
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-white text-red-600 hover:bg-gold-300"
+                )}
+              >
+                {t("order")}
+              </Link>
+            )}
             {FEATURES.ORDERING_ENABLED && itemCount > 0 && (
               <Link href="/cart" className="relative p-2">
-                <svg className={cn("w-5 h-5", scrolled ? "text-dark" : "text-white")} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={cn("w-5 h-5", solid ? "text-dark" : "text-white")} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
                 </svg>
                 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{itemCount}</span>
@@ -79,7 +97,7 @@ export default function Header() {
           <div className="flex items-center gap-2 sm:gap-3 md:hidden">
             {FEATURES.ORDERING_ENABLED && itemCount > 0 && (
               <Link href="/cart" className="relative p-2">
-                <svg className={cn("w-5 h-5", scrolled ? "text-dark" : "text-white")} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={cn("w-5 h-5", solid ? "text-dark" : "text-white")} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
                 </svg>
                 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{itemCount}</span>
@@ -90,7 +108,7 @@ export default function Header() {
               onClick={() => setMobileOpen(!mobileOpen)}
               className={cn(
                 "p-2 cursor-pointer",
-                scrolled ? "text-dark" : "text-white"
+                solid ? "text-dark" : "text-white"
               )}
               aria-label="Toggle menu"
             >
@@ -135,6 +153,15 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
+            {FEATURES.ORDERING_ENABLED && (
+              <Link
+                href="/menu"
+                onClick={() => setMobileOpen(false)}
+                className="mx-4 my-2 py-3 bg-gold-500 text-white font-semibold rounded-full text-center hover:bg-gold-600 transition-colors"
+              >
+                {t("order")}
+              </Link>
+            )}
           </nav>
         </div>
       )}

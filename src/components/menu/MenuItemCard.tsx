@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import Badge from "@/components/ui/Badge";
+import { FEATURES } from "@/lib/constants";
+import { useCart } from "@/context/CartContext";
 import type { MenuItem, MenuItemTag } from "@/types/menu";
 import type { Locale } from "@/i18n/config";
 
@@ -16,11 +19,20 @@ export default function MenuItemCard({
 }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("menu");
+  const { addItem } = useCart();
+  const [justAdded, setJustAdded] = useState(false);
 
   const tagLabels: Record<MenuItemTag, string> = {
     popular: t("popular"),
     spicy: t("spicy"),
     new: t("new"),
+  };
+
+  const handleQuickAdd = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    addItem(item.id, 1);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1200);
   };
 
   return (
@@ -42,6 +54,36 @@ export default function MenuItemCard({
           className="object-cover"
           sizes="(max-width: 640px) 50vw, 25vw"
         />
+        {FEATURES.ORDERING_ENABLED && (
+          <motion.div
+            className="absolute bottom-2 right-2"
+            initial={false}
+            animate={justAdded ? { scale: [1, 1.2, 1] } : {}}
+            transition={{ duration: 0.3 }}
+          >
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={handleQuickAdd}
+              onKeyDown={(e) => { if (e.key === "Enter") handleQuickAdd(e as unknown as React.MouseEvent); }}
+              className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full shadow-md transition-colors ${
+                justAdded
+                  ? "bg-green-500 text-white"
+                  : "bg-gold-500 text-white hover:bg-gold-600"
+              }`}
+            >
+              {justAdded ? (
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                </svg>
+              )}
+            </span>
+          </motion.div>
+        )}
       </div>
       <div className="p-2.5 sm:p-4">
         <div className="flex items-start justify-between gap-1 sm:gap-2 mb-0.5 sm:mb-1">
@@ -52,7 +94,7 @@ export default function MenuItemCard({
             ${item.price}
           </span>
         </div>
-        <p className="text-[10px] sm:text-xs text-dark/50 mb-2 sm:mb-3 line-clamp-2 hidden sm:block">
+        <p className="text-[10px] sm:text-xs text-dark/50 mb-2 sm:mb-3 line-clamp-1 sm:line-clamp-2">
           {item.description[locale]}
         </p>
         {item.tags.length > 0 && (

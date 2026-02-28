@@ -37,7 +37,7 @@ export default function CartItemRow({ item }: { item: CartItem }) {
       <div className="flex items-center gap-2">
         <button
           onClick={() => updateQuantity(item.menuItemId, item.quantity - 1)}
-          className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-dark hover:bg-gray-200 transition-colors cursor-pointer"
+          className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-dark hover:bg-gray-200 transition-colors cursor-pointer"
           aria-label={t("decrease")}
         >
           -
@@ -45,7 +45,7 @@ export default function CartItemRow({ item }: { item: CartItem }) {
         <span className="w-8 text-center font-semibold">{item.quantity}</span>
         <button
           onClick={() => updateQuantity(item.menuItemId, item.quantity + 1)}
-          className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-dark hover:bg-gray-200 transition-colors cursor-pointer"
+          className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-dark hover:bg-gray-200 transition-colors cursor-pointer"
           aria-label={t("increase")}
         >
           +

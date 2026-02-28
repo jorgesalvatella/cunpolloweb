@@ -2,8 +2,23 @@
 
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
+import { Link } from "@/i18n/navigation";
 import Container from "@/components/ui/Container";
-import { RESTAURANT } from "@/lib/constants";
+import { FEATURES, RESTAURANT } from "@/lib/constants";
+
+function OpenIndicator() {
+  const t = useTranslations("location");
+  const now = new Date();
+  const hour = now.getHours();
+  const isOpen = hour >= 13 && hour < 21;
+
+  return (
+    <span className={`inline-flex items-center gap-1.5 text-sm font-medium ${isOpen ? "text-green-600" : "text-red-500"}`}>
+      <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-green-500" : "bg-red-500"}`} />
+      {isOpen ? t("open") : t("closed")}
+    </span>
+  );
+}
 
 export default function LocationSection() {
   const t = useTranslations("location");
@@ -73,9 +88,12 @@ export default function LocationSection() {
             </div>
 
             <div>
-              <h3 className="text-xs sm:text-sm font-semibold text-gold-500 uppercase tracking-wider mb-1.5 sm:mb-2">
-                {t("hours")}
-              </h3>
+              <div className="flex items-center gap-3 mb-1.5 sm:mb-2">
+                <h3 className="text-xs sm:text-sm font-semibold text-gold-500 uppercase tracking-wider">
+                  {t("hours")}
+                </h3>
+                <OpenIndicator />
+              </div>
               <div className="space-y-1 text-dark text-base sm:text-lg">
                 <p>
                   <span className="text-dark/60">{t("weekdays")}:</span>{" "}
@@ -100,18 +118,28 @@ export default function LocationSection() {
               </a>
             </div>
 
-            <a
-              href={mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all shadow-md hover:shadow-lg w-full sm:w-fit text-base sm:text-lg"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              {t("getDirections")}
-            </a>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 transition-all shadow-md hover:shadow-lg flex-1 text-base sm:text-lg"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                {t("getDirections")}
+              </a>
+              {FEATURES.ORDERING_ENABLED && (
+                <Link
+                  href="/menu"
+                  className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-gold-500 text-white font-semibold rounded-full hover:bg-gold-600 transition-all shadow-md hover:shadow-lg flex-1 text-base sm:text-lg"
+                >
+                  {t("orderPickup")}
+                </Link>
+              )}
+            </div>
           </motion.div>
         </div>
       </Container>

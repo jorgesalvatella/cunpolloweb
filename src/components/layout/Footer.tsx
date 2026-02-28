@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import Container from "@/components/ui/Container";
-import { RESTAURANT } from "@/lib/constants";
+import { FEATURES, RESTAURANT } from "@/lib/constants";
 
 export default function Footer() {
   const t = useTranslations("footer");
@@ -19,21 +20,29 @@ export default function Footer() {
               height={48}
               className="h-12 w-auto mb-4 brightness-110"
             />
-            <p className="text-white/60 text-sm leading-relaxed">
+            <p className="text-white/60 text-sm leading-relaxed mb-4">
               {RESTAURANT.address.street}
               <br />
               {RESTAURANT.address.city}, {RESTAURANT.address.state}{" "}
               {RESTAURANT.address.zip}
             </p>
+            {FEATURES.ORDERING_ENABLED && (
+              <Link
+                href="/menu"
+                className="inline-flex items-center justify-center px-5 py-2.5 bg-gold-500 text-white font-semibold rounded-full text-sm hover:bg-gold-600 transition-colors"
+              >
+                {t("orderNow")}
+              </Link>
+            )}
           </div>
 
           {/* Hours */}
           <div>
             <h4 className="font-semibold text-gold-400 mb-3">{t("hours")}</h4>
             <p className="text-white/70 text-sm leading-relaxed">
-              Lun - Vie: {RESTAURANT.hours.weekdays}
+              {t("weekdays")}: {RESTAURANT.hours.weekdays}
               <br />
-              Sáb - Dom: {RESTAURANT.hours.weekends}
+              {t("weekends")}: {RESTAURANT.hours.weekends}
             </p>
           </div>
 

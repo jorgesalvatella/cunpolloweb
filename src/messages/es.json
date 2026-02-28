@@ -7,19 +7,27 @@
     "home": "Inicio",
     "menu": "Menú",
     "location": "Ubicación",
-    "contact": "Contacto"
+    "contact": "Contacto",
+    "order": "Pedir"
   },
   "hero": {
     "title": "Pollo que Salva tu Día",
     "subtitle": "Pollos y acompañamientos frescos, sabrosos y rápidos. Cada mordida es un gustito que quieres repetir.",
-    "playArea": "Con el área de juegos infantil más grande de Cancún",
+    "playArea": "Área de juegos infantil",
+    "playAreaHighlight": "la más grande de Cancún",
     "cta": "Ver Menú",
-    "ctaSecondary": "Cómo Llegar"
+    "ctaOrder": "Pedir Ahora",
+    "ctaSecondary": "Cómo Llegar",
+    "trustLine": "Listo en ~20 min para recoger"
+  },
+  "video": {
+    "title": "Así Preparamos tu Pollo",
+    "subtitle": "Fresco, rostizado al momento y con el sabor que te enamora"
   },
   "menuPreview": {
-    "title": "Nuestro Menú",
-    "subtitle": "Los favoritos de nuestros clientes",
-    "viewAll": "Ver Menú Completo"
+    "title": "Los Más Pedidos",
+    "subtitle": "Agrega directo a tu pedido",
+    "viewAll": "Ver Todo y Pedir"
   },
   "menu": {
     "title": "Menú",
@@ -33,7 +41,8 @@
     "close": "Cerrar",
     "addToOrder": "Agregar al Pedido",
     "ingredients": "Ingredientes",
-    "description": "Descripción"
+    "description": "Descripción",
+    "added": "Agregado"
   },
   "cart": {
     "title": "Tu Pedido",
@@ -46,7 +55,8 @@
     "clearCart": "Vaciar carrito",
     "remove": "Eliminar",
     "increase": "Aumentar cantidad",
-    "decrease": "Disminuir cantidad"
+    "decrease": "Disminuir cantidad",
+    "pickupEstimate": "Tiempo estimado: ~20 min"
   },
   "checkout": {
     "title": "Finalizar Pedido",
@@ -71,7 +81,11 @@
     "errorValidation": "Por favor completa todos los campos correctamente.",
     "errorCard": "Los datos de la tarjeta son incorrectos.",
     "emptyCart": "No hay productos en tu pedido",
-    "backToCart": "Volver al carrito"
+    "backToCart": "Volver al carrito",
+    "stepMenu": "Menú",
+    "stepCart": "Carrito",
+    "stepPayment": "Pago",
+    "securePayment": "Pago seguro con encriptación SSL"
   },
   "confirmation": {
     "title": "¡Pedido Confirmado!",
@@ -91,18 +105,24 @@
     "weekdays": "Lunes a Viernes",
     "weekends": "Sábados y Domingos",
     "phone": "Teléfono",
-    "getDirections": "Cómo Llegar"
+    "getDirections": "Cómo Llegar",
+    "orderPickup": "Pide para Recoger",
+    "open": "Abierto ahora",
+    "closed": "Cerrado"
   },
   "cta": {
-    "title": "¿Antojo de Pollo?",
-    "subtitle": "Visítanos hoy y prueba el mejor pollo rostizado de la ciudad.",
-    "button": "Ver Menú",
+    "title": "Pide y Recoge en 20 Min",
+    "subtitle": "Haz tu pedido en línea y recógelo calientito. Sin filas, sin esperas.",
+    "button": "Hacer Pedido",
     "phone": "Llámanos"
   },
   "footer": {
     "rights": "Todos los derechos reservados.",
     "followUs": "Síguenos",
     "hours": "Horarios",
-    "contact": "Contacto"
+    "contact": "Contacto",
+    "orderNow": "Hacer Pedido",
+    "weekdays": "Lun - Vie",
+    "weekends": "Sáb - Dom"
   }
 }

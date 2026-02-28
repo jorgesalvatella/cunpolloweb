@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { FEATURES } from "@/lib/constants";
 
 export default function CartFloatingButton() {
-  const { itemCount } = useCart();
+  const { itemCount, total } = useCart();
 
   if (!FEATURES.ORDERING_ENABLED || itemCount === 0) return null;
 
@@ -20,7 +20,7 @@ export default function CartFloatingButton() {
       >
         <Link
           href="/cart"
-          className="flex items-center gap-2 bg-red-600 text-white px-5 py-3 rounded-full shadow-lg hover:bg-red-700 transition-colors font-semibold"
+          className="flex items-center gap-2.5 bg-red-600 text-white px-5 py-3.5 rounded-full shadow-lg hover:bg-red-700 transition-colors font-semibold"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -30,6 +30,7 @@ export default function CartFloatingButton() {
               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"
             />
           </svg>
+          <span className="text-sm font-bold">${total} MXN</span>
           <motion.span
             key={itemCount}
             initial={{ scale: 1.3 }}

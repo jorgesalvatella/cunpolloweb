@@ -3,27 +3,34 @@
 ## Implementadas
 
 ### Landing Page
-- **Estado**: Producción
-- Hero section con escena 3D (confetti + toy blocks)
-- Preview del menú (items populares)
-- Sección de ubicación con link a Google Maps
-- Video section
-- CTA section
+- **Estado**: Produccion
+- Hero section con CTA "Pedir Ahora" + trust line "Listo en ~20 min"
+- Header con boton "Pedir" persistente en nav (desktop + mobile)
+- Preview del menu: "Los Mas Pedidos" con CTA "Ver Todo y Pedir"
+- CTA section: "Pide y Recoge en 20 Min" orientado a conversion
+- Video section con heading "Asi Preparamos tu Pollo"
+- Ubicacion con indicador abierto/cerrado + boton "Pide para Recoger"
+- Footer con boton "Hacer Pedido" + horarios internacionalizados
 - SEO: JSON-LD, sitemap, robots.txt
 - Bilingue ES/EN con next-intl
 
-### Menú Completo
-- **Estado**: Producción
-- Filtros por categoría (tabs)
-- 33 items en 7 categorías: especialidad, lo-mero-bueno, antojitos, acompañamientos, bebidas, postres, combos
-- Modal con detalle, tags (popular/picante/nuevo), precios reales
-- Imágenes reales de productos (WebP, extraídas de Rappi) en `public/images/menu/`
-- Datos estáticos en `src/data/menu-items.ts` (datos extraídos de Rappi)
+### Menu Completo
+- **Estado**: Produccion
+- Filtros por categoria (tabs con tap targets ampliados)
+- 33 items en 7 categorias: especialidad, lo-mero-bueno, antojitos, acompañamientos, bebidas, postres, combos
+- Quick-add "+" dorado en cada tarjeta (checkmark verde al agregar)
+- Descripcion visible en mobile (line-clamp-1, antes hidden)
+- Modal con detalle, tags (popular/picante/nuevo), precios reales, boton rounded-full
+- Imagenes reales de productos (WebP, extraidas de Rappi) en `public/images/menu/`
+- Datos estaticos en `src/data/menu-items.ts` (datos extraidos de Rappi)
 
 ### Sistema de Pedidos (Paga y Recoge)
 - **Estado**: Desplegado en produccion (pendiente API Key real de T1 Pagos)
 - **Feature flag**: `FEATURES.ORDERING_ENABLED` en `src/lib/constants.ts` (actualmente `true`)
 - Carrito client-side con persistencia en localStorage
+- Boton flotante de carrito muestra total "$X MXN" + badge con cantidad
+- Pagina de carrito con pickup estimate, checkout primary button, SVG icon (sin emoji)
+- Checkout con progress steps (Menu > Carrito > Pago), trust badge SSL
 - Checkout con pago por tarjeta via T1 Pagos (API v2)
 - API: `POST /v2/tarjeta` (tokenizacion) + `POST /v2/cargo` (cobro)
 - Auth: `X-API-Key` header, no SDK (fetch directo al REST API)

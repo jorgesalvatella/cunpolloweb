@@ -97,7 +97,7 @@ export default function MenuPreview() {
         >
           <Link
             href="/menu"
-            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-gold-500 text-white font-semibold rounded-lg hover:bg-gold-600 transition-all shadow-md hover:shadow-lg text-base sm:text-lg"
+            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 transition-all shadow-md hover:shadow-lg text-base sm:text-lg"
           >
             {t("viewAll")}
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

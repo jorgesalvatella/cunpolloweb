@@ -124,7 +124,7 @@ export default function MenuItemModal({
                         onClose();
                       }, 800);
                     }}
-                    className={`w-full px-6 py-3 font-semibold rounded-lg transition-colors cursor-pointer ${
+                    className={`w-full px-6 py-3 font-semibold rounded-full transition-colors cursor-pointer ${
                       added
                         ? "bg-green-500 text-white"
                         : "bg-gold-500 text-white hover:bg-gold-600"

@@ -53,7 +53,7 @@ export default function CategoryTabs({
             ref={isActive ? activeRef : undefined}
             onClick={() => onSelect(tab.id)}
             className={cn(
-              "relative flex items-center gap-2 px-5 py-2.5 rounded-full whitespace-nowrap text-sm font-medium transition-colors cursor-pointer shrink-0",
+              "relative flex items-center gap-2 px-5 py-3 rounded-full whitespace-nowrap text-sm font-medium transition-colors cursor-pointer shrink-0",
               isActive
                 ? "text-white"
                 : "text-dark/60 hover:text-dark bg-dark/5 hover:bg-dark/10"

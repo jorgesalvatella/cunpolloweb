@@ -19,11 +19,13 @@ export default function CartPage() {
 
         {items.length === 0 ? (
           <div className="text-center py-20">
-            <span className="text-6xl block mb-4">🛒</span>
+            <svg className="w-16 h-16 mx-auto mb-4 text-dark/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+            </svg>
             <p className="text-dark/50 text-lg mb-6">{t("empty")}</p>
             <Link
               href="/menu"
-              className="inline-block bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors"
+              className="inline-block bg-red-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-red-700 transition-colors"
             >
               {t("goToMenu")}
             </Link>
@@ -47,25 +49,32 @@ export default function CartPage() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <p className="text-center text-dark/50 text-sm mb-4">
+              {t("pickupEstimate")}
+            </p>
+
+            <div className="flex flex-col gap-3">
               <Link
                 href="/checkout"
-                className="flex-1 text-center bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors"
+                className="text-center bg-red-600 text-white px-6 py-4 rounded-full font-bold text-lg hover:bg-red-700 transition-colors"
               >
                 {t("checkout")}
               </Link>
-              <Link
-                href="/menu"
-                className="flex-1 text-center bg-gray-100 text-dark px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
-              >
-                {t("continueShopping")}
-              </Link>
-              <button
-                onClick={clearCart}
-                className="text-red-400 hover:text-red-600 transition-colors text-sm cursor-pointer py-2"
-              >
-                {t("clearCart")}
-              </button>
+              <div className="flex items-center justify-center gap-4">
+                <Link
+                  href="/menu"
+                  className="text-red-600 font-medium hover:text-red-700 transition-colors text-sm"
+                >
+                  {t("continueShopping")}
+                </Link>
+                <span className="text-dark/20">|</span>
+                <button
+                  onClick={clearCart}
+                  className="text-red-400 hover:text-red-600 transition-colors text-sm cursor-pointer"
+                >
+                  {t("clearCart")}
+                </button>
+              </div>
             </div>
           </>
         )}

@@ -7,19 +7,27 @@
     "home": "Home",
     "menu": "Menu",
     "location": "Location",
-    "contact": "Contact"
+    "contact": "Contact",
+    "order": "Order"
   },
   "hero": {
     "title": "Chicken that Saves Your Day",
     "subtitle": "Fresh, delicious, and fast chicken with all the sides. Every bite is a treat you'll want to repeat.",
-    "playArea": "With the largest kids' play area in Cancún",
+    "playArea": "Kids' play area",
+    "playAreaHighlight": "the largest in Cancún",
     "cta": "View Menu",
-    "ctaSecondary": "Get Directions"
+    "ctaOrder": "Order Now",
+    "ctaSecondary": "Get Directions",
+    "trustLine": "Ready in ~20 min for pickup"
+  },
+  "video": {
+    "title": "This Is How We Make Your Chicken",
+    "subtitle": "Fresh, roasted on the spot with flavor you'll love"
   },
   "menuPreview": {
-    "title": "Our Menu",
-    "subtitle": "Our customers' favorites",
-    "viewAll": "View Full Menu"
+    "title": "Most Ordered",
+    "subtitle": "Add straight to your order",
+    "viewAll": "See All & Order"
   },
   "menu": {
     "title": "Menu",
@@ -33,7 +41,8 @@
     "close": "Close",
     "addToOrder": "Add to Order",
     "ingredients": "Ingredients",
-    "description": "Description"
+    "description": "Description",
+    "added": "Added"
   },
   "cart": {
     "title": "Your Order",
@@ -46,7 +55,8 @@
     "clearCart": "Clear cart",
     "remove": "Remove",
     "increase": "Increase quantity",
-    "decrease": "Decrease quantity"
+    "decrease": "Decrease quantity",
+    "pickupEstimate": "Estimated time: ~20 min"
   },
   "checkout": {
     "title": "Checkout",
@@ -71,7 +81,11 @@
     "errorValidation": "Please fill in all fields correctly.",
     "errorCard": "Card details are incorrect.",
     "emptyCart": "No items in your order",
-    "backToCart": "Back to cart"
+    "backToCart": "Back to cart",
+    "stepMenu": "Menu",
+    "stepCart": "Cart",
+    "stepPayment": "Payment",
+    "securePayment": "Secure payment with SSL encryption"
   },
   "confirmation": {
     "title": "Order Confirmed!",
@@ -91,18 +105,24 @@
     "weekdays": "Monday to Friday",
     "weekends": "Saturday & Sunday",
     "phone": "Phone",
-    "getDirections": "Get Directions"
+    "getDirections": "Get Directions",
+    "orderPickup": "Order for Pickup",
+    "open": "Open now",
+    "closed": "Closed"
   },
   "cta": {
-    "title": "Craving Chicken?",
-    "subtitle": "Visit us today and taste the best roasted chicken in town.",
-    "button": "View Menu",
+    "title": "Order & Pick Up in 20 Min",
+    "subtitle": "Place your order online and pick it up hot. No lines, no waiting.",
+    "button": "Place Order",
     "phone": "Call Us"
   },
   "footer": {
     "rights": "All rights reserved.",
     "followUs": "Follow Us",
     "hours": "Hours",
-    "contact": "Contact"
+    "contact": "Contact",
+    "orderNow": "Place Order",
+    "weekdays": "Mon - Fri",
+    "weekends": "Sat - Sun"
   }
 }
