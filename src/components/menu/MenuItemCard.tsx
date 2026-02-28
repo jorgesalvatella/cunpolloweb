@@ -12,9 +12,11 @@ import type { Locale } from "@/i18n/config";
 
 export default function MenuItemCard({
   item,
+  index,
   onSelect,
 }: {
   item: MenuItem;
+  index: number;
   onSelect: (item: MenuItem) => void;
 }) {
   const locale = useLocale() as Locale;
@@ -46,12 +48,13 @@ export default function MenuItemCard({
       onClick={() => onSelect(item)}
       className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow text-left cursor-pointer w-full border border-gold-400/20"
     >
-      <div className="h-28 sm:h-40 bg-red-50 relative overflow-hidden">
+      <div className={`flex items-center justify-center p-3 ${index % 2 === 0 ? "bg-gold-500" : "bg-red-600"}`}>
         <Image
           src={item.image}
           alt={item.name[locale]}
-          fill
-          className="object-cover"
+          width={500}
+          height={500}
+          className="w-full h-auto rounded-lg"
           sizes="(max-width: 640px) 50vw, 25vw"
         />
         {FEATURES.ORDERING_ENABLED && (

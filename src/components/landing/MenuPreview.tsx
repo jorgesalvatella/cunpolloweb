@@ -56,12 +56,13 @@ export default function MenuPreview() {
               whileHover={{ y: -4 }}
               className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow"
             >
-              <div className="h-32 sm:h-48 bg-red-50 relative overflow-hidden">
+              <div className={`flex items-center justify-center p-3 ${i % 2 === 0 ? "bg-gold-500" : "bg-red-600"}`}>
                 <Image
                   src={item.image}
                   alt={item.name[locale]}
-                  fill
-                  className="object-cover"
+                  width={500}
+                  height={500}
+                  className="w-full h-auto rounded-lg"
                   sizes="(max-width: 640px) 50vw, 25vw"
                 />
               </div>

@@ -48,12 +48,13 @@ export default function MenuItemModal({
             className="bg-white rounded-t-2xl sm:rounded-3xl w-full max-w-lg max-h-[90vh] sm:max-h-[80vh] overflow-y-auto"
           >
             {/* Image area */}
-            <div className="h-44 sm:h-56 bg-red-50 relative overflow-hidden">
+            <div className="bg-gold-500 flex items-center justify-center p-6">
               <Image
                 src={item.image}
                 alt={item.name[locale]}
-                fill
-                className="object-cover"
+                width={500}
+                height={500}
+                className="w-full h-auto rounded-xl"
                 sizes="(max-width: 640px) 100vw, 512px"
               />
               <button

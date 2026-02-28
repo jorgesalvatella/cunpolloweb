@@ -33,10 +33,11 @@ export default function MenuContainer() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 mt-4 sm:mt-6">
         <AnimatePresence mode="popLayout">
-          {items.map((item) => (
+          {items.map((item, i) => (
             <MenuItemCard
               key={item.id}
               item={item}
+              index={i}
               onSelect={setSelectedItem}
             />
           ))}
