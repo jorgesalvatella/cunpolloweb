@@ -8,6 +8,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CartProvider } from "@/context/CartContext";
 import CartFloatingButton from "@/components/cart/CartFloatingButton";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default async function LocaleLayout({
   children,
@@ -32,6 +33,7 @@ export default async function LocaleLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <CartFloatingButton />
+        <WhatsAppButton />
       </CartProvider>
     </NextIntlClientProvider>
   );
