@@ -9,7 +9,7 @@ Todas las rutas API están excluidas del middleware de i18n.
 ## Pedidos
 
 ### `POST /api/orders`
-Crea una orden y procesa el pago.
+Crea una orden.
 
 **Request body:**
 ```json
@@ -17,16 +17,8 @@ Crea una orden y procesa el pago.
   "items": [
     { "menuItemId": "pollo-entero", "quantity": 2 }
   ],
-  "customerName": "Juan Pérez",
-  "customerPhone": "+529981234567",
-  "card": {
-    "number": "4242424242424242",
-    "expMonth": "12",
-    "expYear": "26",
-    "cvv": "123",
-    "holderName": "JUAN PEREZ"
-  },
-  "deviceFingerprint": "uuid-device-fingerprint"
+  "customerName": "Juan Perez",
+  "customerPhone": "+529981234567"
 }
 ```
 
@@ -39,63 +31,58 @@ Crea una orden y procesa el pago.
 ```
 
 **Errores:**
-- `400` — Datos incompletos, producto no disponible, error de tarjeta, error de cobro
+- `400` — Datos incompletos, producto no disponible
 - `500` — Error interno
 
 **Flujo interno:**
 1. Valida items contra menu (recalcula precios server-side)
 2. INSERT en Supabase (status: pending)
-3. Tokeniza tarjeta via T1 Pagos (`POST /v2/tarjeta`)
-4. Crea cargo con token (`POST /v2/cargo`) — monto como string, device_fingerprint requerido
-5. Si OK → UPDATE a paid + WhatsApp notify (fire-and-forget) → responde con orderId
-6. Si falla → UPDATE a cancelled/failed, responde con error
+3. TODO: Procesamiento de pago con OpenPay
+4. Responde con orderId
 
 ---
 
 ### `GET /api/orders/[id]`
-Consulta una orden por UUID (sin auth, el UUID actúa como token).
+Consulta una orden por UUID (sin auth, el UUID actua como token).
 
-**Response 200:** Objeto `Order` completo
+**Response 200:**
+```json
+{
+  "id": "uuid-...",
+  "order_number": 10,
+  "status": "paid",
+  "items": [...],
+  "subtotal": 100,
+  "total": 100,
+  "created_at": "2026-03-01T...",
+  "customer_name": "Juan Perez"
+}
+```
+
+**Campos excluidos** (seguridad): `customer_phone`, `payment_reference`, `payment_status`
+
 **Response 404:** `{ "error": "Pedido no encontrado" }`
-
----
-
-## Webhook
-
-### `POST /api/webhooks/t1pagos`
-Safety net para eventos asincronos de ClaroPagos (T1 Pagos).
-
-**Eventos manejados:**
-- `cargo.exitoso` → Actualiza orden a paid/success + WhatsApp notify
-- `cargo.fallido` → Actualiza orden a cancelled/failed
-- `cargo.cancelado` → Actualiza orden a cancelled/failed
-
-**Auth:** Basic HTTP auth (configurable via `T1_WEBHOOK_USER` / `T1_WEBHOOK_PASS`). Si no se configuran, acepta todo.
-
-**Payload (v2):** Estructura con `tipo_evento`, `data.cargo.id`, `data.cargo.pedido.id_externo`
-
-Siempre responde `200 { "ok": true }` (excepto `401` si falla auth).
 
 ---
 
 ## Admin
 
 ### `POST /api/admin/login`
-Autentica al admin con contraseña.
+Autentica al admin con contrasena.
 
 **Request:** `{ "password": "..." }`
 **Response 200:** `{ "ok": true }` + cookie `cunpollo-admin`
-**Response 401:** `{ "error": "Contraseña incorrecta" }`
+**Response 401:** `{ "error": "Contrasena incorrecta" }`
 
 ---
 
 ### `GET /api/admin/orders`
-Lista órdenes (requiere cookie admin).
+Lista ordenes (requiere cookie admin).
 
 **Query params:**
 - `status` (opcional) — Filtrar por status (paid, preparing, ready, etc.)
 
-**Response 200:** Array de `Order[]` (máx 50, ordenados por created_at DESC)
+**Response 200:** Array de `Order[]` (max 50, ordenados por created_at DESC)
 **Response 401:** `{ "error": "No autorizado" }`
 
 ---
@@ -104,6 +91,6 @@ Lista órdenes (requiere cookie admin).
 Cambia el status de una orden (requiere cookie admin).
 
 **Request:** `{ "status": "preparing" }`
-**Status válidos:** pending, paid, preparing, ready, picked_up, cancelled
+**Status validos:** pending, paid, preparing, ready, picked_up, cancelled
 **Response 200:** Objeto `Order` actualizado
 **Response 400/401/500:** Error

@@ -45,14 +45,8 @@ export type CreateOrderRequest = {
   items: CartItem[];
   customerName: string;
   customerPhone: string;
-  card: {
-    number: string;
-    expMonth: string;
-    expYear: string;
-    cvv: string;
-    holderName: string;
-  };
-  deviceFingerprint: string;
+  tokenId: string;
+  deviceSessionId: string;
 };
 
 export type CreateOrderResponse = {

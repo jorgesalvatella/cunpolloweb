@@ -107,8 +107,17 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-white/10 text-center text-white/40 text-xs sm:text-sm">
-          &copy; {new Date().getFullYear()} CUNPOLLO. {t("rights")}
+        <div className="mt-8 pt-8 border-t border-white/10 text-center text-white/40 text-xs sm:text-sm space-y-2">
+          <div className="flex items-center justify-center gap-4">
+            <Link href="/terminos" className="hover:text-gold-400 transition-colors">
+              {t("terms")}
+            </Link>
+            <span>|</span>
+            <Link href="/privacidad" className="hover:text-gold-400 transition-colors">
+              {t("privacy")}
+            </Link>
+          </div>
+          <p>&copy; {new Date().getFullYear()} CUNPOLLO. {t("rights")}</p>
         </div>
       </Container>
     </footer>

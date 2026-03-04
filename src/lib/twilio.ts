@@ -3,7 +3,7 @@ import type { Order } from "@/types/order";
 
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
-const TWILIO_WHATSAPP_FROM = process.env.TWILIO_WHATSAPP_FROM || "whatsapp:+14155238886";
+const TWILIO_WHATSAPP_FROM = process.env.TWILIO_WHATSAPP_FROM || "whatsapp:+529983871387";
 const ADMIN_WHATSAPP_PHONES = process.env.ADMIN_WHATSAPP_PHONES || "";
 
 function isConfigured(): boolean {

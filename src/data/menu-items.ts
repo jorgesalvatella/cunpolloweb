@@ -521,4 +521,17 @@ export const menuItems: MenuItem[] = [
     tags: ["popular"],
     available: true,
   },
+  {
+    id: "prueba-pasarela",
+    categoryId: "combos",
+    name: { es: "Prueba", en: "Test" },
+    description: {
+      es: "Prueba de pasarela",
+      en: "Payment gateway test",
+    },
+    price: 2,
+    image: "/logo.png",
+    tags: [],
+    available: true,
+  },
 ];

@@ -39,7 +39,7 @@ export default function CardInput({
           onChange={(e) => onChange({ ...value, holderName: e.target.value })}
           placeholder={t("cardHolderPlaceholder")}
           className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
-          autoComplete="cc-name"
+          autoComplete="off"
         />
       </div>
       <div>
@@ -51,7 +51,7 @@ export default function CardInput({
           onChange={(e) => onChange({ ...value, number: formatCardNumber(e.target.value) })}
           placeholder={t("cardNumberPlaceholder")}
           className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none font-mono"
-          autoComplete="cc-number"
+          autoComplete="off"
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
@@ -64,7 +64,7 @@ export default function CardInput({
             onChange={(e) => onChange({ ...value, expiry: formatExpiry(e.target.value) })}
             placeholder={t("expiryPlaceholder")}
             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none font-mono"
-            autoComplete="cc-exp"
+            autoComplete="off"
           />
         </div>
         <div>
@@ -76,7 +76,7 @@ export default function CardInput({
             onChange={(e) => onChange({ ...value, cvv: e.target.value.replace(/\D/g, "").slice(0, 4) })}
             placeholder={t("cvvPlaceholder")}
             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none font-mono"
-            autoComplete="cc-csc"
+            autoComplete="off"
           />
         </div>
       </div>

@@ -48,6 +48,91 @@ export default function ConfirmationPage() {
   const addressFull = `${RESTAURANT.address.street}, ${RESTAURANT.address.city}, ${RESTAURANT.address.state} ${RESTAURANT.address.zip}`;
   const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${RESTAURANT.coordinates.lat},${RESTAURANT.coordinates.lng}`;
 
+  async function downloadReceipt() {
+    if (!order) return;
+    const { jsPDF } = await import("jspdf");
+    const doc = new jsPDF();
+    const pageW = doc.internal.pageSize.getWidth();
+    let y = 20;
+
+    // Title
+    doc.setFontSize(24);
+    doc.setTextColor(183, 28, 28); // red-700
+    doc.text("CUNPOLLO", pageW / 2, y, { align: "center" });
+    y += 10;
+
+    doc.setFontSize(14);
+    doc.setTextColor(60, 60, 60);
+    doc.text(t("title"), pageW / 2, y, { align: "center" });
+    y += 12;
+
+    // Order info
+    doc.setFontSize(11);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`${t("orderNumber")} #${order.order_number}`, 20, y);
+    y += 7;
+
+    const date = new Date(order.created_at);
+    doc.text(date.toLocaleString(), 20, y);
+    y += 7;
+
+    if (order.customer_name) {
+      doc.text(order.customer_name, 20, y);
+      y += 7;
+    }
+    y += 3;
+
+    // Separator
+    doc.setDrawColor(200, 200, 200);
+    doc.line(20, y, pageW - 20, y);
+    y += 8;
+
+    // Items header
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text(t("summary"), 20, y);
+    y += 8;
+
+    // Items
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    for (const item of order.items) {
+      doc.text(`${item.name} x${item.quantity}`, 20, y);
+      doc.text(`$${item.lineTotal.toFixed(2)}`, pageW - 20, y, { align: "right" });
+      y += 6;
+    }
+
+    // Total separator
+    y += 2;
+    doc.line(20, y, pageW - 20, y);
+    y += 8;
+
+    doc.setFontSize(13);
+    doc.setFont("helvetica", "bold");
+    doc.text("Total", 20, y);
+    doc.setTextColor(183, 28, 28);
+    doc.text(`$${order.total.toFixed(2)} MXN`, pageW - 20, y, { align: "right" });
+    y += 12;
+
+    // Restaurant address
+    doc.setFontSize(9);
+    doc.setTextColor(100, 100, 100);
+    doc.setFont("helvetica", "normal");
+    doc.text(RESTAURANT.name, 20, y);
+    y += 5;
+    doc.text(addressFull, 20, y);
+    y += 5;
+    doc.text(RESTAURANT.phone, 20, y);
+    y += 12;
+
+    // Thank you
+    doc.setFontSize(11);
+    doc.setTextColor(60, 60, 60);
+    doc.text(t("message"), pageW / 2, y, { align: "center" });
+
+    doc.save(`cunpollo-pedido-${order.order_number}.pdf`);
+  }
+
   return (
     <section className="pt-28 pb-16 min-h-screen bg-white">
       <Container>
@@ -152,6 +237,12 @@ export default function ConfirmationPage() {
                 {t("call")}
               </a>
             </div>
+            <button
+              onClick={downloadReceipt}
+              className="w-full bg-yellow-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-yellow-600 transition-colors text-center mt-3"
+            >
+              {t("downloadReceipt")}
+            </button>
           </motion.div>
 
           <Link

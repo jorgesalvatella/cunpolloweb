@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/server";
-import { tokenizeCard, createCharge } from "@/lib/t1pagos";
-import { notifyCustomerStatusChange, notifyAdminNewOrder } from "@/lib/twilio";
 import { getMenuItemById } from "@/data";
+import { createCharge } from "@/lib/openpay";
 import type { CreateOrderRequest, OrderItem } from "@/types/order";
 
 export async function POST(request: Request) {
@@ -10,7 +9,13 @@ export async function POST(request: Request) {
     const body: CreateOrderRequest = await request.json();
 
     // Validate required fields
-    if (!body.items?.length || !body.customerName || !body.customerPhone || !body.card || !body.deviceFingerprint) {
+    if (
+      !body.items?.length ||
+      !body.customerName ||
+      !body.customerPhone ||
+      !body.tokenId ||
+      !body.deviceSessionId
+    ) {
       return NextResponse.json({ error: "Datos incompletos" }, { status: 400 });
     }
 
@@ -32,7 +37,6 @@ export async function POST(request: Request) {
     // Validate items and recalculate prices server-side
     const orderItems: OrderItem[] = [];
     for (const item of body.items) {
-      // Validate quantity
       if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 100) {
         return NextResponse.json({ error: "Cantidad invalida (1-100)" }, { status: 400 });
       }
@@ -54,7 +58,7 @@ export async function POST(request: Request) {
     }
 
     const subtotal = orderItems.reduce((sum, i) => sum + i.lineTotal, 0);
-    const total = subtotal; // No tax/fees for now
+    const total = subtotal;
 
     // Create order in Supabase (status: pending)
     const { data: order, error: dbError } = await supabaseAdmin
@@ -76,69 +80,63 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Error al crear el pedido" }, { status: 500 });
     }
 
-    // Tokenize card
-    let token: string;
-    try {
-      const tokenRes = await tokenizeCard({
-        number: body.card.number,
-        expMonth: body.card.expMonth,
-        expYear: body.card.expYear,
-        cvv: body.card.cvv,
-        holderName: body.card.holderName,
-      });
-      token = tokenRes.token;
-    } catch {
-      console.error("[Payment] Tokenization failed for order:", order.id);
+    // Process payment with OpenPay
+    const itemNames = orderItems.map((i) => `${i.name} x${i.quantity}`).join(", ");
+    const chargeResult = await createCharge({
+      tokenId: body.tokenId,
+      deviceSessionId: body.deviceSessionId,
+      amount: total,
+      description: `CUNPOLLO Pedido #${order.order_number}: ${itemNames}`.slice(0, 250),
+      orderId: order.id,
+      customerName: name,
+    });
+
+    if (!chargeResult.success) {
+      // Update order as failed
       await supabaseAdmin
         .from("orders")
         .update({ payment_status: "failed", status: "cancelled" })
         .eq("id", order.id);
-      return NextResponse.json({ error: "Error con la tarjeta" }, { status: 400 });
+
+      return NextResponse.json(
+        { error: chargeResult.error || "Error al procesar el pago" },
+        { status: 402 }
+      );
     }
 
-    // Create charge
+    // Payment successful — update order
+    await supabaseAdmin
+      .from("orders")
+      .update({
+        payment_status: "success",
+        payment_reference: chargeResult.chargeId,
+        status: "paid",
+      })
+      .eq("id", order.id);
+
+    // Fire-and-forget WhatsApp notification
     try {
-      const chargeRes = await createCharge({
-        token,
-        amount: total,
-        description: `CUNPOLLO Pedido #${order.order_number}`,
-        orderId: order.id,
-        deviceFingerprint: body.deviceFingerprint,
+      const { notifyAdminNewOrder } = await import("@/lib/twilio");
+      notifyAdminNewOrder({
+        id: order.id,
+        order_number: order.order_number,
+        customer_name: name,
+        customer_phone: phone,
+        items: orderItems,
+        subtotal,
+        total,
+        status: "paid",
+        payment_status: "success",
+        payment_reference: chargeResult.chargeId || null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       });
+    } catch {}
 
-      await supabaseAdmin
-        .from("orders")
-        .update({
-          status: "paid",
-          payment_status: "success",
-          payment_reference: chargeRes.id,
-        })
-        .eq("id", order.id);
-
-      // Fetch complete order for notifications
-      const { data: fullOrder } = await supabaseAdmin
-        .from("orders")
-        .select()
-        .eq("id", order.id)
-        .single();
-
-      if (fullOrder) {
-        notifyCustomerStatusChange(fullOrder);
-        notifyAdminNewOrder(fullOrder);
-      }
-
-      return NextResponse.json({
-        orderId: order.id,
-        orderNumber: order.order_number,
-      });
-    } catch {
-      console.error("[Payment] Charge failed for order:", order.id);
-      await supabaseAdmin
-        .from("orders")
-        .update({ payment_status: "failed", status: "cancelled" })
-        .eq("id", order.id);
-      return NextResponse.json({ error: "Error al procesar el pago" }, { status: 400 });
-    }
+    return NextResponse.json({
+      orderId: order.id,
+      orderNumber: order.order_number,
+    });
   } catch {
     return NextResponse.json({ error: "Error interno" }, { status: 500 });
   }

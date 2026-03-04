@@ -1,5 +1,51 @@
 # Changelog
 
+## 2026-03-02 — Twilio WhatsApp Business en produccion
+
+### Cambio
+- Numero remitente actualizado de sandbox (+14155238886) a numero propio (+529983871387)
+- Numero registrado como WhatsApp Business Sender via Meta/Twilio Self Sign-up
+- Perfil de WhatsApp Business configurado (logo CUNPOLLO, descripcion, website)
+- Boton flotante de WhatsApp actualizado al numero de Twilio (era sandbox)
+- 4 variables de entorno configuradas en Vercel (production)
+- Deploy a produccion completado
+
+### Archivos modificados
+- `src/lib/twilio.ts` — Default fallback actualizado al numero propio
+- `src/components/WhatsAppButton.tsx` — Numero actualizado de sandbox a +529983871387
+- `.env.example` — Numero actualizado
+- `docs/env-vars.md` — Referencia actualizada
+- `docs/features.md` — Estado cambiado a "Produccion", removidos pendientes de Twilio
+
+### Configuracion Twilio/Meta
+- **Numero WhatsApp**: +529983871387 (numero mexicano, Voice + SIP, sin SMS)
+- **Verificacion**: Por llamada de voz (numero no tiene SMS) via TwiML Bin + email
+- **Env vars en Vercel**: TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_FROM, ADMIN_WHATSAPP_PHONES
+
+## 2026-03-01 — Comprobante de pago descargable (PDF)
+
+### Nuevo
+- Boton "Descargar Comprobante" en la pagina de confirmacion de pedido
+- Genera PDF en el cliente con jsPDF (import dinamico, solo se carga al hacer clic)
+- Contenido del PDF: titulo CUNPOLLO, numero de pedido, fecha, nombre del cliente, items con cantidades y precios, total, direccion del restaurante, mensaje de agradecimiento
+
+### Archivos modificados
+- `src/app/[locale]/confirmation/[id]/page.tsx` — Funcion `downloadReceipt()` con import dinamico de jsPDF, boton dorado
+- `src/app/api/orders/[id]/route.ts` — Agregado `customer_name` al SELECT de Supabase
+- `src/messages/es.json` — Key `confirmation.downloadReceipt`
+- `src/messages/en.json` — Key `confirmation.downloadReceipt`
+- `package.json` — Dependencia `jspdf` v4.2.0
+
+### Decisiones de seguridad
+- `payment_reference` **NO** se expone en la API publica `/api/orders/[id]` — es dato interno entre el sistema y OpenPay
+- `customer_name` se expone porque el que accede es el propio cliente (protegido por UUID)
+- jsPDF se importa dinamicamente (`await import("jspdf")`) para evitar problemas de SSR y reducir bundle inicial (170KB vs 298KB)
+
+### Documentacion actualizada
+- `docs/features.md` — Agregada linea de comprobante PDF
+- `docs/api.md` — Detallados campos del GET /api/orders/[id] y exclusiones de seguridad
+- `docs/changelog.md` — Este entry
+
 ## 2026-02-28 — Security hardening del sistema de pedidos
 
 ### Archivos modificados

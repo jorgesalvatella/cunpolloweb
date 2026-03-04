@@ -17,7 +17,7 @@ No dejar documentación desactualizada. Si no sabes qué archivo actualizar, act
 - Tailwind CSS v4 (tokens en globals.css)
 - Framer Motion + React Three Fiber
 - Supabase (DB + Realtime)
-- T1 Pagos (pasarela de pago México)
+- OpenPay (pasarela de pago México)
 - pnpm como package manager
 - Deploy: Vercel
 

@@ -4,7 +4,7 @@
 - Node.js 18+
 - pnpm (`npm install -g pnpm`)
 - Cuenta en Supabase (gratis)
-- Cuenta en T1 Pagos (para pagos)
+- Cuenta en OpenPay (para pagos — pendiente)
 - Cuenta en Vercel (para deploy)
 
 ## Setup Local
@@ -28,11 +28,8 @@ Editar `.env.local` con los valores reales (ver `docs/env-vars.md`).
 3. Pegar y ejecutar el contenido de `supabase/schema.sql`
 4. Copiar URL, anon key y service role key a `.env.local`
 
-### 4. Configurar T1 Pagos / ClaroPagos (opcional para dev)
-1. Registrarse en [t1pagos.com](https://t1pagos.com)
-2. Acceder al panel admin sandbox: `https://admin.sandbox.claropagos.com/login`
-3. Obtener Bearer token
-4. Agregar `T1_PAGOS_BEARER_TOKEN` a `.env.local`
+### 4. Configurar OpenPay (opcional para dev)
+Pendiente de integracion. Ver `docs/env-vars.md` para las variables necesarias.
 
 ### 5. Ejecutar
 ```bash
@@ -42,7 +39,7 @@ Abrir http://localhost:3000
 
 ## Desarrollo sin servicios externos
 
-El carrito y las páginas de menú/cart funcionan sin Supabase ni T1 Pagos.
+El carrito y las paginas de menu/cart funcionan sin Supabase ni OpenPay.
 Solo el flujo de checkout y admin requieren los servicios configurados.
 
 Para desarrollar sin ellos:
@@ -72,8 +69,8 @@ Configuradas en Vercel Dashboard → Settings → Environment Variables (product
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
-- `T1_PAGOS_BEARER_TOKEN`
-- `T1_PAGOS_BASE_URL`
+- `OPENPAY_MERCHANT_ID` (pendiente)
+- `OPENPAY_PRIVATE_KEY` (pendiente)
 - `ADMIN_PASSWORD`
 
 ### Deploy manual (CLI)

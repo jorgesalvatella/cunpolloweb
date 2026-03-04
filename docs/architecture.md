@@ -39,7 +39,7 @@ cunpolloweb/
     │   │   │   └── page.tsx           # Página de checkout/pago
     │   │   └── confirmation/
     │   │       └── [id]/
-    │   │           └── page.tsx       # Confirmación de pedido
+    │   │           └── page.tsx       # Confirmación de pedido + descarga PDF (jsPDF)
     │   ├── admin/
     │   │   ├── layout.tsx             # Layout admin (sin Header/Footer)
     │   │   ├── page.tsx               # Dashboard de pedidos
@@ -51,8 +51,7 @@ cunpolloweb/
     │       │   └── [id]/
     │       │       └── route.ts       # GET: consultar orden
     │       ├── webhooks/
-    │       │   └── t1pagos/
-    │       │       └── route.ts       # POST: webhook de pagos
+    │       │   └── # TODO: openpay/   # Webhook de pagos (pendiente)
     │       └── admin/
     │           ├── login/
     │           │   └── route.ts       # POST: auth admin
@@ -91,6 +90,7 @@ cunpolloweb/
     │   │   └── Badge.tsx              # Badge para tags del menú
     │   ├── seo/
     │   │   └── JsonLd.tsx             # Structured data
+    │   ├── WhatsAppButton.tsx       # Boton flotante WhatsApp Business (+529983871387)
     │   └── three/
     │       ├── SceneWrapper.tsx       # Canvas wrapper para 3D
     │       ├── FlameParticles.tsx     # Partículas de fuego/confetti
@@ -113,7 +113,7 @@ cunpolloweb/
     │   ├── constants.ts               # FEATURES flags + RESTAURANT info
     │   ├── utils.ts                   # cn() helper (clsx + tailwind-merge)
     │   ├── fonts.ts                   # Font config
-    │   ├── t1pagos.ts                 # ClaroPagos (T1 Pagos) API wrapper (server-only)
+    │   ├── openpay.ts                  # OpenPay API wrapper (tokenize + charge)
     │   ├── twilio.ts                  # Twilio WhatsApp notifications (server-only)
     │   ├── admin-auth.ts              # Auth admin por cookie
     │   └── supabase/
@@ -138,7 +138,7 @@ cunpolloweb/
   CartPage → CheckoutForm → POST /api/orders
 
 [Servidor]
-  POST /api/orders → validar items → Supabase INSERT → T1 Pagos tokenize → T1 Pagos charge → Supabase UPDATE → WhatsApp notify (fire-and-forget) → response
+  POST /api/orders → validar items → Supabase INSERT → TODO: OpenPay payment → Supabase UPDATE → WhatsApp notify (fire-and-forget) → response
 
 [Admin]
   /admin/login → POST /api/admin/login → cookie
