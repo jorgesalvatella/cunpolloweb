@@ -63,9 +63,13 @@ export default function CheckoutForm() {
 
     const tryInit = (attempt: number) => {
       if (window.OpenPay.deviceData) {
-        window.OpenPay.setId(process.env.NEXT_PUBLIC_OPENPAY_MERCHANT_ID!);
-        window.OpenPay.setApiKey(process.env.NEXT_PUBLIC_OPENPAY_PUBLIC_KEY!);
-        window.OpenPay.setSandboxMode(process.env.NEXT_PUBLIC_OPENPAY_SANDBOX === "true");
+        const merchantId = process.env.NEXT_PUBLIC_OPENPAY_MERCHANT_ID!;
+        const apiKey = process.env.NEXT_PUBLIC_OPENPAY_PUBLIC_KEY!;
+        const sandbox = process.env.NEXT_PUBLIC_OPENPAY_SANDBOX === "true";
+        console.log("[Openpay] Config:", { merchantId, apiKey, sandbox, merchantIdLen: merchantId?.length, apiKeyLen: apiKey?.length });
+        window.OpenPay.setId(merchantId);
+        window.OpenPay.setApiKey(apiKey);
+        window.OpenPay.setSandboxMode(sandbox);
         const sessionId = window.OpenPay.deviceData.setup();
         setDeviceSessionId(sessionId);
         setOpenpayReady(true);
@@ -95,21 +99,25 @@ export default function CheckoutForm() {
       }, 15000);
 
       try {
-        window.OpenPay.token.create(
-          {
+        const tokenData = {
             card_number: digits,
             holder_name: card.holderName,
             expiration_month: month,
             expiration_year: year,
             cvv2: card.cvv,
-          },
+        };
+        console.log("[Openpay] Tokenizing with:", { ...tokenData, card_number: digits.slice(0, 6) + "****", cvv2: "***" });
+        window.OpenPay.token.create(
+          tokenData,
           (response) => {
             clearTimeout(timeout);
+            console.log("[Openpay] Token OK:", response.data.id);
             resolve(response.data.id);
           },
-          (error: { data: { description: string; error_code: number } }) => {
+          (error: { data: { description: string; error_code: number }; status?: number; message?: string }) => {
             clearTimeout(timeout);
-            console.error("[Openpay] Token error:", JSON.stringify(error));
+            console.error("[Openpay] Token error FULL:", JSON.stringify(error, null, 2));
+            console.error("[Openpay] Token error status:", error?.status, "message:", error?.message);
             const desc = error?.data?.description || JSON.stringify(error);
             reject(new Error(desc));
           }
