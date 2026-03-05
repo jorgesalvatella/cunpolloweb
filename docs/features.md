@@ -55,6 +55,20 @@
 - Soporta multiples numeros admin via `ADMIN_WHATSAPP_PHONES` (separados por coma)
 - Sin dependencias nuevas (0 paquetes agregados)
 
+### Hub WhatsApp Promociones (Admin)
+- **Estado**: Implementado
+- **Ruta**: `/admin` > Tab "WhatsApp"
+- **Componentes**: `WhatsAppHub`, `ContactList`, `SendPromo`, `CampaignHistory`
+- **Tablas**: `contacts` (contactos WhatsApp), `campaigns` (historial de envios)
+- **Funcionalidad**:
+  - Agregar contactos manualmente o importar de pedidos existentes
+  - Enviar promociones usando templates aprobados de Meta via Twilio (ContentSid)
+  - Vista previa del mensaje antes de enviar
+  - Seleccionar contactos especificos o enviar a todos
+  - Historial de campanas con stats (enviados/fallidos)
+- **API**: `/api/admin/contacts` (GET, POST, DELETE), `/api/admin/campaigns` (GET, POST)
+- **Twilio**: `sendWhatsAppTemplate()` en `src/lib/twilio.ts` para templates con ContentSid
+
 ## Pendientes / Por Configurar
 
 | Item | Descripcion | Bloqueado por |

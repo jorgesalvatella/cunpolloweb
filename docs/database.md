@@ -63,7 +63,41 @@ pending → processing → success
 - Service role: acceso completo (usado por API routes del server)
 - Anon: lectura pública (para que el cliente consulte su orden por UUID)
 
-## Cómo aplicar (referencia)
+## Tabla: `contacts`
+
+Contactos de WhatsApp para envio de promociones.
+
+| Columna | Tipo | Default | Descripcion |
+|---------|------|---------|-------------|
+| `id` | UUID | `gen_random_uuid()` | PK |
+| `name` | TEXT | NOT NULL | Nombre del contacto |
+| `phone` | TEXT | NOT NULL, UNIQUE | Telefono WhatsApp |
+| `source` | TEXT | `'manual'` | Origen: `manual` o `order` |
+| `active` | BOOLEAN | `true` | Soft delete flag |
+| `created_at` | TIMESTAMPTZ | `now()` | Fecha de creacion |
+
+**Indices:** `idx_contacts_active` en columna `active`
+
+---
+
+## Tabla: `campaigns`
+
+Registro de campanas de WhatsApp enviadas.
+
+| Columna | Tipo | Default | Descripcion |
+|---------|------|---------|-------------|
+| `id` | UUID | `gen_random_uuid()` | PK |
+| `template_name` | TEXT | NOT NULL | Nombre del template de Meta |
+| `message_preview` | TEXT | NOT NULL | Vista previa del mensaje |
+| `recipients_count` | INTEGER | `0` | Total de destinatarios |
+| `sent_count` | INTEGER | `0` | Mensajes enviados exitosamente |
+| `failed_count` | INTEGER | `0` | Mensajes fallidos |
+| `status` | TEXT | `'draft'` | Estado: draft, sending, completed, failed |
+| `created_at` | TIMESTAMPTZ | `now()` | Fecha de creacion |
+
+---
+
+## Como aplicar (referencia)
 Schema ya aplicado en producción. Para un proyecto nuevo:
 1. Ir al SQL Editor en el dashboard de Supabase
 2. Pegar el contenido de `supabase/schema.sql`

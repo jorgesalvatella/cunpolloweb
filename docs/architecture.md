@@ -55,10 +55,16 @@ cunpolloweb/
     │       └── admin/
     │           ├── login/
     │           │   └── route.ts       # POST: auth admin
-    │           └── orders/
-    │               ├── route.ts       # GET: listar órdenes
-    │               └── [id]/
-    │                   └── route.ts   # PATCH: cambiar status
+    │           ├── orders/
+    │           │   ├── route.ts       # GET: listar órdenes
+    │           │   └── [id]/
+    │           │       └── route.ts   # PATCH: cambiar status
+    │           ├── contacts/
+    │           │   ├── route.ts       # GET/POST: listar/agregar contactos
+    │           │   └── [id]/
+    │           │       └── route.ts   # DELETE: desactivar contacto
+    │           └── campaigns/
+    │               └── route.ts       # GET/POST: historial/enviar campana
     ├── components/
     │   ├── layout/
     │   │   ├── Header.tsx             # Navbar (logo, nav, cart icon, lang switcher)
@@ -83,7 +89,11 @@ cunpolloweb/
     │   │   └── CardInput.tsx          # Inputs de tarjeta con formateo
     │   ├── admin/
     │   │   ├── OrdersDashboard.tsx    # Dashboard real-time de pedidos
-    │   │   └── OrderCard.tsx          # Tarjeta de pedido con acciones
+    │   │   ├── OrderCard.tsx          # Tarjeta de pedido con acciones
+    │   │   ├── WhatsAppHub.tsx        # Hub principal de WhatsApp promos (tabs)
+    │   │   ├── ContactList.tsx        # Lista/CRUD de contactos WhatsApp
+    │   │   ├── SendPromo.tsx          # Formulario para enviar promos via template
+    │   │   └── CampaignHistory.tsx    # Historial de campanas enviadas
     │   ├── ui/
     │   │   ├── Button.tsx             # Botón reutilizable
     │   │   ├── Container.tsx          # Container con max-width

@@ -121,6 +121,46 @@ function getAdminMessage(order: Order): string {
   ].join("\n");
 }
 
+export async function sendWhatsAppTemplate(
+  to: string,
+  contentSid: string,
+  variables?: Record<string, string>
+): Promise<{ success: boolean; error?: string }> {
+  if (!isConfigured()) {
+    return { success: false, error: "Twilio not configured" };
+  }
+
+  const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
+  const auth = Buffer.from(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`).toString("base64");
+
+  const params = new URLSearchParams({
+    From: TWILIO_WHATSAPP_FROM,
+    To: formatPhone(to),
+    ContentSid: contentSid,
+  });
+
+  if (variables) {
+    params.set("ContentVariables", JSON.stringify(variables));
+  }
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${auth}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: params.toString(),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    console.error(`[Twilio] Template send error to ${to}: ${res.status} ${error}`);
+    return { success: false, error: `${res.status}: ${error}` };
+  }
+
+  return { success: true };
+}
+
 export function notifyCustomerStatusChange(order: Order): void {
   if (!isConfigured()) return;
 

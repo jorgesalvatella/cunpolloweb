@@ -94,3 +94,77 @@ Cambia el status de una orden (requiere cookie admin).
 **Status validos:** pending, paid, preparing, ready, picked_up, cancelled
 **Response 200:** Objeto `Order` actualizado
 **Response 400/401/500:** Error
+
+---
+
+## Contactos (WhatsApp Promos)
+
+### `GET /api/admin/contacts`
+Lista contactos (requiere cookie admin).
+
+**Query params:**
+- `active=true` (opcional) — Solo contactos activos
+
+**Response 200:** Array de contactos
+
+---
+
+### `POST /api/admin/contacts`
+Agrega contacto o importa de pedidos (requiere cookie admin).
+
+**Agregar manual:**
+```json
+{ "name": "Juan", "phone": "+529981234567" }
+```
+
+**Importar de pedidos:**
+```json
+{ "importFromOrders": true }
+```
+
+**Response 201:** Contacto creado
+**Response 409:** Telefono duplicado
+
+---
+
+### `DELETE /api/admin/contacts/[id]`
+Desactiva un contacto (soft delete, requiere cookie admin).
+
+**Response 200:** `{ "ok": true }`
+
+---
+
+## Campanas WhatsApp
+
+### `GET /api/admin/campaigns`
+Lista historial de campanas (requiere cookie admin).
+
+**Response 200:** Array de campanas
+
+---
+
+### `POST /api/admin/campaigns`
+Crea y envia una campana (requiere cookie admin).
+
+**Request:**
+```json
+{
+  "templateName": "lanzamiento_delivery",
+  "contentSid": "HXXXXXXXXXXX",
+  "messagePreview": "Texto de referencia...",
+  "contentVariables": { "1": "CUNPOLLO" },
+  "contactIds": ["uuid-1", "uuid-2"]
+}
+```
+
+Si `contactIds` no se envia, se envia a todos los contactos activos.
+
+**Response 200:**
+```json
+{
+  "id": "uuid-...",
+  "sent": 10,
+  "failed": 1,
+  "status": "completed"
+}
+```
