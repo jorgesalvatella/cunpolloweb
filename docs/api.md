@@ -37,7 +37,7 @@ Crea una orden.
 **Flujo interno:**
 1. Valida items contra menu (recalcula precios server-side)
 2. INSERT en Supabase (status: pending)
-3. TODO: Procesamiento de pago con OpenPay
+3. TODO: Procesamiento de pago con Openpay
 4. Responde con orderId
 
 ---

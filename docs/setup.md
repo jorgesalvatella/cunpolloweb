@@ -4,7 +4,7 @@
 - Node.js 18+
 - pnpm (`npm install -g pnpm`)
 - Cuenta en Supabase (gratis)
-- Cuenta en OpenPay (para pagos — pendiente)
+- Cuenta en Openpay (para pagos — pendiente)
 - Cuenta en Vercel (para deploy)
 
 ## Setup Local
@@ -28,7 +28,7 @@ Editar `.env.local` con los valores reales (ver `docs/env-vars.md`).
 3. Pegar y ejecutar el contenido de `supabase/schema.sql`
 4. Copiar URL, anon key y service role key a `.env.local`
 
-### 4. Configurar OpenPay (opcional para dev)
+### 4. Configurar Openpay (opcional para dev)
 Pendiente de integracion. Ver `docs/env-vars.md` para las variables necesarias.
 
 ### 5. Ejecutar
@@ -39,7 +39,7 @@ Abrir http://localhost:3000
 
 ## Desarrollo sin servicios externos
 
-El carrito y las paginas de menu/cart funcionan sin Supabase ni OpenPay.
+El carrito y las paginas de menu/cart funcionan sin Supabase ni Openpay.
 Solo el flujo de checkout y admin requieren los servicios configurados.
 
 Para desarrollar sin ellos:

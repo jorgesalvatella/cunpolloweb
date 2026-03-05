@@ -54,7 +54,7 @@ export async function createCharge({
             error_code?: number;
             http_code?: number;
           };
-          console.error("OpenPay charge error:", {
+          console.error("Openpay charge error:", {
             orderId,
             error_code: err.error_code,
             http_code: err.http_code,

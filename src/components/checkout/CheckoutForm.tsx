@@ -69,11 +69,11 @@ export default function CheckoutForm() {
         const sessionId = window.OpenPay.deviceData.setup();
         setDeviceSessionId(sessionId);
         setOpenpayReady(true);
-        console.log("[OpenPay] Inicializado OK, session:", sessionId);
+        console.log("[Openpay] Inicializado OK, session:", sessionId);
       } else if (attempt < 10) {
         setTimeout(() => tryInit(attempt + 1), 300);
       } else {
-        console.error("[OpenPay] deviceData no disponible despues de 10 intentos");
+        console.error("[Openpay] deviceData no disponible despues de 10 intentos");
       }
     };
     tryInit(0);
@@ -109,7 +109,7 @@ export default function CheckoutForm() {
           },
           (error: { data: { description: string; error_code: number } }) => {
             clearTimeout(timeout);
-            console.error("[OpenPay] Token error:", JSON.stringify(error));
+            console.error("[Openpay] Token error:", JSON.stringify(error));
             const desc = error?.data?.description || JSON.stringify(error);
             reject(new Error(desc));
           }

@@ -25,7 +25,7 @@
 - Datos estaticos en `src/data/menu-items.ts` (datos extraidos de Rappi)
 
 ### Sistema de Pedidos (Paga y Recoge)
-- **Estado**: Integrado con OpenPay (sandbox)
+- **Estado**: Integrado con Openpay (sandbox)
 - **Feature flag**: `FEATURES.ORDERING_ENABLED` en `src/lib/constants.ts` (actualmente `true`)
 - Carrito client-side con persistencia en localStorage
 - Boton flotante de carrito muestra total "$X MXN" + badge con cantidad
@@ -73,7 +73,7 @@
 
 | Item | Descripcion | Bloqueado por |
 |------|-------------|---------------|
-| OpenPay integracion | Integrar pasarela de pago OpenPay (tarjeta + SPEI) | Documentacion y credenciales OpenPay |
+| Openpay integracion | Integrar pasarela de pago Openpay (tarjeta + SPEI) | Documentacion y credenciales Openpay |
 
 ## Desactivadas
 

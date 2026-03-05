@@ -15,7 +15,7 @@ Documento de referencia para el estado de seguridad del sistema de pedidos.
 | Sanitizacion telefono | Regex `^\+?[0-9]{10,15}$`, limpia espacios/guiones | `api/orders/route.ts` |
 | Admin hash HMAC-SHA256 | Cookie usa `crypto.createHmac('sha256')` en vez de djb2 | `lib/admin-auth.ts` |
 | Timing-safe password compare | `crypto.timingSafeEqual` para evitar timing attacks | `lib/admin-auth.ts` |
-| Webhook fail-secure | Pendiente — se implementara con OpenPay | — |
+| Webhook fail-secure | Pendiente — se implementara con Openpay | — |
 | Order lookup limitado | `/api/orders/[id]` solo retorna `id, order_number, status, items, subtotal, total, created_at` — sin nombre/telefono | `api/orders/[id]/route.ts` |
 | UUID validation | Valida formato UUID en params antes de query | `api/orders/[id]/route.ts` |
 | Logs limpios | Error logs solo incluyen order ID, nunca datos de tarjeta | `api/orders/route.ts` |
@@ -23,7 +23,7 @@ Documento de referencia para el estado de seguridad del sistema de pedidos.
 | Cookie httpOnly + secure | Cookie admin es `httpOnly`, `secure` en produccion, `sameSite: lax` | `api/admin/login/route.ts` |
 | Status whitelist | Solo status validos aceptados en PATCH admin | `api/admin/orders/[id]/route.ts` |
 | Supabase parameterizado | Todas las queries usan `.eq()` (parameterizado), sin string interpolation | Todos los API routes |
-| Tarjeta nunca almacenada | Pendiente — se implementara con OpenPay (tokenizacion) | — |
+| Tarjeta nunca almacenada | Pendiente — se implementara con Openpay (tokenizacion) | — |
 | Variables server-only | `SUPABASE_SERVICE_ROLE_KEY`, etc. no son `NEXT_PUBLIC_` | `.env.example` |
 
 ### Pendiente — Prioridad ALTA
@@ -41,14 +41,14 @@ Documento de referencia para el estado de seguridad del sistema de pedidos.
 | CSRF tokens en admin | Atacante podria cambiar status de ordenes si admin visita sitio malicioso | Generar CSRF token en cookie + validar en cada PATCH | Medio |
 | Idempotency key en ordenes | Retry de red puede crear ordenes/cobros duplicados | Header `Idempotency-Key` + columna con UNIQUE constraint | Medio |
 | Audit log de acciones admin | No hay registro de quien cambio que | Tabla `audit_logs` con admin_id, order_id, accion, timestamps | Medio |
-| Device fingerprint real | Pendiente — depende de la pasarela OpenPay | Evaluar requerimientos de OpenPay | Alto |
+| Device fingerprint real | Pendiente — depende de la pasarela Openpay | Evaluar requerimientos de Openpay | Alto |
 
 ### Pendiente — Prioridad BAJA
 
 | Issue | Riesgo | Solucion propuesta | Esfuerzo |
 |-------|--------|--------------------|---------|
 | Password admin en produccion | Podria quedar como `change-me-to-a-secure-password` | Validacion al startup: throw si es valor default en production | Bajo |
-| Webhook signature (HMAC) | Pendiente — se definira con OpenPay | Verificar docs de OpenPay | Medio |
+| Webhook signature (HMAC) | Pendiente — se definira con Openpay | Verificar docs de Openpay | Medio |
 | Content Security Policy | Sin CSP headers configurados | Agregar CSP en `next.config.ts` o middleware | Medio |
 
 ## Arquitectura de seguridad
@@ -66,7 +66,7 @@ Vercel Edge (middleware next-intl)
   |     3. Valida cantidades (1-100)
   |     4. Recalcula precios server-side desde menu-items.ts
   |     5. Inserta orden en Supabase (service_role)
-  |     6. TODO: Procesar pago via OpenPay
+  |     6. TODO: Procesar pago via Openpay
   |     7. Actualiza status en DB
   |
   |-- GET /api/orders/[id]
@@ -84,7 +84,7 @@ Supabase (service_role key, server-only)
   |
   | RLS: PENDING — restringir SELECT para anon
   |
-OpenPay API (TODO)
+Openpay API (TODO)
   |
   | Pendiente integracion
 ```

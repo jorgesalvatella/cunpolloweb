@@ -11,14 +11,14 @@ Archivo de referencia: `.env.example`
 | `SUPABASE_SERVICE_ROLE_KEY` | Secret | Service role key de Supabase | Supabase Dashboard > Settings > API |
 | `ADMIN_PASSWORD` | Secret | Contrasena del dashboard admin | Definir manualmente |
 
-## Pasarela de Pago (OpenPay)
+## Pasarela de Pago (Openpay)
 
 | Variable | Tipo | Descripcion | Donde obtener |
 |----------|------|-------------|---------------|
-| `OPENPAY_MERCHANT_ID` | Secret | ID del comercio (server-side) | Panel OpenPay |
-| `OPENPAY_PRIVATE_KEY` | Secret | Llave privada API (server-side) | Panel OpenPay |
-| `NEXT_PUBLIC_OPENPAY_MERCHANT_ID` | Public | ID del comercio (client-side tokenizacion) | Panel OpenPay |
-| `NEXT_PUBLIC_OPENPAY_PUBLIC_KEY` | Public | Llave publica (client-side tokenizacion) | Panel OpenPay |
+| `OPENPAY_MERCHANT_ID` | Secret | ID del comercio (server-side) | Panel Openpay |
+| `OPENPAY_PRIVATE_KEY` | Secret | Llave privada API (server-side) | Panel Openpay |
+| `NEXT_PUBLIC_OPENPAY_MERCHANT_ID` | Public | ID del comercio (client-side tokenizacion) | Panel Openpay |
+| `NEXT_PUBLIC_OPENPAY_PUBLIC_KEY` | Public | Llave publica (client-side tokenizacion) | Panel Openpay |
 | `NEXT_PUBLIC_OPENPAY_SANDBOX` | Public | `true` para sandbox, `false` para produccion | Manual |
 
 ## Twilio WhatsApp
@@ -42,7 +42,7 @@ Archivo de referencia: `.env.example`
 - `SUPABASE_SERVICE_ROLE_KEY` tiene acceso total a la DB — nunca exponerlo al cliente
 - `ADMIN_PASSWORD` puede ser cualquier string, se usa para el login de `/admin`
 - Las variables de Twilio son opcionales — si no se configuran, las notificaciones se desactivan silenciosamente
-- Las variables de OpenPay estan pendientes de integracion
+- Las variables de Openpay estan pendientes de integracion
 
 ## Setup local
 

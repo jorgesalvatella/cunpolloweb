@@ -37,7 +37,7 @@
 - `package.json` — Dependencia `jspdf` v4.2.0
 
 ### Decisiones de seguridad
-- `payment_reference` **NO** se expone en la API publica `/api/orders/[id]` — es dato interno entre el sistema y OpenPay
+- `payment_reference` **NO** se expone en la API publica `/api/orders/[id]` — es dato interno entre el sistema y Openpay
 - `customer_name` se expone porque el que accede es el propio cliente (protegido por UUID)
 - jsPDF se importa dinamicamente (`await import("jspdf")`) para evitar problemas de SSR y reducir bundle inicial (170KB vs 298KB)
 

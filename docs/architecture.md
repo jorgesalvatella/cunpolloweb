@@ -123,7 +123,7 @@ cunpolloweb/
     │   ├── constants.ts               # FEATURES flags + RESTAURANT info
     │   ├── utils.ts                   # cn() helper (clsx + tailwind-merge)
     │   ├── fonts.ts                   # Font config
-    │   ├── openpay.ts                  # OpenPay API wrapper (tokenize + charge)
+    │   ├── openpay.ts                  # Openpay API wrapper (tokenize + charge)
     │   ├── twilio.ts                  # Twilio WhatsApp notifications (server-only)
     │   ├── admin-auth.ts              # Auth admin por cookie
     │   └── supabase/
@@ -148,7 +148,7 @@ cunpolloweb/
   CartPage → CheckoutForm → POST /api/orders
 
 [Servidor]
-  POST /api/orders → validar items → Supabase INSERT → TODO: OpenPay payment → Supabase UPDATE → WhatsApp notify (fire-and-forget) → response
+  POST /api/orders → validar items → Supabase INSERT → TODO: Openpay payment → Supabase UPDATE → WhatsApp notify (fire-and-forget) → response
 
 [Admin]
   /admin/login → POST /api/admin/login → cookie

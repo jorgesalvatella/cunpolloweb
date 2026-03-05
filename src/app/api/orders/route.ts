@@ -80,7 +80,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Error al crear el pedido" }, { status: 500 });
     }
 
-    // Process payment with OpenPay
+    // Process payment with Openpay
     const itemNames = orderItems.map((i) => `${i.name} x${i.quantity}`).join(", ");
     const chargeResult = await createCharge({
       tokenId: body.tokenId,
