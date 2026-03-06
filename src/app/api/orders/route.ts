@@ -80,6 +80,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Error al crear el pedido" }, { status: 500 });
     }
 
+    // Build redirect URL for 3D Secure
+    const origin = request.headers.get("origin") || "https://cunpollo.com";
+    const confirmationUrl = `${origin}/es/confirmation/${order.id}`;
+
     // Process payment with Openpay
     const itemNames = orderItems.map((i) => `${i.name} x${i.quantity}`).join(", ");
     const chargeResult = await createCharge({
@@ -89,6 +93,7 @@ export async function POST(request: Request) {
       description: `CUNPOLLO Pedido #${order.order_number}: ${itemNames}`.slice(0, 250),
       orderId: order.id,
       customerName: name,
+      redirectUrl: confirmationUrl,
     });
 
     if (!chargeResult.success) {
@@ -102,6 +107,24 @@ export async function POST(request: Request) {
         { error: chargeResult.error || "Error al procesar el pago" },
         { status: 402 }
       );
+    }
+
+    // If 3D Secure is required, redirect the customer
+    if (chargeResult.redirectUrl) {
+      await supabaseAdmin
+        .from("orders")
+        .update({
+          payment_status: "pending_3ds",
+          payment_reference: chargeResult.chargeId,
+          status: "pending",
+        })
+        .eq("id", order.id);
+
+      return NextResponse.json({
+        orderId: order.id,
+        orderNumber: order.order_number,
+        redirectUrl: chargeResult.redirectUrl,
+      });
     }
 
     // Payment successful — update order

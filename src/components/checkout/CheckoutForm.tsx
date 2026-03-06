@@ -183,6 +183,13 @@ export default function CheckoutForm() {
         return;
       }
 
+      // 3D Secure redirect
+      if (data.redirectUrl) {
+        clearCart();
+        window.location.href = data.redirectUrl;
+        return;
+      }
+
       clearCart();
       router.push(`/${locale}/confirmation/${data.orderId}`);
     } catch (err) {

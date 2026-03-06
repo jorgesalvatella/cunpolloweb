@@ -11,6 +11,8 @@ type ChargeResult = {
   success: boolean;
   chargeId?: string;
   error?: string;
+  redirectUrl?: string;
+  status?: string;
 };
 
 export async function createCharge({
@@ -21,6 +23,7 @@ export async function createCharge({
   orderId,
   customerName,
   customerEmail,
+  redirectUrl,
 }: {
   tokenId: string;
   deviceSessionId: string;
@@ -29,6 +32,7 @@ export async function createCharge({
   orderId: string;
   customerName: string;
   customerEmail?: string;
+  redirectUrl: string;
 }): Promise<ChargeResult> {
   return new Promise((resolve) => {
     const chargeRequest = {
@@ -39,6 +43,7 @@ export async function createCharge({
       description,
       order_id: orderId,
       device_session_id: deviceSessionId,
+      redirect_url: redirectUrl,
       customer: {
         name: customerName,
         email: customerEmail || "cliente@cunpollo.com",
@@ -47,7 +52,7 @@ export async function createCharge({
 
     openpay.charges.create(
       chargeRequest,
-      (error: unknown, charge: { id?: string }) => {
+      (error: unknown, charge: { id?: string; status?: string; payment_method?: { url?: string } }) => {
         if (error) {
           const err = error as {
             description?: string;
@@ -67,9 +72,12 @@ export async function createCharge({
           return;
         }
 
+        const needs3ds = charge.status === "charge_pending" && charge.payment_method?.url;
         resolve({
           success: true,
           chargeId: charge.id,
+          status: charge.status,
+          redirectUrl: needs3ds ? charge.payment_method!.url : undefined,
         });
       }
     );
