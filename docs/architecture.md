@@ -49,9 +49,9 @@ cunpolloweb/
     │       ├── orders/
     │       │   ├── route.ts           # POST: crear orden + cobrar
     │       │   └── [id]/
-    │       │       └── route.ts       # GET: consultar orden
-    │       ├── webhooks/
-    │       │   └── # TODO: openpay/   # Webhook de pagos (pendiente)
+    │       │       ├── route.ts       # GET: consultar orden
+    │       │       └── verify/
+    │       │           └── route.ts   # POST: verificar pago 3DS con Openpay
     │       └── admin/
     │           ├── login/
     │           │   └── route.ts       # POST: auth admin
@@ -148,7 +148,8 @@ cunpolloweb/
   CartPage → CheckoutForm → POST /api/orders
 
 [Servidor]
-  POST /api/orders → validar items → Supabase INSERT → TODO: Openpay payment → Supabase UPDATE → WhatsApp notify (fire-and-forget) → response
+  POST /api/orders → validar items → Supabase INSERT → Openpay charge (tarjeta) → Supabase UPDATE → WhatsApp notify → response
+  POST /api/orders/[id]/verify → verificar cobro 3DS con Openpay → Supabase UPDATE → WhatsApp notify
 
 [Admin]
   /admin/login → POST /api/admin/login → cookie

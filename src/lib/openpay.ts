@@ -15,6 +15,22 @@ type ChargeResult = {
   status?: string;
 };
 
+export async function getCharge(chargeId: string): Promise<{ status?: string; error?: string }> {
+  return new Promise((resolve) => {
+    openpay.charges.get(
+      chargeId,
+      (error: unknown, charge: { status?: string }) => {
+        if (error) {
+          const err = error as { description?: string };
+          resolve({ error: err.description || "Error al verificar el cobro" });
+          return;
+        }
+        resolve({ status: charge.status });
+      }
+    );
+  });
+}
+
 export async function createCharge({
   tokenId,
   deviceSessionId,

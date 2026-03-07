@@ -18,7 +18,9 @@ Crea una orden.
     { "menuItemId": "pollo-entero", "quantity": 2 }
   ],
   "customerName": "Juan Perez",
-  "customerPhone": "+529981234567"
+  "customerPhone": "+529981234567",
+  "tokenId": "tok_...",
+  "deviceSessionId": "..."
 }
 ```
 
@@ -26,19 +28,22 @@ Crea una orden.
 ```json
 {
   "orderId": "uuid-...",
-  "orderNumber": 1042
+  "orderNumber": 1042,
+  "redirectUrl": "https://..." // solo si requiere 3D Secure
 }
 ```
 
 **Errores:**
 - `400` — Datos incompletos, producto no disponible
+- `402` — Error de pago (Openpay)
 - `500` — Error interno
 
 **Flujo interno:**
 1. Valida items contra menu (recalcula precios server-side)
-2. INSERT en Supabase (status: pending)
-3. TODO: Procesamiento de pago con Openpay
-4. Responde con orderId
+2. INSERT en Supabase (status: pending, payment_status: processing)
+3. Cobra con Openpay (tarjeta tokenizada)
+4. Si requiere 3D Secure: responde con `redirectUrl`, orden queda en `pending_3ds`
+5. Si pago directo: actualiza a `paid`, envia WhatsApp y responde con orderId
 
 ---
 
@@ -62,6 +67,20 @@ Consulta una orden por UUID (sin auth, el UUID actua como token).
 **Campos excluidos** (seguridad): `customer_phone`, `payment_reference`, `payment_status`
 
 **Response 404:** `{ "error": "Pedido no encontrado" }`
+
+---
+
+### `POST /api/orders/[id]/verify`
+Verifica el estado del pago con Openpay despues de 3D Secure. Llamado automaticamente por la pagina de confirmacion cuando detecta parametros de retorno 3DS.
+
+**Response 200:**
+```json
+{
+  "status": "paid" | "failed" | "pending" | "unknown"
+}
+```
+
+Si el cobro fue exitoso, actualiza la orden a `paid` y envia notificacion WhatsApp.
 
 ---
 

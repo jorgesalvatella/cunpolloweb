@@ -66,18 +66,14 @@ export default function CheckoutForm() {
         const merchantId = process.env.NEXT_PUBLIC_OPENPAY_MERCHANT_ID!;
         const apiKey = process.env.NEXT_PUBLIC_OPENPAY_PUBLIC_KEY!;
         const sandbox = process.env.NEXT_PUBLIC_OPENPAY_SANDBOX === "true";
-        console.log("[Openpay] Config:", { merchantId, apiKey, sandbox, merchantIdLen: merchantId?.length, apiKeyLen: apiKey?.length });
         window.OpenPay.setId(merchantId);
         window.OpenPay.setApiKey(apiKey);
         window.OpenPay.setSandboxMode(sandbox);
         const sessionId = window.OpenPay.deviceData.setup();
         setDeviceSessionId(sessionId);
         setOpenpayReady(true);
-        console.log("[Openpay] Inicializado OK, session:", sessionId);
       } else if (attempt < 10) {
         setTimeout(() => tryInit(attempt + 1), 300);
-      } else {
-        console.error("[Openpay] deviceData no disponible despues de 10 intentos");
       }
     };
     tryInit(0);
@@ -106,19 +102,15 @@ export default function CheckoutForm() {
             expiration_year: year,
             cvv2: card.cvv,
         };
-        console.log("[Openpay] Tokenizing with:", { ...tokenData, card_number: digits.slice(0, 6) + "****", cvv2: "***" });
         window.OpenPay.token.create(
           tokenData,
           (response) => {
             clearTimeout(timeout);
-            console.log("[Openpay] Token OK:", response.data.id);
             resolve(response.data.id);
           },
           (error: { data: { description: string; error_code: number }; status?: number; message?: string }) => {
             clearTimeout(timeout);
-            console.error("[Openpay] Token error FULL:", JSON.stringify(error, null, 2));
-            console.error("[Openpay] Token error status:", error?.status, "message:", error?.message);
-            const desc = error?.data?.description || JSON.stringify(error);
+            const desc = error?.data?.description || "Error al procesar la tarjeta";
             reject(new Error(desc));
           }
         );
@@ -157,11 +149,8 @@ export default function CheckoutForm() {
     setLoading(true);
 
     try {
-      console.log("[Checkout] Tokenizando tarjeta...");
       const tokenId = await tokenizeCard();
-      console.log("[Checkout] Token obtenido:", tokenId);
 
-      console.log("[Checkout] Enviando orden al servidor...");
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -175,7 +164,6 @@ export default function CheckoutForm() {
       });
 
       const data = await res.json();
-      console.log("[Checkout] Respuesta del servidor:", res.status, data);
 
       if (!res.ok) {
         showError(data.error || t("errorGeneric"));
@@ -193,7 +181,6 @@ export default function CheckoutForm() {
       clearCart();
       router.push(`/${locale}/confirmation/${data.orderId}`);
     } catch (err) {
-      console.error("[Checkout] Error:", err);
       showError(err instanceof Error ? err.message : t("errorGeneric"));
       setLoading(false);
     }

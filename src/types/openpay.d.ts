@@ -10,6 +10,10 @@ declare module "openpay" {
         data: Record<string, unknown>,
         callback: (error: unknown, charge: Record<string, unknown>) => void
       ) => void;
+      get: (
+        chargeId: string,
+        callback: (error: unknown, charge: Record<string, unknown>) => void
+      ) => void;
     };
   }
   export = Openpay;

@@ -82,7 +82,8 @@ export async function POST(request: Request) {
 
     // Build redirect URL for 3D Secure
     const origin = request.headers.get("origin") || "https://cunpollo.com";
-    const confirmationUrl = `${origin}/es/confirmation/${order.id}`;
+    const locale = request.headers.get("accept-language")?.startsWith("en") ? "en" : "es";
+    const confirmationUrl = `${origin}/${locale}/confirmation/${order.id}`;
 
     // Process payment with Openpay
     const itemNames = orderItems.map((i) => `${i.name} x${i.quantity}`).join(", ");

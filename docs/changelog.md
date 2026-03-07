@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-03-06 — Fix integracion Openpay (solo tarjetas + 3DS completo)
+
+### Cambio
+- Agregado endpoint `POST /api/orders/[id]/verify` para verificar cobros despues de redirect 3D Secure
+- Pagina de confirmacion ahora detecta retorno de 3DS y verifica el pago automaticamente
+- Corregido redirect URL hardcodeada a `/es/` — ahora respeta el locale del usuario
+- Limpieza de console.log de debug en CheckoutForm
+- Agregada funcion `getCharge()` en `src/lib/openpay.ts` para consultar estado de cobros
+- Actualizado type declaration `openpay.d.ts` con metodo `charges.get`
+
+### Archivos nuevos
+- `src/app/api/orders/[id]/verify/route.ts` — Verificacion 3DS
+
+### Archivos modificados
+- `src/lib/openpay.ts` — Nueva funcion `getCharge()`
+- `src/types/openpay.d.ts` — Agregado `charges.get` al type
+- `src/app/api/orders/route.ts` — Locale dinamico en redirect URL
+- `src/app/[locale]/confirmation/[id]/page.tsx` — Verificacion 3DS al cargar
+- `src/components/checkout/CheckoutForm.tsx` — Limpieza de logs de debug
+
+### Documentacion actualizada
+- `docs/api.md` — Nuevo endpoint verify, request/response actualizado para orders
+- `docs/architecture.md` — Mapa actualizado con verify endpoint y flujo
+- `docs/changelog.md` — Este entry
+
 ## 2026-03-02 — Twilio WhatsApp Business en produccion
 
 ### Cambio

@@ -16,13 +16,23 @@ export default function ConfirmationPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/orders/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
+    async function loadOrder() {
+      try {
+        // If returning from 3D Secure, verify the payment first
+        const url = new URL(window.location.href);
+        if (url.searchParams.has("id")) {
+          await fetch(`/api/orders/${id}/verify`, { method: "POST" });
+          // Clean URL params after verification
+          window.history.replaceState({}, "", url.pathname);
+        }
+
+        const res = await fetch(`/api/orders/${id}`);
+        const data = await res.json();
         setOrder(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+      } catch {}
+      setLoading(false);
+    }
+    loadOrder();
   }, [id]);
 
   if (loading) {
