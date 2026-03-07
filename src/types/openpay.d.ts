@@ -1,6 +1,6 @@
 declare module "openpay" {
   class Openpay {
-    constructor(merchantId: string, privateKey: string, countryCode?: string, isProductionReady?: boolean);
+    constructor(merchantId: string, privateKey: string, isProductionReady?: boolean);
     setTimeout(ms: number): void;
     setMerchantId(id: string): void;
     setPrivateKey(key: string): void;

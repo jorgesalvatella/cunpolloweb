@@ -4,7 +4,7 @@ const merchantId = process.env.OPENPAY_MERCHANT_ID!;
 const privateKey = process.env.OPENPAY_PRIVATE_KEY!;
 const isSandbox = process.env.NEXT_PUBLIC_OPENPAY_SANDBOX === "true";
 
-const openpay = new Openpay(merchantId, privateKey, "mx", !isSandbox);
+const openpay = new Openpay(merchantId, privateKey, !isSandbox);
 openpay.setTimeout(30000);
 
 type ChargeResult = {
