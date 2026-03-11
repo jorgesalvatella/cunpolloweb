@@ -74,6 +74,7 @@ export async function POST(request: Request) {
   // Send messages
   let sentCount = 0;
   let failedCount = 0;
+  const errors: string[] = [];
 
   for (const contact of contacts) {
     const result = await sendWhatsAppTemplate(
@@ -86,7 +87,9 @@ export async function POST(request: Request) {
       sentCount++;
     } else {
       failedCount++;
-      console.error(`[Campaign ${campaign.id}] Failed to send to ${contact.phone}: ${result.error}`);
+      const errMsg = `${contact.phone}: ${result.error}`;
+      errors.push(errMsg);
+      console.error(`[Campaign ${campaign.id}] ${errMsg}`);
     }
   }
 
@@ -98,6 +101,7 @@ export async function POST(request: Request) {
       sent_count: sentCount,
       failed_count: failedCount,
       status: finalStatus,
+      error_details: errors.length > 0 ? errors.join("\n") : null,
     })
     .eq("id", campaign.id);
 
@@ -106,5 +110,6 @@ export async function POST(request: Request) {
     sent: sentCount,
     failed: failedCount,
     status: finalStatus,
+    errors: errors.length > 0 ? errors : undefined,
   });
 }
