@@ -35,6 +35,12 @@ export default function ContactList() {
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!/^[0-9]{10}$/.test(phone)) {
+      setError("El telefono debe tener exactamente 10 digitos");
+      return;
+    }
+
     setAdding(true);
 
     const res = await fetch("/api/admin/contacts", {
@@ -94,10 +100,15 @@ export default function ContactList() {
           required
         />
         <input
-          type="text"
-          placeholder="+52..."
+          type="tel"
+          placeholder="10 digitos, ej: 9981234567"
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={(e) => {
+            const val = e.target.value.replace(/[^0-9]/g, "");
+            if (val.length <= 10) setPhone(val);
+          }}
+          pattern="[0-9]{10}"
+          title="Ingresa 10 digitos del numero celular"
           className="border rounded px-3 py-2 text-sm flex-1 min-w-[120px]"
           required
         />
