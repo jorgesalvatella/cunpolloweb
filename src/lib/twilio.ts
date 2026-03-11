@@ -40,7 +40,10 @@ async function sendWhatsApp(to: string, body: string): Promise<void> {
 function formatPhone(phone: string): string {
   const cleaned = phone.replace(/[\s\-()]/g, "");
   if (cleaned.startsWith("whatsapp:")) return cleaned;
-  return `whatsapp:${cleaned}`;
+  // Add +52 country code if not present
+  if (cleaned.startsWith("+")) return `whatsapp:${cleaned}`;
+  if (cleaned.startsWith("52") && cleaned.length === 12) return `whatsapp:+${cleaned}`;
+  return `whatsapp:+52${cleaned}`;
 }
 
 function formatCurrency(amount: number): string {
