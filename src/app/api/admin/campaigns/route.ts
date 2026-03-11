@@ -77,10 +77,12 @@ export async function POST(request: Request) {
   const errors: string[] = [];
 
   for (const contact of contacts) {
+    // Auto-set {{1}} to contact name, merge with any extra variables
+    const vars = { "1": contact.name, ...contentVariables };
     const result = await sendWhatsAppTemplate(
       contact.phone,
       contentSid,
-      contentVariables || undefined
+      vars
     );
 
     if (result.success) {
