@@ -3,7 +3,7 @@ import type { Order } from "@/types/order";
 
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
-const TWILIO_WHATSAPP_FROM = process.env.TWILIO_WHATSAPP_FROM || "whatsapp:+529983871387";
+const TWILIO_WHATSAPP_FROM = process.env.TWILIO_WHATSAPP_FROM || "whatsapp:+5219983871387";
 const ADMIN_WHATSAPP_PHONES = process.env.ADMIN_WHATSAPP_PHONES || "";
 
 function isConfigured(): boolean {
@@ -40,10 +40,12 @@ async function sendWhatsApp(to: string, body: string): Promise<void> {
 function formatPhone(phone: string): string {
   const cleaned = phone.replace(/[\s\-()]/g, "");
   if (cleaned.startsWith("whatsapp:")) return cleaned;
-  // Add +52 country code if not present
   if (cleaned.startsWith("+")) return `whatsapp:${cleaned}`;
-  if (cleaned.startsWith("52") && cleaned.length === 12) return `whatsapp:+${cleaned}`;
-  return `whatsapp:+52${cleaned}`;
+  // Mexican mobile numbers: +521 prefix (10-digit local numbers)
+  if (cleaned.startsWith("521") && cleaned.length === 13) return `whatsapp:+${cleaned}`;
+  if (cleaned.startsWith("52") && cleaned.length === 12) return `whatsapp:+${cleaned.slice(0, 2)}1${cleaned.slice(2)}`;
+  // 10-digit local number → add +521
+  return `whatsapp:+521${cleaned}`;
 }
 
 function formatCurrency(amount: number): string {
