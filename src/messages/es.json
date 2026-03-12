@@ -42,7 +42,8 @@
     "addToOrder": "Agregar al Pedido",
     "ingredients": "Ingredientes",
     "description": "Descripción",
-    "added": "Agregado"
+    "added": "Agregado",
+    "dineInOnly": "Solo consumo en restaurante"
   },
   "cart": {
     "title": "Tu Pedido",

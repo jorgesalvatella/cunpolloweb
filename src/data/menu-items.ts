@@ -1,6 +1,36 @@
 import type { MenuItem } from "@/types/menu";
 
 export const menuItems: MenuItem[] = [
+  // === Promociones ===
+  {
+    id: "miercoles-kids",
+    categoryId: "promociones",
+    name: { es: "Miercoles Kids", en: "Wednesday Kids" },
+    description: {
+      es: "Menu Kids $99: Hamburguesa o tiras de pollo + papas + helado. Solo consumo en restaurante.",
+      en: "Kids Menu $99: Burger or chicken strips + fries + ice cream. Dine-in only.",
+    },
+    price: 99,
+    image: "https://igwu4bqzucdjjkup.public.blob.vercel-storage.com/Public/kidspromo.jpeg",
+    tags: [],
+    available: true,
+    promo: true,
+  },
+  {
+    id: "jueves-ninos-gratis",
+    categoryId: "promociones",
+    name: { es: "Jueves: Ninos Comen Gratis", en: "Thursday: Kids Eat Free" },
+    description: {
+      es: "Al ordenar un platillo y una bebida para adulto, 1 nino come gratis. Solo consumo en restaurante.",
+      en: "Order an adult meal and drink, 1 kid eats free. Dine-in only.",
+    },
+    price: 0,
+    image: "https://igwu4bqzucdjjkup.public.blob.vercel-storage.com/Public/Kidsfree.jpeg",
+    tags: [],
+    available: true,
+    promo: true,
+  },
+
   // === Nuestra Especialidad ===
   {
     id: "pollo-rostizado",

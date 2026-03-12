@@ -21,4 +21,5 @@ export type MenuItem = {
   image: string;
   tags: MenuItemTag[];
   available: boolean;
+  promo?: boolean;
 };

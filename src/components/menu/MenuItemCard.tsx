@@ -58,7 +58,7 @@ export default function MenuItemCard({
           sizes="(max-width: 640px) 50vw, 25vw"
           unoptimized
         />
-        {FEATURES.ORDERING_ENABLED && (
+        {FEATURES.ORDERING_ENABLED && !item.promo && (
           <motion.div
             className="absolute bottom-2 right-2"
             initial={false}
@@ -94,13 +94,21 @@ export default function MenuItemCard({
           <h3 className="font-semibold text-dark text-xs sm:text-sm leading-tight">
             {item.name[locale]}
           </h3>
-          <span className="text-gold-500 font-bold text-xs sm:text-sm whitespace-nowrap">
-            ${item.price}
-          </span>
+          {!item.promo && (
+            <span className="text-gold-500 font-bold text-xs sm:text-sm whitespace-nowrap">
+              ${item.price}
+            </span>
+          )}
         </div>
-        <p className="text-[10px] sm:text-xs text-dark/50 mb-2 sm:mb-3 line-clamp-1 sm:line-clamp-2">
-          {item.description[locale]}
-        </p>
+        {item.promo ? (
+          <p className="text-[10px] sm:text-xs text-red-600 font-semibold mb-2 sm:mb-3">
+            {t("dineInOnly")}
+          </p>
+        ) : (
+          <p className="text-[10px] sm:text-xs text-dark/50 mb-2 sm:mb-3 line-clamp-1 sm:line-clamp-2">
+            {item.description[locale]}
+          </p>
+        )}
         {item.tags.length > 0 && (
           <div className="flex gap-1 flex-wrap">
             {item.tags.map((tag) => (

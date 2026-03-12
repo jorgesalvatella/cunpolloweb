@@ -17,7 +17,8 @@
 ### Menu Completo
 - **Estado**: Produccion
 - Filtros por categoria (tabs con tap targets ampliados)
-- 33 items en 7 categorias: especialidad, lo-mero-bueno, antojitos, acompanamientos, bebidas, postres, combos
+- 35 items en 8 categorias: promociones, especialidad, lo-mero-bueno, antojitos, acompanamientos, bebidas, postres, combos
+- Categoria "Promociones" con items solo-display (no se agregan al carrito, etiqueta "Solo consumo en restaurante")
 - Quick-add "+" dorado en cada tarjeta (checkmark verde al agregar)
 - Descripcion visible en mobile (line-clamp-1, antes hidden)
 - Modal con detalle, tags (popular/picante/nuevo), precios reales, boton rounded-full

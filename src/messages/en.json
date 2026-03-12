@@ -42,7 +42,8 @@
     "addToOrder": "Add to Order",
     "ingredients": "Ingredients",
     "description": "Description",
-    "added": "Added"
+    "added": "Added",
+    "dineInOnly": "Dine-in only"
   },
   "cart": {
     "title": "Your Order",

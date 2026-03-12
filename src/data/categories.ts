@@ -2,6 +2,12 @@ import type { MenuCategory } from "@/types/menu";
 
 export const categories: MenuCategory[] = [
   {
+    id: "promociones",
+    name: { es: "Promociones", en: "Promotions" },
+    icon: "🎉",
+    order: 0,
+  },
+  {
     id: "especialidad",
     name: { es: "Nuestra Especialidad", en: "Our Specialty" },
     icon: "🍗",

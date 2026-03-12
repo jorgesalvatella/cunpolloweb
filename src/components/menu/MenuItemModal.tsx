@@ -75,9 +75,11 @@ export default function MenuItemModal({
                 <h2 className="text-xl sm:text-2xl font-bold text-red-700 font-(family-name:--font-heading)">
                   {item.name[locale]}
                 </h2>
-                <span className="text-xl sm:text-2xl font-bold text-gold-500 shrink-0">
-                  ${item.price}
-                </span>
+                {!item.promo && (
+                  <span className="text-xl sm:text-2xl font-bold text-gold-500 shrink-0">
+                    ${item.price}
+                  </span>
+                )}
               </div>
 
               {item.tags.length > 0 && (
@@ -95,11 +97,19 @@ export default function MenuItemModal({
                 {item.description[locale]}
               </p>
 
-              <p className="text-xs sm:text-sm text-dark/30 text-center">
-                {t("currency")}: MXN
-              </p>
+              {item.promo && (
+                <p className="text-sm font-semibold text-red-600 text-center mt-2">
+                  {t("dineInOnly")}
+                </p>
+              )}
 
-              {FEATURES.ORDERING_ENABLED && (
+              {!item.promo && (
+                <p className="text-xs sm:text-sm text-dark/30 text-center">
+                  {t("currency")}: MXN
+                </p>
+              )}
+
+              {FEATURES.ORDERING_ENABLED && !item.promo && (
                 <div className="mt-4">
                   <div className="flex items-center justify-center gap-4 mb-3">
                     <button
