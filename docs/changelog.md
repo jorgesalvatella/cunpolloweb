@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-03-12 — Categoria Promociones en el menu
+
+### Cambio
+- Nueva categoria "Promociones" (aparece primero en el menu)
+- Items con `promo: true` son solo-display: sin precio, sin boton agregar al carrito, sin controles de cantidad
+- Muestran etiqueta "Solo consumo en restaurante" / "Dine-in only"
+- 2 promos iniciales: Miercoles Kids ($99) y Jueves Ninos Comen Gratis
+
+### Archivos modificados
+- `src/types/menu.ts` — Campo opcional `promo?: boolean` en `MenuItem`
+- `src/data/categories.ts` — Nueva categoria `promociones` (order: 0)
+- `src/data/menu-items.ts` — 2 items promo con imagenes en Vercel Blob `Public/`
+- `src/components/menu/MenuItemCard.tsx` — Oculta precio y boton "+" para promos, muestra `dineInOnly`
+- `src/components/menu/MenuItemModal.tsx` — Oculta precio y controles de orden para promos, muestra `dineInOnly`
+- `src/messages/es.json` — Key `menu.dineInOnly`
+- `src/messages/en.json` — Key `menu.dineInOnly`
+- `docs/features.md` — Actualizado conteo de items y categorias
+
+### Metodo para futuras promos
+1. Subir imagen a **Vercel Blob Storage** > carpeta `Public/` (Dashboard Vercel > Storage > Blob)
+2. URL resultante: `https://igwu4bqzucdjjkup.public.blob.vercel-storage.com/Public/{nombre}.jpeg`
+3. Agregar item en `src/data/menu-items.ts` con `categoryId: "promociones"` y `promo: true`
+4. Push a `main` — Vercel despliega automaticamente
+
 ## 2026-03-06 — Fix integracion Openpay (solo tarjetas + 3DS completo)
 
 ### Cambio
