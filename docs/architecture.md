@@ -52,6 +52,9 @@ cunpolloweb/
     │       │       ├── route.ts       # GET: consultar orden
     │       │       └── verify/
     │       │           └── route.ts   # POST: verificar pago 3DS con Openpay
+    │       ├── catalog/
+    │       │   └── feed/
+    │       │       └── route.ts           # GET: XML feed para Meta Commerce Manager
     │       └── admin/
     │           ├── login/
     │           │   └── route.ts       # POST: auth admin

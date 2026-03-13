@@ -70,6 +70,17 @@
 - **API**: `/api/admin/contacts` (GET, POST, DELETE), `/api/admin/campaigns` (GET, POST)
 - **Twilio**: `sendWhatsAppTemplate()` en `src/lib/twilio.ts` para templates con ContentSid
 
+### Feed de Catalogo para WhatsApp (Meta Commerce Manager)
+- **Estado**: Implementado
+- **Ruta**: `/api/catalog/feed`
+- **Archivo**: `src/app/api/catalog/feed/route.ts`
+- **Formato**: XML Atom + Google Product Data (compatible con Meta Commerce Manager)
+- **Productos**: Todos los items activos del menu (excluye promos y item de prueba)
+- **Campos**: id, titulo, descripcion, precio (MXN), imagen, categoria, disponibilidad, marca
+- **Cache**: 1 hora (s-maxage=3600)
+- **Uso**: Configurar en Meta Commerce Manager como "Scheduled Feed" con URL `https://cunpollo.com/api/catalog/feed`
+- **Beneficio**: Catalogo de WhatsApp Business se sincroniza automaticamente con los productos del sitio
+
 ## Pendientes / Por Configurar
 
 | Item | Descripcion | Bloqueado por |

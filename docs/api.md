@@ -116,6 +116,37 @@ Cambia el status de una orden (requiere cookie admin).
 
 ---
 
+## Catalogo de Productos (Feed para Meta/WhatsApp)
+
+### `GET /api/catalog/feed`
+Genera un feed XML de productos en formato Atom + Google Product Data compatible con Meta Commerce Manager. Se usa para sincronizar automaticamente el catalogo de WhatsApp Business.
+
+**Response:** XML (Content-Type: `application/xml`)
+
+**Productos incluidos:** Todos los items activos del menu, excluyendo:
+- Items con `promo: true` (promociones solo en restaurante)
+- Item de prueba (`prueba-pasarela`)
+
+**Campos por producto:**
+- `g:id` — ID unico del producto
+- `g:title` — Nombre en espanol
+- `g:description` — Descripcion en espanol
+- `g:price` — Precio en MXN
+- `g:image_link` — URL de imagen
+- `g:product_type` — Categoria
+- `g:availability` — Siempre "in stock" (filtrado por `available`)
+- `g:brand` — CUNPOLLO
+
+**Configuracion en Meta Commerce Manager:**
+1. Ir a Commerce Manager > Catalogo > Origenes de datos
+2. Seleccionar "Data Feed" > "Scheduled Feed"
+3. URL: `https://cunpollo.com/api/catalog/feed`
+4. Frecuencia: diaria o cada hora
+
+**Cache:** 1 hora (`s-maxage=3600`)
+
+---
+
 ## Contactos (WhatsApp Promos)
 
 ### `GET /api/admin/contacts`
