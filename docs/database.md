@@ -19,6 +19,8 @@
 | `status` | TEXT | `'pending'` | Estado del pedido |
 | `payment_reference` | TEXT | NULL | ID del cargo en T1 Pagos |
 | `payment_status` | TEXT | `'pending'` | Estado del pago |
+| `order_type` | TEXT | `'pickup'` | Tipo: `dine_in` o `pickup` |
+| `pickup_time` | TEXT | NULL | Hora solicitada (ej: "14:00", "18:30") |
 | `created_at` | TIMESTAMPTZ | `NOW()` | Fecha de creación |
 | `updated_at` | TIMESTAMPTZ | `NOW()` | Última actualización (trigger automático) |
 

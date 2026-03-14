@@ -14,9 +14,21 @@ export async function POST(request: Request) {
       !body.customerName ||
       !body.customerPhone ||
       !body.tokenId ||
-      !body.deviceSessionId
+      !body.deviceSessionId ||
+      !body.orderType ||
+      !body.pickupTime
     ) {
       return NextResponse.json({ error: "Datos incompletos" }, { status: 400 });
+    }
+
+    // Validate order type
+    if (!["dine_in", "pickup"].includes(body.orderType)) {
+      return NextResponse.json({ error: "Tipo de pedido invalido" }, { status: 400 });
+    }
+
+    // Validate pickup time format (H:MM or HH:MM)
+    if (!/^\d{1,2}:\d{2}$/.test(body.pickupTime)) {
+      return NextResponse.json({ error: "Horario invalido" }, { status: 400 });
     }
 
     // Validate customer input
@@ -71,6 +83,8 @@ export async function POST(request: Request) {
         total,
         status: "pending",
         payment_status: "processing",
+        order_type: body.orderType,
+        pickup_time: body.pickupTime,
       })
       .select("id, order_number")
       .single();
@@ -152,6 +166,8 @@ export async function POST(request: Request) {
         status: "paid",
         payment_status: "success",
         payment_reference: chargeResult.chargeId || null,
+        order_type: body.orderType,
+        pickup_time: body.pickupTime,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       });

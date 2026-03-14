@@ -56,6 +56,20 @@ export default function OrderCard({
         <a href={`tel:${order.customer_phone}`} className="text-sm text-blue-600">
           {order.customer_phone}
         </a>
+        <div className="flex gap-2 mt-1">
+          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+            order.order_type === "dine_in"
+              ? "bg-purple-100 text-purple-800"
+              : "bg-teal-100 text-teal-800"
+          }`}>
+            {order.order_type === "dine_in" ? "Comer aqui" : "Para llevar"}
+          </span>
+          {order.pickup_time && (
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+              Listo: {order.pickup_time}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="space-y-1 mb-3">

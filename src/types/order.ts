@@ -26,6 +26,8 @@ export type PaymentStatus =
   | "success"
   | "failed";
 
+export type OrderType = "dine_in" | "pickup";
+
 export type Order = {
   id: string;
   order_number: number;
@@ -37,6 +39,8 @@ export type Order = {
   status: OrderStatus;
   payment_reference: string | null;
   payment_status: PaymentStatus;
+  order_type: OrderType;
+  pickup_time: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -47,6 +51,8 @@ export type CreateOrderRequest = {
   customerPhone: string;
   tokenId: string;
   deviceSessionId: string;
+  orderType: OrderType;
+  pickupTime: string | null;
 };
 
 export type CreateOrderResponse = {

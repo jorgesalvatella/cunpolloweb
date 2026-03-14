@@ -32,7 +32,9 @@
 - Boton flotante de carrito muestra total "$X MXN" + badge con cantidad
 - Pagina de carrito con pickup estimate, checkout primary button, SVG icon (sin emoji)
 - Checkout con progress steps (Menu > Carrito > Pago), trust badge SSL
-- Confirmacion con animacion y "Te esperamos en ~20 min"
+- Selector de tipo de pedido: "Comer aqui" o "Para llevar"
+- Selector de horario: slots de 30 min entre 1 PM y 9 PM
+- Confirmacion con animacion, tipo de pedido y hora solicitada
 - Comprobante de pago descargable (PDF generado en cliente con jsPDF)
 - Sin delivery, sin cuentas de usuario
 - Notificaciones WhatsApp via Twilio (ver seccion abajo)

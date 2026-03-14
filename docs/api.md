@@ -20,7 +20,9 @@ Crea una orden.
   "customerName": "Juan Perez",
   "customerPhone": "+529981234567",
   "tokenId": "tok_...",
-  "deviceSessionId": "..."
+  "deviceSessionId": "...",
+  "orderType": "dine_in",
+  "pickupTime": "14:00"
 }
 ```
 

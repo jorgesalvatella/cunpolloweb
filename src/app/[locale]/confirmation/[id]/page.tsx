@@ -90,6 +90,14 @@ export default function ConfirmationPage() {
       doc.text(order.customer_name, 20, y);
       y += 7;
     }
+
+    const typeLabel = order.order_type === "dine_in" ? "Comer en restaurante" : "Para llevar";
+    doc.text(`Tipo: ${typeLabel}`, 20, y);
+    y += 7;
+    if (order.pickup_time) {
+      doc.text(`Hora: ${order.pickup_time}`, 20, y);
+      y += 7;
+    }
     y += 3;
 
     // Separator
@@ -196,6 +204,20 @@ export default function ConfirmationPage() {
             transition={{ delay: 0.6 }}
             className="bg-red-50 rounded-2xl p-6 my-8"
           >
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                order.order_type === "dine_in"
+                  ? "bg-purple-100 text-purple-800"
+                  : "bg-teal-100 text-teal-800"
+              }`}>
+                {order.order_type === "dine_in" ? t("dineIn") : t("pickup")}
+              </span>
+              {order.pickup_time && (
+                <span className="px-3 py-1 rounded-full text-sm font-semibold bg-amber-100 text-amber-800">
+                  {t("readyBy")} {order.pickup_time}
+                </span>
+              )}
+            </div>
             <p className="text-xl font-bold text-red-700">{t("message")}</p>
           </motion.div>
 

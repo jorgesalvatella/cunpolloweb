@@ -86,7 +86,13 @@
     "stepMenu": "Menú",
     "stepCart": "Carrito",
     "stepPayment": "Pago",
-    "securePayment": "Pago seguro con encriptación SSL"
+    "securePayment": "Pago seguro con encriptación SSL",
+    "orderType": "Tipo de pedido",
+    "dineIn": "Comer aquí",
+    "pickup": "Para llevar",
+    "pickupTime": "Horario para tenerlo listo",
+    "selectTime": "Selecciona un horario",
+    "errorPickupTime": "Por favor selecciona un horario para tu pedido."
   },
   "confirmation": {
     "title": "¡Pedido Confirmado!",
@@ -97,7 +103,10 @@
     "directions": "Cómo Llegar",
     "call": "Llamar al restaurante",
     "backHome": "Volver al Inicio",
-    "downloadReceipt": "Descargar Comprobante"
+    "downloadReceipt": "Descargar Comprobante",
+    "dineIn": "Comer en restaurante",
+    "pickup": "Para llevar",
+    "readyBy": "Listo a las"
   },
   "location": {
     "title": "Encuéntranos",

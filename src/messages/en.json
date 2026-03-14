@@ -86,7 +86,13 @@
     "stepMenu": "Menu",
     "stepCart": "Cart",
     "stepPayment": "Payment",
-    "securePayment": "Secure payment with SSL encryption"
+    "securePayment": "Secure payment with SSL encryption",
+    "orderType": "Order type",
+    "dineIn": "Dine in",
+    "pickup": "Pickup",
+    "pickupTime": "Ready by",
+    "selectTime": "Select a time",
+    "errorPickupTime": "Please select a time for your order."
   },
   "confirmation": {
     "title": "Order Confirmed!",
@@ -97,7 +103,10 @@
     "directions": "Get Directions",
     "call": "Call restaurant",
     "backHome": "Back to Home",
-    "downloadReceipt": "Download Receipt"
+    "downloadReceipt": "Download Receipt",
+    "dineIn": "Dine in",
+    "pickup": "Pickup",
+    "readyBy": "Ready by"
   },
   "location": {
     "title": "Find Us",

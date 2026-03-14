@@ -60,6 +60,8 @@ function getCustomerMessage(order: Order): string | null {
       const itemLines = items
         .map((i) => `- ${i.quantity}x ${i.name} (${formatCurrency(i.lineTotal)})`)
         .join("\n");
+      const typeLabel = order.order_type === "dine_in" ? "Comer en restaurante" : "Para llevar";
+      const timeLine = order.pickup_time ? `Hora solicitada: ${order.pickup_time}` : "";
       return [
         `CUNPOLLO - Pedido #${order_number} confirmado`,
         "",
@@ -67,12 +69,13 @@ function getCustomerMessage(order: Order): string | null {
         itemLines,
         "",
         `Total: ${formatCurrency(total)}`,
+        `Tipo: ${typeLabel}`,
+        timeLine,
         "",
         `Recogelo en: ${RESTAURANT.address.street}, ${RESTAURANT.address.city}`,
-        `Te esperamos en aprox. 20 minutos.`,
         "",
         `Dudas? Llamanos al ${RESTAURANT.phone}`,
-      ].join("\n");
+      ].filter(Boolean).join("\n");
     }
     case "preparing":
       return [
@@ -113,17 +116,22 @@ function getAdminMessage(order: Order): string {
     .map((i) => `- ${i.quantity}x ${i.name}`)
     .join("\n");
 
+  const typeLabel = order.order_type === "dine_in" ? "Comer aqui" : "Para llevar";
+  const timeLine = order.pickup_time ? `Hora: ${order.pickup_time}` : "";
+
   return [
     `NUEVO PEDIDO #${order.order_number}`,
     "",
     `Cliente: ${order.customer_name}`,
     `Telefono: ${order.customer_phone}`,
+    `Tipo: ${typeLabel}`,
+    timeLine,
     "",
     "Items:",
     itemLines,
     "",
     `Total: ${formatCurrency(order.total)}`,
-  ].join("\n");
+  ].filter(Boolean).join("\n");
 }
 
 export async function sendWhatsAppTemplate(

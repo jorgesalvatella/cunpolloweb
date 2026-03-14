@@ -8,6 +8,20 @@ import { useCart } from "@/context/CartContext";
 import { getMenuItemById } from "@/data";
 import CardInput from "./CardInput";
 import type { Locale } from "@/i18n/config";
+import type { OrderType } from "@/types/order";
+
+function generateTimeSlots(): string[] {
+  const slots: string[] = [];
+  for (let h = 13; h <= 21; h++) {
+    slots.push(`${h}:00`);
+    if (h < 21) {
+      slots.push(`${h}:15`);
+      slots.push(`${h}:30`);
+      slots.push(`${h}:45`);
+    }
+  }
+  return slots;
+}
 
 declare global {
   interface Window {
@@ -49,7 +63,10 @@ export default function CheckoutForm() {
 
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [orderType, setOrderType] = useState<OrderType>("pickup");
+  const [pickupTime, setPickupTime] = useState("");
   const [card, setCard] = useState({ number: "", expiry: "", cvv: "", holderName: "" });
+  const timeSlots = generateTimeSlots();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const errorRef = useRef<HTMLDivElement>(null);
@@ -135,6 +152,11 @@ export default function CheckoutForm() {
       return;
     }
 
+    if (!pickupTime) {
+      showError(t("errorPickupTime"));
+      return;
+    }
+
     const digits = card.number.replace(/\s/g, "");
     if (!digits || !card.expiry || !card.cvv || !card.holderName) {
       showError(t("errorCard"));
@@ -160,6 +182,8 @@ export default function CheckoutForm() {
           customerPhone,
           tokenId,
           deviceSessionId,
+          orderType,
+          pickupTime,
         }),
       });
 
@@ -249,6 +273,48 @@ export default function CheckoutForm() {
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
               />
             </div>
+          </div>
+        </div>
+
+        {/* Order Type */}
+        <div>
+          <h2 className="text-lg font-bold text-dark mb-3">{t("orderType")}</h2>
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <button
+              type="button"
+              onClick={() => setOrderType("dine_in")}
+              className={`py-3 rounded-lg font-semibold text-sm transition-colors cursor-pointer border-2 ${
+                orderType === "dine_in"
+                  ? "border-red-600 bg-red-50 text-red-700"
+                  : "border-gray-200 bg-white text-dark/70 hover:border-gray-300"
+              }`}
+            >
+              {t("dineIn")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setOrderType("pickup")}
+              className={`py-3 rounded-lg font-semibold text-sm transition-colors cursor-pointer border-2 ${
+                orderType === "pickup"
+                  ? "border-red-600 bg-red-50 text-red-700"
+                  : "border-gray-200 bg-white text-dark/70 hover:border-gray-300"
+              }`}
+            >
+              {t("pickup")}
+            </button>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-dark/70 mb-1">{t("pickupTime")}</label>
+            <select
+              value={pickupTime}
+              onChange={(e) => setPickupTime(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none bg-white text-dark"
+            >
+              <option value="">{t("selectTime")}</option>
+              {timeSlots.map((slot) => (
+                <option key={slot} value={slot}>{slot}</option>
+              ))}
+            </select>
           </div>
         </div>
 
