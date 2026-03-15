@@ -40,7 +40,8 @@ function getAvailableSlots(): string[] {
   const nowM = Number(parts.find((p) => p.type === "minute")?.value ?? 0);
   const nowMinutes = nowH * 60 + nowM + 30;
 
-  return ALL_TIME_SLOTS.filter((slot) => slotToMinutes(slot) >= nowMinutes);
+  const filtered = ALL_TIME_SLOTS.filter((slot) => slotToMinutes(slot) >= nowMinutes);
+  return filtered.length > 0 ? filtered : ALL_TIME_SLOTS;
 }
 
 declare global {
