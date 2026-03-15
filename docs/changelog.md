@@ -1,11 +1,33 @@
 # Changelog
 
-## 2026-03-15 — Vistas especializadas admin (cocina, entrega, gerente)
+## 2026-03-15 — Autenticacion por roles + vistas especializadas admin
 
 ### Cambio
+- Autenticacion por roles: cada usuario tiene su usuario/contraseña y solo accede a su vista
 - 3 nuevas vistas admin para operacion diaria del restaurante, sin modificar el dashboard existente
 
+### Autenticacion por roles
+- Nueva env var `ADMIN_USERS` reemplaza `ADMIN_PASSWORD` (backward compatible)
+- Formato: `usuario:contraseña:rol` separados por coma
+- Roles: `admin` (acceso total), `cocina`, `entrega`, `gerente`
+- Login ahora pide usuario + contraseña, redirige automaticamente a la vista del rol
+- Nuevo endpoint `GET /api/admin/me` devuelve el rol del usuario autenticado
+- Cada vista verifica que el rol sea el correcto (admin puede acceder a todas)
+
+### Archivos modificados (auth)
+- `src/lib/admin-auth.ts` — Reescrito: soporte multi-usuario con roles, `getAdminRole()`, `validateCredentials()`
+- `src/app/api/admin/login/route.ts` — Acepta username+password, devuelve rol
+- `src/app/admin/login/page.tsx` — Campo usuario, redirect por rol
+- `src/app/admin/page.tsx` — Verifica rol = admin
+- `src/app/admin/cocina/page.tsx` — Verifica rol = cocina o admin
+- `src/app/admin/entrega/page.tsx` — Verifica rol = entrega o admin
+- `src/app/admin/gerente/page.tsx` — Verifica rol = gerente o admin
+- `.env.example` — `ADMIN_USERS` reemplaza `ADMIN_PASSWORD`
+
 ### Archivos nuevos
+- `src/app/api/admin/me/route.ts` — Endpoint que devuelve el rol del usuario
+
+### Archivos nuevos (vistas)
 - `src/app/admin/cocina/page.tsx` — Kitchen Display System (KDS) para tablet en cocina
   - Dark theme (bg-gray-900) con texto grande para legibilidad
   - Solo muestra pedidos "paid" y "preparing"

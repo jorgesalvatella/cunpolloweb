@@ -17,10 +17,10 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("orders");
 
   useEffect(() => {
-    // Quick auth check by trying to fetch orders
-    fetch("/api/admin/orders")
-      .then((res) => {
-        if (res.ok) {
+    fetch("/api/admin/me")
+      .then((res) => res.ok ? res.json() : Promise.reject())
+      .then((data) => {
+        if (data.role === "admin") {
           setAuthed(true);
         } else {
           router.push("/admin/login");

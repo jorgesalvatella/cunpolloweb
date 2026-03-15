@@ -89,11 +89,29 @@ Si el cobro fue exitoso, actualiza la orden a `paid` y envia notificacion WhatsA
 ## Admin
 
 ### `POST /api/admin/login`
-Autentica al admin con contrasena.
+Autentica con usuario y contrasena. Devuelve el rol asignado.
 
-**Request:** `{ "password": "..." }`
-**Response 200:** `{ "ok": true }` + cookie `cunpollo-admin`
-**Response 401:** `{ "error": "Contrasena incorrecta" }`
+**Request:** `{ "username": "cocinero", "password": "..." }`
+**Response 200:** `{ "ok": true, "role": "cocina" }` + cookie `cunpollo-admin`
+**Response 401:** `{ "error": "Credenciales incorrectas" }`
+
+**Roles y vistas:**
+| Rol | Vista permitida |
+|-----|----------------|
+| `admin` | `/admin` (dashboard completo) |
+| `cocina` | `/admin/cocina` |
+| `entrega` | `/admin/entrega` |
+| `gerente` | `/admin/gerente` |
+
+El rol `admin` tiene acceso a todas las vistas.
+
+---
+
+### `GET /api/admin/me`
+Devuelve el rol del usuario autenticado.
+
+**Response 200:** `{ "role": "cocina" }`
+**Response 401:** `{ "error": "No autenticado" }`
 
 ---
 

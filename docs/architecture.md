@@ -63,7 +63,9 @@ cunpolloweb/
     │       │       └── route.ts           # GET: XML feed para Meta Commerce Manager
     │       └── admin/
     │           ├── login/
-    │           │   └── route.ts       # POST: auth admin
+    │           │   └── route.ts       # POST: auth con usuario+contraseña, devuelve rol
+    │           ├── me/
+    │           │   └── route.ts       # GET: rol del usuario autenticado
     │           ├── orders/
     │           │   ├── route.ts       # GET: listar órdenes
     │           │   └── [id]/

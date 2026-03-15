@@ -3,8 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+const roleRedirects: Record<string, string> = {
+  admin: "/admin",
+  cocina: "/admin/cocina",
+  entrega: "/admin/entrega",
+  gerente: "/admin/gerente",
+};
+
 export default function AdminLoginPage() {
   const router = useRouter();
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,18 +26,19 @@ export default function AdminLoginPage() {
       const res = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ username, password }),
       });
 
       if (!res.ok) {
-        setError("Contraseña incorrecta");
+        setError("Usuario o contraseña incorrectos");
         setLoading(false);
         return;
       }
 
-      router.push("/admin");
+      const { role } = await res.json();
+      router.push(roleRedirects[role] || "/admin");
     } catch {
-      setError("Error de conexión");
+      setError("Error de conexion");
       setLoading(false);
     }
   };
@@ -37,8 +46,20 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-center text-red-700 mb-8">CUNPOLLO Admin</h1>
+        <h1 className="text-2xl font-bold text-center text-red-700 mb-8">CUNPOLLO</h1>
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-dark/70 mb-1">Usuario</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
+              required
+              autoFocus
+              autoComplete="username"
+            />
+          </div>
           <div>
             <label className="block text-sm font-medium text-dark/70 mb-1">Contraseña</label>
             <input
@@ -47,7 +68,7 @@ export default function AdminLoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
               required
-              autoFocus
+              autoComplete="current-password"
             />
           </div>
           {error && <p className="text-red-600 text-sm">{error}</p>}

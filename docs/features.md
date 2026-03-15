@@ -41,7 +41,10 @@
 
 ### Dashboard Admin
 - **Estado**: Desplegado en produccion (Supabase configurado)
-- Login por contrasena simple (cookie HTTP-only)
+- Login con usuario + contraseña, autenticacion por roles (cookie HTTP-only)
+- Roles: `admin` (dashboard completo), `cocina`, `entrega`, `gerente`
+- Cada rol solo accede a su vista; `admin` accede a todas
+- Usuarios configurados via env var `ADMIN_USERS` (formato: `usuario:contraseña:rol`)
 - Lista de pedidos en real-time (Supabase Realtime)
 - Progresion de status: pagado > preparando > listo > entregado
 - Ruta `/admin` (fuera del sistema i18n)

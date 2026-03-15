@@ -12,10 +12,14 @@ export default function EntregaPage() {
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    fetch("/api/admin/orders")
-      .then((res) => {
-        if (res.ok) setAuthed(true);
-        else router.push("/admin/login");
+    fetch("/api/admin/me")
+      .then((res) => res.ok ? res.json() : Promise.reject())
+      .then((data) => {
+        if (data.role === "entrega" || data.role === "admin") {
+          setAuthed(true);
+        } else {
+          router.push("/admin/login");
+        }
         setChecking(false);
       })
       .catch(() => {

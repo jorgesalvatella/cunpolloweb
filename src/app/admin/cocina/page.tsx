@@ -24,10 +24,14 @@ export default function CocinaPage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    fetch("/api/admin/orders")
-      .then((res) => {
-        if (res.ok) setAuthed(true);
-        else router.push("/admin/login");
+    fetch("/api/admin/me")
+      .then((res) => res.ok ? res.json() : Promise.reject())
+      .then((data) => {
+        if (data.role === "cocina" || data.role === "admin") {
+          setAuthed(true);
+        } else {
+          router.push("/admin/login");
+        }
         setChecking(false);
       })
       .catch(() => {

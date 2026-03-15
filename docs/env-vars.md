@@ -9,7 +9,7 @@ Archivo de referencia: `.env.example`
 | `NEXT_PUBLIC_SUPABASE_URL` | Public | URL del proyecto Supabase | Supabase Dashboard > Settings > API |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public | Anon key de Supabase | Supabase Dashboard > Settings > API |
 | `SUPABASE_SERVICE_ROLE_KEY` | Secret | Service role key de Supabase | Supabase Dashboard > Settings > API |
-| `ADMIN_PASSWORD` | Secret | Contrasena del dashboard admin | Definir manualmente |
+| `ADMIN_USERS` | Secret | Usuarios admin por rol (formato abajo) | Definir manualmente |
 
 ## Pasarela de Pago (Openpay)
 
@@ -40,7 +40,8 @@ Archivo de referencia: `.env.example`
 
 - Las variables `NEXT_PUBLIC_*` se exponen al browser — no poner secretos ahi
 - `SUPABASE_SERVICE_ROLE_KEY` tiene acceso total a la DB — nunca exponerlo al cliente
-- `ADMIN_PASSWORD` puede ser cualquier string, se usa para el login de `/admin`
+- `ADMIN_USERS` define los usuarios por rol. Formato: `usuario:contraseña:rol` separados por coma. Roles validos: `admin`, `cocina`, `entrega`, `gerente`. Ejemplo: `admin:MiPass:admin,cocinero:OtraPass:cocina,cajera:Pass3:entrega,gerente:Pass4:gerente`
+- Backward compatible: si `ADMIN_USERS` no esta definido, usa `ADMIN_PASSWORD` como usuario "admin" con rol "admin"
 - Las variables de Twilio son opcionales — si no se configuran, las notificaciones se desactivan silenciosamente
 - Las variables de Openpay estan en produccion (sandbox=false). Al usar `echo` para setear env vars en Vercel CLI, usar `printf` en vez de `echo` para evitar `\n` al final
 

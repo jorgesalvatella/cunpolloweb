@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
-import { validatePassword, getAdminCookieName, getAdminCookieValue } from "@/lib/admin-auth";
+import { validateCredentials, getAdminCookieName, getAdminCookieValue } from "@/lib/admin-auth";
 
 export async function POST(request: Request) {
-  const { password } = await request.json();
+  const { username, password } = await request.json();
 
-  if (!validatePassword(password)) {
-    return NextResponse.json({ error: "Contraseña incorrecta" }, { status: 401 });
+  const user = validateCredentials(username || "", password || "");
+  if (!user) {
+    return NextResponse.json({ error: "Credenciales incorrectas" }, { status: 401 });
   }
 
-  const response = NextResponse.json({ ok: true });
-  response.cookies.set(getAdminCookieName(), getAdminCookieValue(), {
+  const response = NextResponse.json({ ok: true, role: user.role });
+  response.cookies.set(getAdminCookieName(), getAdminCookieValue(user.username, user.password), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
