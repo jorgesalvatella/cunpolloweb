@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const roleRedirects: Record<string, string> = {
   admin: "/admin",
@@ -46,7 +47,16 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-center text-red-700 mb-8">CUNPOLLO</h1>
+        <div className="flex justify-center mb-8">
+          <Image
+            src="/logo.png"
+            alt="CUNPOLLO"
+            width={120}
+            height={120}
+            priority
+            className="drop-shadow-[0_2px_8px_rgba(183,28,28,0.3)]"
+          />
+        </div>
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
           <div>
             <label className="block text-sm font-medium text-dark/70 mb-1">Usuario</label>
