@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import OrdersDashboard from "@/components/admin/OrdersDashboard";
 import WhatsAppHub from "@/components/admin/WhatsAppHub";
 
@@ -46,7 +47,10 @@ export default function AdminPage() {
   return (
     <div className="p-4 sm:p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-red-700">CUNPOLLO - Admin</h1>
+        <div className="flex items-center gap-3">
+          <Image src="/logo.png" alt="CUNPOLLO" width={48} height={48} className="drop-shadow-[0_1px_4px_rgba(183,28,28,0.3)]" />
+          <h1 className="text-2xl font-bold text-red-700">Admin</h1>
+        </div>
         <button
           onClick={() => {
             document.cookie = "cunpollo-admin=; Max-Age=0; path=/";

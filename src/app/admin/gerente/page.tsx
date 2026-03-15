@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase/client";
 import type { Order, OrderStatus } from "@/types/order";
 
@@ -90,7 +91,10 @@ export default function GerentePage() {
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 max-w-6xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-red-700">GERENTE</h1>
+        <div className="flex items-center gap-3">
+          <Image src="/logo.png" alt="CUNPOLLO" width={48} height={48} className="drop-shadow-[0_1px_4px_rgba(183,28,28,0.3)]" />
+          <h1 className="text-2xl font-bold text-red-700">GERENTE</h1>
+        </div>
         <button
           onClick={() => router.push("/admin")}
           className="text-dark/50 text-sm hover:text-dark cursor-pointer"

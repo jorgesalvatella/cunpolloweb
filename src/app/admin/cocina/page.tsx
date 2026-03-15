@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase/client";
 import type { Order, OrderStatus } from "@/types/order";
 
@@ -94,7 +95,10 @@ export default function CocinaPage() {
 
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-white">COCINA</h1>
+        <div className="flex items-center gap-3">
+          <Image src="/logo.png" alt="CUNPOLLO" width={48} height={48} className="drop-shadow-[0_1px_6px_rgba(255,255,255,0.4)]" />
+          <h1 className="text-3xl font-bold text-white">COCINA</h1>
+        </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-blue-500 animate-pulse" />
