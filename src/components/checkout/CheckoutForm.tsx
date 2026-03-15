@@ -23,17 +23,24 @@ const ALL_TIME_SLOTS: string[] = (() => {
   return slots;
 })();
 
-function getAvailableSlots(orderType: OrderType): string[] {
-  const now = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Cancun" }));
-  const bufferMin = orderType === "dine_in" ? 30 : 15;
-  const earliest = new Date(now.getTime() + bufferMin * 60000);
-  const earliestH = earliest.getHours();
-  const earliestM = earliest.getMinutes();
+function slotToMinutes(slot: string): number {
+  const [h, m] = slot.split(":").map(Number);
+  return h * 60 + m;
+}
 
-  return ALL_TIME_SLOTS.filter((slot) => {
-    const [h, m] = slot.split(":").map(Number);
-    return h > earliestH || (h === earliestH && m >= earliestM);
+function getAvailableSlots(): string[] {
+  const fmt = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Cancun",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: false,
   });
+  const parts = fmt.formatToParts(new Date());
+  const nowH = Number(parts.find((p) => p.type === "hour")?.value ?? 0);
+  const nowM = Number(parts.find((p) => p.type === "minute")?.value ?? 0);
+  const nowMinutes = nowH * 60 + nowM + 30;
+
+  return ALL_TIME_SLOTS.filter((slot) => slotToMinutes(slot) >= nowMinutes);
 }
 
 declare global {
@@ -82,12 +89,8 @@ export default function CheckoutForm() {
   const [availableSlots, setAvailableSlots] = useState<string[]>(ALL_TIME_SLOTS);
 
   useEffect(() => {
-    setAvailableSlots(getAvailableSlots(orderType));
-    setPickupTime((prev) => {
-      const slots = getAvailableSlots(orderType);
-      return slots.includes(prev) ? prev : "";
-    });
-  }, [orderType]);
+    setAvailableSlots(getAvailableSlots());
+  }, []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const errorRef = useRef<HTMLDivElement>(null);
