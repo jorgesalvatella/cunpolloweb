@@ -1,5 +1,50 @@
 # Changelog
 
+## 2026-03-14 — Openpay en produccion + tipo de pedido y horario
+
+### Cambio
+- Openpay pasado de sandbox a produccion (credenciales de produccion, sandbox=false)
+- Nuevo selector de tipo de pedido en checkout: "Comer aqui" o "Para llevar"
+- Nuevo selector de horario: slots de 15 min entre 1 PM y 9 PM
+- Tipo de pedido y horario visibles en: admin dashboard, confirmacion, PDF, WhatsApp
+
+### Credenciales Openpay (produccion)
+- Merchant ID: `ma6rwqx70h1ibjeome4y`
+- Llave publica: `pk_5a96...` (en Vercel env vars)
+- Llave privada: `sk_862a...` (en Vercel env vars)
+- Sandbox: `false`
+- Soporte Openpay: soporte@openpay.mx / 55 5022 0404
+
+### Base de datos
+- Migracion: `add_order_type_and_pickup_time`
+- Columna `order_type` TEXT NOT NULL DEFAULT 'pickup' (valores: dine_in, pickup)
+- Columna `pickup_time` TEXT nullable (ej: "14:00", "18:30")
+
+### Archivos modificados
+- `src/types/order.ts` — Nuevos tipos OrderType, campos order_type y pickup_time
+- `src/components/checkout/CheckoutForm.tsx` — UI selector tipo + horario, debug logging
+- `src/app/api/orders/route.ts` — Validacion y guardado de order_type y pickup_time
+- `src/components/admin/OrderCard.tsx` — Badges de tipo y horario
+- `src/app/[locale]/confirmation/[id]/page.tsx` — Muestra tipo y horario, PDF actualizado
+- `src/lib/twilio.ts` — WhatsApp incluye tipo y horario
+- `src/messages/es.json` — Keys checkout y confirmation
+- `src/messages/en.json` — Keys checkout y confirmation
+
+### Env vars en Vercel (actualizadas)
+- `OPENPAY_PRIVATE_KEY` — Llave privada produccion
+- `NEXT_PUBLIC_OPENPAY_PUBLIC_KEY` — Llave publica produccion
+- `NEXT_PUBLIC_OPENPAY_SANDBOX` — `false`
+
+### Nota tecnica
+- Al usar Vercel CLI para setear env vars, usar `printf` en vez de `echo` para evitar `\n` trailing que corrompe las API keys
+
+### Documentacion actualizada
+- `docs/features.md` — Estado produccion, horario 15 min, pendientes limpiados
+- `docs/database.md` — Columnas order_type y pickup_time
+- `docs/api.md` — Campos orderType y pickupTime en POST /api/orders
+- `docs/env-vars.md` — Nota sobre printf vs echo
+- `docs/changelog.md` — Este entry
+
 ## 2026-03-12 — Categoria Promociones en el menu
 
 ### Cambio

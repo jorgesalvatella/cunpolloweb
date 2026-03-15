@@ -10,7 +10,7 @@ import CardInput from "./CardInput";
 import type { Locale } from "@/i18n/config";
 import type { OrderType } from "@/types/order";
 
-function generateTimeSlots(): string[] {
+const ALL_TIME_SLOTS: string[] = (() => {
   const slots: string[] = [];
   for (let h = 13; h <= 21; h++) {
     slots.push(`${h}:00`);
@@ -21,6 +21,19 @@ function generateTimeSlots(): string[] {
     }
   }
   return slots;
+})();
+
+function getAvailableSlots(orderType: OrderType): string[] {
+  const now = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Cancun" }));
+  const bufferMin = orderType === "dine_in" ? 30 : 15;
+  const earliest = new Date(now.getTime() + bufferMin * 60000);
+  const earliestH = earliest.getHours();
+  const earliestM = earliest.getMinutes();
+
+  return ALL_TIME_SLOTS.filter((slot) => {
+    const [h, m] = slot.split(":").map(Number);
+    return h > earliestH || (h === earliestH && m >= earliestM);
+  });
 }
 
 declare global {
@@ -66,7 +79,15 @@ export default function CheckoutForm() {
   const [orderType, setOrderType] = useState<OrderType>("pickup");
   const [pickupTime, setPickupTime] = useState("");
   const [card, setCard] = useState({ number: "", expiry: "", cvv: "", holderName: "" });
-  const timeSlots = generateTimeSlots();
+  const [availableSlots, setAvailableSlots] = useState<string[]>(ALL_TIME_SLOTS);
+
+  useEffect(() => {
+    setAvailableSlots(getAvailableSlots(orderType));
+    setPickupTime((prev) => {
+      const slots = getAvailableSlots(orderType);
+      return slots.includes(prev) ? prev : "";
+    });
+  }, [orderType]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const errorRef = useRef<HTMLDivElement>(null);
@@ -127,7 +148,7 @@ export default function CheckoutForm() {
           },
           (error: { data: { description: string; error_code: number }; status?: number; message?: string }) => {
             clearTimeout(timeout);
-            const desc = error?.data?.description || "Error al procesar la tarjeta";
+            const desc = error?.data?.description || error?.message || "Error al procesar la tarjeta";
             reject(new Error(desc));
           }
         );
@@ -311,7 +332,7 @@ export default function CheckoutForm() {
               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none bg-white text-dark"
             >
               <option value="">{t("selectTime")}</option>
-              {timeSlots.map((slot) => (
+              {availableSlots.map((slot) => (
                 <option key={slot} value={slot}>{slot}</option>
               ))}
             </select>

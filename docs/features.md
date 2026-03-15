@@ -26,14 +26,14 @@
 - Datos estaticos en `src/data/menu-items.ts` (datos extraidos de Rappi)
 
 ### Sistema de Pedidos (Paga y Recoge)
-- **Estado**: Integrado con Openpay (sandbox)
+- **Estado**: Produccion (Openpay produccion, 3D Secure activo)
 - **Feature flag**: `FEATURES.ORDERING_ENABLED` en `src/lib/constants.ts` (actualmente `true`)
 - Carrito client-side con persistencia en localStorage
 - Boton flotante de carrito muestra total "$X MXN" + badge con cantidad
 - Pagina de carrito con pickup estimate, checkout primary button, SVG icon (sin emoji)
 - Checkout con progress steps (Menu > Carrito > Pago), trust badge SSL
 - Selector de tipo de pedido: "Comer aqui" o "Para llevar"
-- Selector de horario: slots de 30 min entre 1 PM y 9 PM
+- Selector de horario: slots de 15 min entre 1 PM y 9 PM
 - Confirmacion con animacion, tipo de pedido y hora solicitada
 - Comprobante de pago descargable (PDF generado en cliente con jsPDF)
 - Sin delivery, sin cuentas de usuario
@@ -87,7 +87,7 @@
 
 | Item | Descripcion | Bloqueado por |
 |------|-------------|---------------|
-| Openpay integracion | Integrar pasarela de pago Openpay (tarjeta + SPEI) | Documentacion y credenciales Openpay |
+| — | Sin pendientes criticos | — |
 
 ## Desactivadas
 

@@ -42,7 +42,7 @@ Archivo de referencia: `.env.example`
 - `SUPABASE_SERVICE_ROLE_KEY` tiene acceso total a la DB — nunca exponerlo al cliente
 - `ADMIN_PASSWORD` puede ser cualquier string, se usa para el login de `/admin`
 - Las variables de Twilio son opcionales — si no se configuran, las notificaciones se desactivan silenciosamente
-- Las variables de Openpay estan pendientes de integracion
+- Las variables de Openpay estan en produccion (sandbox=false). Al usar `echo` para setear env vars en Vercel CLI, usar `printf` en vez de `echo` para evitar `\n` al final
 
 ## Setup local
 
