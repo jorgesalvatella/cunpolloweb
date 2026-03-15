@@ -6,6 +6,7 @@
 - Openpay pasado de sandbox a produccion (credenciales de produccion, sandbox=false)
 - Nuevo selector de tipo de pedido en checkout: "Comer aqui" o "Para llevar"
 - Nuevo selector de horario: slots de 15 min entre 1 PM y 9 PM
+- Filtro inteligente de horarios: solo muestra slots futuros (pickup: +15 min, dine-in: +30 min desde hora actual en timezone America/Cancun). Si el usuario cambia de tipo y su horario ya no aplica, se resetea
 - Tipo de pedido y horario visibles en: admin dashboard, confirmacion, PDF, WhatsApp
 
 ### Credenciales Openpay (produccion)

@@ -33,7 +33,7 @@
 - Pagina de carrito con pickup estimate, checkout primary button, SVG icon (sin emoji)
 - Checkout con progress steps (Menu > Carrito > Pago), trust badge SSL
 - Selector de tipo de pedido: "Comer aqui" o "Para llevar"
-- Selector de horario: slots de 15 min entre 1 PM y 9 PM
+- Selector de horario: slots de 15 min entre 1 PM y 9 PM, filtrado inteligente segun hora actual (pickup: +15 min, dine-in: +30 min, timezone America/Cancun)
 - Confirmacion con animacion, tipo de pedido y hora solicitada
 - Comprobante de pago descargable (PDF generado en cliente con jsPDF)
 - Sin delivery, sin cuentas de usuario
