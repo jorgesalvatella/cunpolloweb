@@ -1,5 +1,37 @@
 # Changelog
 
+## 2026-03-15 — Vistas especializadas admin (cocina, entrega, gerente)
+
+### Cambio
+- 3 nuevas vistas admin para operacion diaria del restaurante, sin modificar el dashboard existente
+
+### Archivos nuevos
+- `src/app/admin/cocina/page.tsx` — Kitchen Display System (KDS) para tablet en cocina
+  - Dark theme (bg-gray-900) con texto grande para legibilidad
+  - Solo muestra pedidos "paid" y "preparing"
+  - Notificacion sonora cuando llega pedido nuevo (HTML audio)
+  - Botones EMPEZAR (paid→preparing) y LISTO (preparing→ready)
+  - Badges de tipo de pedido, horario, personas
+  - Supabase Realtime en canal "cocina-realtime"
+- `src/app/admin/entrega/page.tsx` — Vista de entrega para cajera/mostrador
+  - White theme limpio, solo pedidos "ready"
+  - Nombre y telefono del cliente prominentes (telefono clickeable)
+  - Tiempo de espera en minutos
+  - Boton ENTREGADO (ready→picked_up)
+  - Supabase Realtime en canal "entrega-realtime"
+- `src/app/admin/gerente/page.tsx` — Dashboard gerencial
+  - Cards: pedidos hoy, ingresos, ticket promedio, completados
+  - Desglose por tipo (comer aqui vs llevar)
+  - Conteo por status
+  - Alertas: pedidos sin atender (+15 min en status "paid")
+  - Tabla completa de pedidos del dia
+  - Supabase Realtime en canal "gerente-realtime"
+
+### Documentacion actualizada
+- `docs/architecture.md` — Nuevas rutas en mapa + flujo de vistas especializadas
+- `docs/features.md` — Nueva seccion "Vistas Especializadas Admin"
+- `docs/changelog.md` — Este entry
+
 ## 2026-03-14 — Openpay en produccion + tipo de pedido y horario
 
 ### Cambio

@@ -43,6 +43,12 @@ cunpolloweb/
     │   ├── admin/
     │   │   ├── layout.tsx             # Layout admin (sin Header/Footer)
     │   │   ├── page.tsx               # Dashboard de pedidos
+    │   │   ├── cocina/
+    │   │   │   └── page.tsx           # Vista cocina (KDS tablet, dark theme)
+    │   │   ├── entrega/
+    │   │   │   └── page.tsx           # Vista entrega/cajera (pedidos listos)
+    │   │   ├── gerente/
+    │   │   │   └── page.tsx           # Vista gerente (stats, alertas, tabla)
     │   │   └── login/
     │   │       └── page.tsx           # Login admin
     │   └── api/
@@ -159,4 +165,9 @@ cunpolloweb/
   /admin → GET /api/admin/orders → Supabase SELECT
   OrderCard → PATCH /api/admin/orders/[id] → Supabase UPDATE → WhatsApp notify (fire-and-forget)
   Supabase Realtime → auto-refresh dashboard
+
+[Vistas Especializadas]
+  /admin/cocina → GET /api/admin/orders (paid+preparing) → Supabase Realtime → EMPEZAR/LISTO
+  /admin/entrega → GET /api/admin/orders?status=ready → Supabase Realtime → ENTREGADO
+  /admin/gerente → GET /api/admin/orders?status=all → Stats + alertas + tabla completa
 ```

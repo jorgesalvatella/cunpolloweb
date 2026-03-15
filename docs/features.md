@@ -46,6 +46,12 @@
 - Progresion de status: pagado > preparando > listo > entregado
 - Ruta `/admin` (fuera del sistema i18n)
 
+### Vistas Especializadas Admin
+- **Estado**: Produccion
+- **Cocina** (`/admin/cocina`): Dark theme optimizado para tablet en cocina. Muestra solo pedidos "paid" y "preparing". Sonido de notificacion para pedidos nuevos. Botones grandes: EMPEZAR (paid→preparing), LISTO (preparing→ready). Supabase Realtime.
+- **Entrega** (`/admin/entrega`): White theme para cajera/mostrador. Muestra solo pedidos "ready". Nombre del cliente y telefono prominentes (clickeable para llamar). Boton ENTREGADO (ready→picked_up). Supabase Realtime.
+- **Gerente** (`/admin/gerente`): Dashboard ejecutivo con stats del dia: pedidos totales, ingresos, ticket promedio, completados. Desglose por tipo (comer aqui vs llevar). Conteo por status. Alerta para pedidos sin atender (+15 min). Tabla completa de pedidos del dia. Supabase Realtime.
+
 ### Notificaciones WhatsApp
 - **Estado**: Produccion (WhatsApp Business Sender registrado)
 - **Numero**: +529983871387 (Twilio, registrado en WABA ID 1475932520606512)
