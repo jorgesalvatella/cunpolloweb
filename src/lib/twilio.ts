@@ -62,6 +62,7 @@ function getCustomerMessage(order: Order): string | null {
         .join("\n");
       const typeLabel = order.order_type === "dine_in" ? "Comer en restaurante" : "Para llevar";
       const timeLine = order.pickup_time ? `Hora solicitada: ${order.pickup_time}` : "";
+      const guestsLine = order.guests ? `Personas: ${order.guests}` : "";
       return [
         `CUNPOLLO - Pedido #${order_number} confirmado`,
         "",
@@ -71,6 +72,7 @@ function getCustomerMessage(order: Order): string | null {
         `Total: ${formatCurrency(total)}`,
         `Tipo: ${typeLabel}`,
         timeLine,
+        guestsLine,
         "",
         `Recogelo en: ${RESTAURANT.address.street}, ${RESTAURANT.address.city}`,
         "",
@@ -118,6 +120,7 @@ function getAdminMessage(order: Order): string {
 
   const typeLabel = order.order_type === "dine_in" ? "Comer aqui" : "Para llevar";
   const timeLine = order.pickup_time ? `Hora: ${order.pickup_time}` : "";
+  const guestsLine = order.guests ? `Personas: ${order.guests}` : "";
 
   return [
     `NUEVO PEDIDO #${order.order_number}`,
@@ -126,6 +129,7 @@ function getAdminMessage(order: Order): string {
     `Telefono: ${order.customer_phone}`,
     `Tipo: ${typeLabel}`,
     timeLine,
+    guestsLine,
     "",
     "Items:",
     itemLines,

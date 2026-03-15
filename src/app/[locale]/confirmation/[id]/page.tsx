@@ -98,6 +98,10 @@ export default function ConfirmationPage() {
       doc.text(`Hora: ${order.pickup_time}`, 20, y);
       y += 7;
     }
+    if (order.guests) {
+      doc.text(`Personas: ${order.guests}`, 20, y);
+      y += 7;
+    }
     y += 3;
 
     // Separator
@@ -215,6 +219,11 @@ export default function ConfirmationPage() {
               {order.pickup_time && (
                 <span className="px-3 py-1 rounded-full text-sm font-semibold bg-amber-100 text-amber-800">
                   {t("readyBy")} {order.pickup_time}
+                </span>
+              )}
+              {order.guests && (
+                <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800">
+                  {order.guests} {t("guests")}
                 </span>
               )}
             </div>

@@ -92,7 +92,11 @@
     "pickup": "Pickup",
     "pickupTime": "Ready by",
     "selectTime": "Select a time",
-    "errorPickupTime": "Please select a time for your order."
+    "errorPickupTime": "Please select a time for your order.",
+    "guests": "Number of guests",
+    "selectGuests": "Select",
+    "guestsCount": "{count} {count, plural, one {guest} other {guests}}",
+    "errorGuests": "Please select the number of guests."
   },
   "confirmation": {
     "title": "Order Confirmed!",
@@ -106,7 +110,8 @@
     "downloadReceipt": "Download Receipt",
     "dineIn": "Dine in",
     "pickup": "Pickup",
-    "readyBy": "Ready by"
+    "readyBy": "Ready by",
+    "guests": "guests"
   },
   "location": {
     "title": "Find Us",

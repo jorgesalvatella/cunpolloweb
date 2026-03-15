@@ -41,6 +41,7 @@ export type Order = {
   payment_status: PaymentStatus;
   order_type: OrderType;
   pickup_time: string | null;
+  guests: number | null;
   created_at: string;
   updated_at: string;
 };
@@ -53,6 +54,7 @@ export type CreateOrderRequest = {
   deviceSessionId: string;
   orderType: OrderType;
   pickupTime: string | null;
+  guests: number | null;
 };
 
 export type CreateOrderResponse = {

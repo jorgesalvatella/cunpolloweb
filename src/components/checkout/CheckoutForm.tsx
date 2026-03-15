@@ -86,6 +86,7 @@ export default function CheckoutForm() {
   const [customerPhone, setCustomerPhone] = useState("");
   const [orderType, setOrderType] = useState<OrderType>("pickup");
   const [pickupTime, setPickupTime] = useState("");
+  const [guests, setGuests] = useState<number | null>(null);
   const [card, setCard] = useState({ number: "", expiry: "", cvv: "", holderName: "" });
   const [availableSlots, setAvailableSlots] = useState<string[]>(ALL_TIME_SLOTS);
 
@@ -182,6 +183,11 @@ export default function CheckoutForm() {
       return;
     }
 
+    if (orderType === "dine_in" && !guests) {
+      showError(t("errorGuests"));
+      return;
+    }
+
     const digits = card.number.replace(/\s/g, "");
     if (!digits || !card.expiry || !card.cvv || !card.holderName) {
       showError(t("errorCard"));
@@ -209,6 +215,7 @@ export default function CheckoutForm() {
           deviceSessionId,
           orderType,
           pickupTime,
+          guests: orderType === "dine_in" ? guests : null,
         }),
       });
 
@@ -341,6 +348,21 @@ export default function CheckoutForm() {
               ))}
             </select>
           </div>
+          {orderType === "dine_in" && (
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-dark/70 mb-1">{t("guests")}</label>
+              <select
+                value={guests ?? ""}
+                onChange={(e) => setGuests(e.target.value ? Number(e.target.value) : null)}
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none bg-white text-dark"
+              >
+                <option value="">{t("selectGuests")}</option>
+                {Array.from({ length: 20 }, (_, i) => i + 1).map((n) => (
+                  <option key={n} value={n}>{n}</option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
 
         {/* Payment Info */}

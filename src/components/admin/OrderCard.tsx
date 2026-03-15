@@ -69,6 +69,11 @@ export default function OrderCard({
               Listo: {order.pickup_time}
             </span>
           )}
+          {order.guests && (
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+              {order.guests} personas
+            </span>
+          )}
         </div>
       </div>
 

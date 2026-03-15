@@ -85,6 +85,7 @@ export async function POST(request: Request) {
         payment_status: "processing",
         order_type: body.orderType,
         pickup_time: body.pickupTime,
+        guests: body.orderType === "dine_in" ? body.guests : null,
       })
       .select("id, order_number")
       .single();
@@ -168,6 +169,7 @@ export async function POST(request: Request) {
         payment_reference: chargeResult.chargeId || null,
         order_type: body.orderType,
         pickup_time: body.pickupTime,
+        guests: body.orderType === "dine_in" ? body.guests : null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       });

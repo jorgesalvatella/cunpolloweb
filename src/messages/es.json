@@ -92,7 +92,11 @@
     "pickup": "Para llevar",
     "pickupTime": "Horario para tenerlo listo",
     "selectTime": "Selecciona un horario",
-    "errorPickupTime": "Por favor selecciona un horario para tu pedido."
+    "errorPickupTime": "Por favor selecciona un horario para tu pedido.",
+    "guests": "Numero de personas",
+    "selectGuests": "Selecciona",
+    "guestsCount": "{count} {count, plural, one {persona} other {personas}}",
+    "errorGuests": "Por favor selecciona el numero de personas."
   },
   "confirmation": {
     "title": "¡Pedido Confirmado!",
@@ -106,7 +110,8 @@
     "downloadReceipt": "Descargar Comprobante",
     "dineIn": "Comer en restaurante",
     "pickup": "Para llevar",
-    "readyBy": "Listo a las"
+    "readyBy": "Listo a las",
+    "guests": "personas"
   },
   "location": {
     "title": "Encuéntranos",
