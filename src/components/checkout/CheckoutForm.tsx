@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Script from "next/script";
 import { useCart } from "@/context/CartContext";
-import { getMenuItemById } from "@/data";
+import { useMenu } from "@/context/MenuContext";
 import CardInput from "./CardInput";
 import type { Locale } from "@/i18n/config";
 import type { OrderType } from "@/types/order";
@@ -81,6 +81,7 @@ export default function CheckoutForm() {
   const t = useTranslations("checkout");
   const router = useRouter();
   const { items, total, clearCart } = useCart();
+  const { getItemById, getEffectivePrice, promotions } = useMenu();
 
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -263,17 +264,45 @@ export default function CheckoutForm() {
           <h2 className="text-lg font-bold text-dark mb-3">{t("orderSummary")}</h2>
           <div className="bg-gray-50 rounded-xl p-4 space-y-2">
             {items.map((item) => {
-              const menuItem = getMenuItemById(item.menuItemId);
+              const menuItem = getItemById(item.menuItemId);
               if (!menuItem) return null;
+              const effective = getEffectivePrice(menuItem);
+              const hasDiscount = effective < menuItem.price;
               return (
                 <div key={item.menuItemId} className="flex justify-between text-sm">
                   <span>
                     {menuItem.name[locale]} x{item.quantity}
                   </span>
-                  <span className="font-medium">${menuItem.price * item.quantity}</span>
+                  <span className="font-medium">
+                    {hasDiscount ? (
+                      <>
+                        <span className="line-through text-dark/30 mr-1">${menuItem.price * item.quantity}</span>
+                        <span className="text-red-600">${effective * item.quantity}</span>
+                      </>
+                    ) : (
+                      `$${menuItem.price * item.quantity}`
+                    )}
+                  </span>
                 </div>
               );
             })}
+            {(() => {
+              const activePromos = promotions.filter(
+                (p) =>
+                  p.active &&
+                  (p.targetOrderType === "all" || p.targetOrderType === orderType) &&
+                  total >= p.minOrderAmount
+              );
+              if (activePromos.length === 0) return null;
+              return activePromos.map((promo) => (
+                <div key={promo.id} className="flex justify-between text-sm text-green-700 bg-green-50 -mx-1 px-1 py-1 rounded">
+                  <span>{locale === "es" ? promo.descriptionEs : promo.descriptionEn}</span>
+                  <span className="font-medium">
+                    -{promo.discountType === "percent" ? `${promo.discountValue}%` : `$${promo.discountValue}`}
+                  </span>
+                </div>
+              ));
+            })()}
             <div className="border-t border-gray-200 pt-2 flex justify-between font-bold">
               <span>{t("orderSummary")}</span>
               <span className="text-red-700">${total} MXN</span>

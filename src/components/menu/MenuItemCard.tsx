@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import Badge from "@/components/ui/Badge";
 import { FEATURES } from "@/lib/constants";
 import { useCart } from "@/context/CartContext";
+import { useMenu } from "@/context/MenuContext";
 import type { MenuItem, MenuItemTag } from "@/types/menu";
 import type { Locale } from "@/i18n/config";
 
@@ -22,6 +23,9 @@ export default function MenuItemCard({
   const locale = useLocale() as Locale;
   const t = useTranslations("menu");
   const { addItem } = useCart();
+  const { getEffectivePrice } = useMenu();
+  const effectivePrice = getEffectivePrice(item);
+  const hasDiscount = effectivePrice < item.price;
   const [justAdded, setJustAdded] = useState(false);
 
   const tagLabels: Record<MenuItemTag, string> = {
@@ -96,7 +100,14 @@ export default function MenuItemCard({
           </h3>
           {!item.promo && (
             <span className="text-gold-500 font-bold text-xs sm:text-sm whitespace-nowrap">
-              ${item.price}
+              {hasDiscount ? (
+                <>
+                  <span className="line-through text-dark/30 font-normal mr-0.5">${item.price}</span>
+                  ${effectivePrice}
+                </>
+              ) : (
+                `$${item.price}`
+              )}
             </span>
           )}
         </div>

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useCart } from "@/context/CartContext";
-import { getMenuItemById } from "@/data";
+import { useMenu } from "@/context/MenuContext";
 import type { CartItem } from "@/types/order";
 import type { Locale } from "@/i18n/config";
 
@@ -11,11 +11,14 @@ export default function CartItemRow({ item }: { item: CartItem }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("cart");
   const { updateQuantity, removeItem } = useCart();
-  const menuItem = getMenuItemById(item.menuItemId);
+  const { getItemById, getEffectivePrice } = useMenu();
+  const menuItem = getItemById(item.menuItemId);
 
   if (!menuItem) return null;
 
-  const lineTotal = menuItem.price * item.quantity;
+  const effectivePrice = getEffectivePrice(menuItem);
+  const hasDiscount = effectivePrice < menuItem.price;
+  const lineTotal = effectivePrice * item.quantity;
 
   return (
     <div className="flex gap-3 py-4 border-b border-gray-100">
@@ -40,7 +43,15 @@ export default function CartItemRow({ item }: { item: CartItem }) {
               {menuItem.name[locale]}
             </h3>
             <p className="text-xs sm:text-sm text-dark/50 mt-0.5">
-              ${menuItem.price} c/u
+              {hasDiscount ? (
+                <>
+                  <span className="line-through mr-1">${menuItem.price}</span>
+                  <span className="text-red-600 font-medium">${effectivePrice}</span>
+                </>
+              ) : (
+                `$${menuItem.price}`
+              )}{" "}
+              c/u
             </p>
           </div>
           <button

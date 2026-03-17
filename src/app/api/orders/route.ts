@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/server";
-import { getMenuItemById } from "@/data";
+import {
+  getMenuItemByIdFromDB,
+  calculateEffectivePrice,
+  getActivePromotions,
+  calculateOrderDiscount,
+} from "@/lib/menu-data";
 import { createCharge } from "@/lib/openpay";
 import type { CreateOrderRequest, OrderItem } from "@/types/order";
 
@@ -46,31 +51,36 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Demasiados productos en el pedido" }, { status: 400 });
     }
 
-    // Validate items and recalculate prices server-side
+    // Validate items and recalculate prices server-side from DB
     const orderItems: OrderItem[] = [];
     for (const item of body.items) {
       if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 100) {
         return NextResponse.json({ error: "Cantidad invalida (1-100)" }, { status: 400 });
       }
 
-      const menuItem = getMenuItemById(item.menuItemId);
-      if (!menuItem || !menuItem.available) {
+      const menuItem = await getMenuItemByIdFromDB(item.menuItemId);
+      if (!menuItem || !menuItem.available || menuItem.promo) {
         return NextResponse.json(
           { error: "Uno o mas productos no estan disponibles" },
           { status: 400 }
         );
       }
+      const effectivePrice = calculateEffectivePrice(menuItem);
       orderItems.push({
         menuItemId: item.menuItemId,
         name: menuItem.name.es,
         quantity: item.quantity,
-        unitPrice: menuItem.price,
-        lineTotal: menuItem.price * item.quantity,
+        unitPrice: effectivePrice,
+        lineTotal: effectivePrice * item.quantity,
       });
     }
 
     const subtotal = orderItems.reduce((sum, i) => sum + i.lineTotal, 0);
-    const total = subtotal;
+
+    // Apply order-level promotion discount
+    const promos = await getActivePromotions(body.orderType);
+    const discount = calculateOrderDiscount(subtotal, body.orderType, promos);
+    const total = subtotal - discount.amount;
 
     // Create order in Supabase (status: pending)
     const { data: order, error: dbError } = await supabaseAdmin
@@ -86,6 +96,9 @@ export async function POST(request: Request) {
         order_type: body.orderType,
         pickup_time: body.pickupTime,
         guests: body.orderType === "dine_in" ? body.guests : null,
+        discount_amount: discount.amount,
+        discount_description: discount.description || null,
+        promotion_id: discount.promotionId || null,
       })
       .select("id, order_number")
       .single();

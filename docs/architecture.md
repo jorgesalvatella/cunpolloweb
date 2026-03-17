@@ -61,6 +61,8 @@ cunpolloweb/
     │       ├── catalog/
     │       │   └── feed/
     │       │       └── route.ts           # GET: XML feed para Meta Commerce Manager
+    │       ├── menu/
+    │       │   └── route.ts               # GET: public menu data (categories, items, promotions)
     │       └── admin/
     │           ├── login/
     │           │   └── route.ts       # POST: auth con usuario+contraseña, devuelve rol
@@ -74,6 +76,14 @@ cunpolloweb/
     │           │   ├── route.ts       # GET/POST: listar/agregar contactos
     │           │   └── [id]/
     │           │       └── route.ts   # DELETE: desactivar contacto
+    │           ├── menu/
+    │           │   ├── route.ts       # GET/PUT: listar/actualizar items del menu
+    │           │   └── categories/
+    │           │       └── route.ts   # GET/PUT: listar/actualizar categorias
+    │           ├── promotions/
+    │           │   ├── route.ts       # GET/POST/PUT: listar/crear/actualizar promociones
+    │           │   └── [id]/
+    │           │       └── route.ts   # DELETE: eliminar promocion
     │           └── campaigns/
     │               └── route.ts       # GET/POST: historial/enviar campana
     ├── components/
@@ -104,7 +114,9 @@ cunpolloweb/
     │   │   ├── WhatsAppHub.tsx        # Hub principal de WhatsApp promos (tabs)
     │   │   ├── ContactList.tsx        # Lista/CRUD de contactos WhatsApp
     │   │   ├── SendPromo.tsx          # Formulario para enviar promos via template
-    │   │   └── CampaignHistory.tsx    # Historial de campanas enviadas
+    │   │   ├── CampaignHistory.tsx    # Historial de campanas enviadas
+    │   │   ├── MenuManager.tsx        # Gestion de menu: editar precio, disponibilidad, descuentos (Realtime)
+    │   │   └── PromotionsManager.tsx  # CRUD de promociones de orden (crear, editar, activar, eliminar)
     │   ├── ui/
     │   │   ├── Button.tsx             # Botón reutilizable
     │   │   ├── Container.tsx          # Container con max-width
@@ -138,6 +150,7 @@ cunpolloweb/
     │   ├── openpay.ts                  # Openpay API wrapper (tokenize + charge)
     │   ├── twilio.ts                  # Twilio WhatsApp notifications (server-only)
     │   ├── admin-auth.ts              # Auth admin por cookie
+    │   ├── menu-data.ts               # Server-side menu data from Supabase (DB fetchers + helpers)
     │   └── supabase/
     │       ├── client.ts              # Supabase browser client (anon key)
     │       └── server.ts             # Supabase server client (service_role)
@@ -147,7 +160,7 @@ cunpolloweb/
     ├── styles/
     │   └── globals.css                # Tailwind v4 + @theme tokens
     └── types/
-        ├── menu.ts                    # MenuItem, MenuCategory, BilingualText
+        ├── menu.ts                    # MenuItem, MenuCategory, BilingualText, Promotion, Db* types
         ├── order.ts                   # Order, CartItem, OrderItem, PaymentStatus
         └── restaurant.ts             # Restaurant type
 ```

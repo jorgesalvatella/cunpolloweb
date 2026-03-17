@@ -136,6 +136,60 @@ Cambia el status de una orden (requiere cookie admin).
 
 ---
 
+## Menu (Datos publicos desde Supabase)
+
+### `GET /api/menu`
+Devuelve categorias activas, items disponibles y promociones vigentes desde la base de datos Supabase. No requiere autenticacion.
+
+**Response 200:**
+```json
+{
+  "categories": [
+    { "id": "especialidad", "name": { "es": "...", "en": "..." }, "icon": "...", "order": 0 }
+  ],
+  "items": [
+    {
+      "id": "pollo-entero",
+      "categoryId": "especialidad",
+      "name": { "es": "...", "en": "..." },
+      "description": { "es": "...", "en": "..." },
+      "price": 219,
+      "image": "https://...",
+      "tags": ["popular"],
+      "available": true,
+      "discountPercent": null,
+      "discountFixed": null
+    }
+  ],
+  "promotions": [
+    {
+      "id": "uuid-...",
+      "name": "10% off pickup",
+      "descriptionEs": "...",
+      "descriptionEn": "...",
+      "discountType": "percent",
+      "discountValue": 10,
+      "targetOrderType": "pickup",
+      "minOrderAmount": 200,
+      "active": true,
+      "startsAt": null,
+      "endsAt": null
+    }
+  ]
+}
+```
+
+**Filtros aplicados server-side:**
+- Categorias: `active = true`, ordenadas por `sort_order`
+- Items: `available = true`, ordenados por `sort_order`
+- Promociones: `active = true`, dentro de rango de fechas (`starts_at`/`ends_at`)
+
+**Cache:** `public, s-maxage=60, stale-while-revalidate=300`
+
+**Response 500:** `{ "error": "Error loading menu data" }`
+
+---
+
 ## Catalogo de Productos (Feed para Meta/WhatsApp)
 
 ### `GET /api/catalog/feed`
@@ -164,6 +218,101 @@ Genera un feed XML de productos en formato Atom + Google Product Data compatible
 4. Frecuencia: diaria o cada hora
 
 **Cache:** 1 hora (`s-maxage=3600`)
+
+---
+
+## Menu (Admin)
+
+### `GET /api/admin/menu`
+Lista todos los items del menu y categorias, incluyendo no disponibles/inactivos (requiere cookie admin).
+
+**Response 200:**
+```json
+{
+  "items": [...],
+  "categories": [...]
+}
+```
+
+Ambos arrays ordenados por `sort_order` ASC.
+
+---
+
+### `PUT /api/admin/menu`
+Actualiza un item del menu (requiere cookie admin). Solo actualiza los campos proporcionados.
+
+**Request:** `{ "id": "pollo-entero", "price": 250, "available": false }`
+**Response 200:** Item actualizado
+**Response 400:** ID faltante o sin campos
+**Response 401:** No autorizado
+
+---
+
+### `GET /api/admin/menu/categories`
+Lista todas las categorias incluyendo inactivas (requiere cookie admin).
+
+**Response 200:** Array de categorias ordenadas por `sort_order` ASC.
+
+---
+
+### `PUT /api/admin/menu/categories`
+Actualiza una categoria (requiere cookie admin). Solo actualiza los campos proporcionados.
+
+**Request:** `{ "id": "pollos", "active": false }`
+**Response 200:** Categoria actualizada
+**Response 400:** ID faltante o sin campos
+**Response 401:** No autorizado
+
+---
+
+## Promociones (Admin)
+
+### `GET /api/admin/promotions`
+Lista todas las promociones incluyendo inactivas (requiere cookie admin).
+
+**Response 200:** Array de promociones ordenadas por `created_at` DESC.
+
+---
+
+### `POST /api/admin/promotions`
+Crea una nueva promocion (requiere cookie admin).
+
+**Request:**
+```json
+{
+  "name": "10% descuento pickup",
+  "description_es": "10% de descuento en pedidos para recoger",
+  "description_en": "10% off pickup orders",
+  "discount_type": "percentage",
+  "discount_value": 10,
+  "target_order_type": "pickup",
+  "min_order_amount": 200,
+  "active": true,
+  "starts_at": "2026-03-17T00:00:00Z",
+  "ends_at": "2026-04-17T00:00:00Z"
+}
+```
+
+**Campos requeridos:** `name`, `discount_type`, `discount_value`, `target_order_type`
+**Response 201:** Promocion creada
+**Response 400:** Campos requeridos faltantes
+
+---
+
+### `PUT /api/admin/promotions`
+Actualiza una promocion (requiere cookie admin). Solo actualiza los campos proporcionados.
+
+**Request:** `{ "id": "uuid-...", "active": false }`
+**Response 200:** Promocion actualizada
+**Response 400:** ID faltante o sin campos
+
+---
+
+### `DELETE /api/admin/promotions/[id]`
+Elimina una promocion por UUID (requiere cookie admin).
+
+**Response 200:** `{ "success": true }`
+**Response 401:** No autorizado
 
 ---
 

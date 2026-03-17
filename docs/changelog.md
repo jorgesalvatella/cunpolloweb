@@ -1,5 +1,83 @@
 # Changelog
 
+## 2026-03-17 — UI admin para gestion de menu y promociones
+
+### Cambio
+- Nuevos tabs "Menu" y "Promos" en el dashboard admin (`/admin`)
+- MenuManager: lista de items con filtro por categoria, busqueda, edicion inline de precio/disponibilidad/descuento, Supabase Realtime
+- PromotionsManager: CRUD completo de promociones de orden con formulario, toggle activa/inactiva, eliminar con confirmacion, vista previa de texto
+
+### Archivos nuevos
+- `src/components/admin/MenuManager.tsx` — Componente de gestion de menu con edicion inline y Realtime
+- `src/components/admin/PromotionsManager.tsx` — CRUD de promociones con formulario y lista
+
+### Archivos modificados
+- `src/app/admin/page.tsx` — Agregados tabs "Menu" y "Promos", imports de MenuManager y PromotionsManager
+
+### Documentacion actualizada
+- `docs/architecture.md` — MenuManager y PromotionsManager en mapa de componentes admin
+- `docs/features.md` — Nueva seccion "Gestion de Menu y Promociones (Admin)"
+- `docs/changelog.md` — Este entry
+
+## 2026-03-17 — Migracion de frontend a MenuContext (eliminar datos estaticos)
+
+### Cambio
+- Todos los componentes frontend que consumian datos del menu ahora usan `useMenu()` de `MenuContext` en vez de importar funciones estaticas de `@/data`
+- Precios con descuento se muestran con precio original tachado + precio efectivo
+- Cart total ahora calcula precios efectivos (con descuentos aplicados)
+- Checkout muestra desglose de descuentos por item y promociones activas por tipo de pedido
+
+### Archivos modificados
+- `src/components/menu/MenuContainer.tsx` — Usa `useMenu()` para categories/items, agrega loading spinner
+- `src/components/landing/MenuPreview.tsx` — Usa `useMenu()` para featured items, muestra precio con descuento
+- `src/components/menu/MenuItemCard.tsx` — Usa `getEffectivePrice()` para precio con strikethrough
+- `src/components/menu/MenuItemModal.tsx` — Usa `getEffectivePrice()` para precio header y boton "Agregar al Pedido"
+- `src/context/CartContext.tsx` — Usa `useMenu()` (`getItemById` + `getEffectivePrice`) en vez de `getMenuItemById` de `@/data`
+- `src/components/cart/CartItemRow.tsx` — Usa `useMenu()` para lookup de items y muestra precio unitario con descuento
+- `src/components/checkout/CheckoutForm.tsx` — Usa `useMenu()` para order summary con descuentos y banner de promociones activas
+
+### Documentacion actualizada
+- `docs/features.md` — Menu data source actualizado, mencion de descuentos
+- `docs/changelog.md` — Este entry
+
+## 2026-03-17 — Migracion de menu a Supabase (tipos, data layer, API publica)
+
+### Cambio
+- Tipos de menu ampliados con campos de descuento y tipos DB (snake_case)
+- Nuevo modulo server-side `menu-data.ts` para leer categorias, items y promociones desde Supabase
+- Nuevo endpoint publico `GET /api/menu` que devuelve datos del menu desde la base de datos
+- Helpers para calcular precios con descuento y descuentos a nivel de orden
+
+### Archivos modificados
+- `src/types/menu.ts` — Agregados `discountPercent`, `discountFixed` a MenuItem; nuevos tipos `DbMenuItem`, `DbCategory`, `DbPromotion`, `Promotion`
+
+### Archivos nuevos
+- `src/lib/menu-data.ts` — Fetchers: `getMenuItemsFromDB`, `getMenuItemByIdFromDB`, `getCategoriesFromDB`, `getActivePromotions`; helpers: `dbToMenuItem`, `dbToCategory`, `calculateEffectivePrice`, `calculateOrderDiscount`
+- `src/app/api/menu/route.ts` — GET publico con cache (s-maxage=60, stale-while-revalidate=300)
+
+### Documentacion actualizada
+- `docs/architecture.md` — menu-data.ts en mapa de lib, api/menu en mapa de rutas, tipos actualizados
+- `docs/api.md` — Nueva seccion "Menu (Datos publicos desde Supabase)"
+- `docs/changelog.md` — Este entry
+
+## 2026-03-17 — API routes para administracion de menu y promociones
+
+### Cambio
+- Nuevas API routes admin para gestionar menu items, categorias y promociones desde el dashboard
+- CRUD completo para promociones (crear, listar, actualizar, eliminar)
+- Actualizacion parcial de menu items y categorias (solo campos proporcionados)
+
+### Archivos nuevos
+- `src/app/api/admin/menu/route.ts` — GET: listar items + categorias, PUT: actualizar item
+- `src/app/api/admin/menu/categories/route.ts` — GET: listar categorias, PUT: actualizar categoria
+- `src/app/api/admin/promotions/route.ts` — GET: listar, POST: crear, PUT: actualizar promocion
+- `src/app/api/admin/promotions/[id]/route.ts` — DELETE: eliminar promocion por UUID
+
+### Documentacion actualizada
+- `docs/api.md` — Nuevas secciones Menu (Admin) y Promociones (Admin)
+- `docs/architecture.md` — Rutas admin/menu y admin/promotions en mapa de archivos
+- `docs/changelog.md` — Este entry
+
 ## 2026-03-16 — PWA completa (Progressive Web App)
 
 ### Cambio

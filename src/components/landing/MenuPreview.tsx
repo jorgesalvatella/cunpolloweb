@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Link } from "@/i18n/navigation";
 import Container from "@/components/ui/Container";
 import Badge from "@/components/ui/Badge";
-import { getFeaturedItems } from "@/data";
+import { useMenu } from "@/context/MenuContext";
 import type { Locale } from "@/i18n/config";
 import type { MenuItemTag } from "@/types/menu";
 
@@ -14,13 +14,16 @@ export default function MenuPreview() {
   const t = useTranslations("menuPreview");
   const tMenu = useTranslations("menu");
   const locale = useLocale() as Locale;
-  const featured = getFeaturedItems();
+  const { items, loading, getEffectivePrice } = useMenu();
+  const featured = items.filter((i) => i.tags.includes("popular"));
 
   const tagLabels: Record<MenuItemTag, string> = {
     popular: tMenu("popular"),
     spicy: tMenu("spicy"),
     new: tMenu("new"),
   };
+
+  if (loading || featured.length === 0) return null;
 
   return (
     <section className="py-14 sm:py-20 bg-red-50">
@@ -73,7 +76,14 @@ export default function MenuPreview() {
                     {item.name[locale]}
                   </h3>
                   <span className="text-gold-500 font-bold whitespace-nowrap text-xs sm:text-base">
-                    ${item.price}
+                    {getEffectivePrice(item) < item.price ? (
+                      <>
+                        <span className="line-through text-dark/30 font-normal mr-1">${item.price}</span>
+                        ${getEffectivePrice(item)}
+                      </>
+                    ) : (
+                      `$${item.price}`
+                    )}
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm text-dark/50 mb-2 sm:mb-3 line-clamp-2 hidden sm:block">

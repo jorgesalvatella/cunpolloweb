@@ -7,6 +7,7 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CartProvider } from "@/context/CartContext";
+import { MenuProvider } from "@/context/MenuContext";
 import CartFloatingButton from "@/components/cart/CartFloatingButton";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
@@ -28,13 +29,15 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <CartProvider>
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <CartFloatingButton />
-        <WhatsAppButton />
-      </CartProvider>
+      <MenuProvider>
+        <CartProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <CartFloatingButton />
+          <WhatsAppButton />
+        </CartProvider>
+      </MenuProvider>
     </NextIntlClientProvider>
   );
 }

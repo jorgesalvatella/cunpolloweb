@@ -16,14 +16,16 @@
 
 ### Menu Completo
 - **Estado**: Produccion
+- **Data source**: MenuContext (datos desde `/api/menu` via Supabase, con fallback loading state)
 - Filtros por categoria (tabs con tap targets ampliados)
 - 35 items en 8 categorias: promociones, especialidad, lo-mero-bueno, antojitos, acompanamientos, bebidas, postres, combos
 - Categoria "Promociones" con items solo-display (no se agregan al carrito, etiqueta "Solo consumo en restaurante")
 - Quick-add "+" dorado en cada tarjeta (checkmark verde al agregar)
 - Descripcion visible en mobile (line-clamp-1, antes hidden)
 - Modal con detalle, tags (popular/picante/nuevo), precios reales, boton rounded-full
-- Imagenes reales de productos (WebP, extraidas de Rappi) en `public/images/menu/`
-- Datos estaticos en `src/data/menu-items.ts` (datos extraidos de Rappi)
+- **Descuentos por producto**: Soporte para `discountPercent` y `discountFixed` — precio original tachado + precio efectivo en rojo
+- Imagenes reales de productos (WebP, extraidas de Rappi) en Vercel Blob Storage
+- Datos estaticos en `src/data/menu-items.ts` se mantienen como referencia pero ya no se usan en frontend
 
 ### Sistema de Pedidos (Paga y Recoge)
 - **Estado**: Produccion (Openpay produccion, 3D Secure activo)
@@ -66,6 +68,28 @@
 - Fire-and-forget: errores se loguean pero nunca bloquean el flujo del pedido
 - Soporta multiples numeros admin via `ADMIN_WHATSAPP_PHONES` (separados por coma)
 - Sin dependencias nuevas (0 paquetes agregados)
+
+### Gestion de Menu y Promociones (Admin)
+- **Estado**: Implementado
+- **Ruta**: `/admin` > Tabs "Menu" y "Promos"
+- **Componentes**: `MenuManager`, `PromotionsManager`
+- **Menu Manager**:
+  - Filtro por categoria (tabs) + busqueda por nombre
+  - Tabla de todos los items (incluso no disponibles, en gris)
+  - Edicion inline: precio (clic para editar, guarda en blur/enter)
+  - Toggle de disponibilidad (switch)
+  - Selector de descuento: sin descuento / % / $ fijo + valor
+  - Items con descuento muestran precio original tachado + precio efectivo
+  - Indicador de guardado (flash verde + texto "Guardado")
+  - Supabase Realtime: se actualiza automaticamente si otro admin cambia algo
+- **Promotions Manager**:
+  - Lista de promociones (activas resaltadas con borde verde)
+  - Crear nueva promocion: nombre, tipo descuento (%/$), valor, aplica a (llevar/aqui/ambos), monto minimo, activa
+  - Vista previa del texto: "5% de descuento en pedidos para llevar"
+  - Editar promocion existente (mismo formulario)
+  - Toggle inline activa/inactiva
+  - Eliminar con confirmacion (doble clic)
+- **API**: `/api/admin/menu` (GET, PUT), `/api/admin/promotions` (GET, POST, PUT, DELETE)
 
 ### Hub WhatsApp Promociones (Admin)
 - **Estado**: Implementado

@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import type { CartItem } from "@/types/order";
-import { getMenuItemById } from "@/data";
+import { useMenu } from "@/context/MenuContext";
 
 const STORAGE_KEY = "cunpollo-cart";
 
@@ -52,6 +52,7 @@ function saveCart(items: CartItem[]) {
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const { getItemById, getEffectivePrice } = useMenu();
   const [items, setItems] = useState<CartItem[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
@@ -99,8 +100,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const total = items.reduce((sum, item) => {
-    const menuItem = getMenuItemById(item.menuItemId);
-    return sum + (menuItem ? menuItem.price * item.quantity : 0);
+    const menuItem = getItemById(item.menuItemId);
+    return sum + (menuItem ? getEffectivePrice(menuItem) * item.quantity : 0);
   }, 0);
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);

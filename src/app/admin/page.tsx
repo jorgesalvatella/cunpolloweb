@@ -5,9 +5,13 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import OrdersDashboard from "@/components/admin/OrdersDashboard";
 import WhatsAppHub from "@/components/admin/WhatsAppHub";
+import MenuManager from "@/components/admin/MenuManager";
+import PromotionsManager from "@/components/admin/PromotionsManager";
 
 const mainTabs = [
   { label: "Pedidos", id: "orders" },
+  { label: "Menu", id: "menu" },
+  { label: "Promos", id: "promos" },
   { label: "WhatsApp", id: "whatsapp" },
 ];
 
@@ -80,6 +84,8 @@ export default function AdminPage() {
       </div>
 
       {activeTab === "orders" && <OrdersDashboard />}
+      {activeTab === "menu" && <MenuManager />}
+      {activeTab === "promos" && <PromotionsManager />}
       {activeTab === "whatsapp" && <WhatsAppHub />}
     </div>
   );

@@ -7,6 +7,7 @@ import Badge from "@/components/ui/Badge";
 import { useState } from "react";
 import { FEATURES } from "@/lib/constants";
 import { useCart } from "@/context/CartContext";
+import { useMenu } from "@/context/MenuContext";
 import type { MenuItem, MenuItemTag } from "@/types/menu";
 import type { Locale } from "@/i18n/config";
 
@@ -20,8 +21,12 @@ export default function MenuItemModal({
   const locale = useLocale() as Locale;
   const t = useTranslations("menu");
   const { addItem } = useCart();
+  const { getEffectivePrice } = useMenu();
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+
+  const effectivePrice = item ? getEffectivePrice(item) : 0;
+  const hasDiscount = item ? effectivePrice < item.price : false;
 
   const tagLabels: Record<MenuItemTag, string> = {
     popular: t("popular"),
@@ -77,7 +82,14 @@ export default function MenuItemModal({
                 </h2>
                 {!item.promo && (
                   <span className="text-xl sm:text-2xl font-bold text-gold-500 shrink-0">
-                    ${item.price}
+                    {hasDiscount ? (
+                      <>
+                        <span className="line-through text-dark/30 font-normal text-base sm:text-lg mr-1">${item.price}</span>
+                        ${effectivePrice}
+                      </>
+                    ) : (
+                      `$${item.price}`
+                    )}
                   </span>
                 )}
               </div>
@@ -142,7 +154,7 @@ export default function MenuItemModal({
                         : "bg-gold-500 text-white hover:bg-gold-600"
                     }`}
                   >
-                    {added ? "✓" : `${t("addToOrder")} — $${item.price * quantity}`}
+                    {added ? "✓" : `${t("addToOrder")} — $${effectivePrice * quantity}`}
                   </button>
                 </div>
               )}

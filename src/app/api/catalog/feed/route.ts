@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { menuItems } from "@/data/menu-items";
-import { categories } from "@/data/categories";
+import { getMenuItemsFromDB, getCategoriesFromDB, calculateEffectivePrice } from "@/lib/menu-data";
 
 const SITE_URL = "https://cunpollo.com";
 const BRAND = "CUNPOLLO";
@@ -16,11 +15,16 @@ function escapeXml(str: string): string {
 }
 
 export async function GET() {
-  const activeItems = menuItems.filter(
-    (item) => item.available && !item.promo && item.id !== "prueba-pasarela"
+  const [allItems, allCategories] = await Promise.all([
+    getMenuItemsFromDB(),
+    getCategoriesFromDB(),
+  ]);
+
+  const activeItems = allItems.filter(
+    (item) => !item.promo && item.id !== "prueba-pasarela"
   );
 
-  const categoryMap = new Map(categories.map((c) => [c.id, c]));
+  const categoryMap = new Map(allCategories.map((c) => [c.id, c]));
 
   const entries = activeItems
     .map((item) => {
@@ -33,7 +37,7 @@ export async function GET() {
     <g:description>${escapeXml(item.description.es)}</g:description>
     <g:availability>in stock</g:availability>
     <g:condition>new</g:condition>
-    <g:price>${item.price.toFixed(2)} ${CURRENCY}</g:price>
+    <g:price>${calculateEffectivePrice(item).toFixed(2)} ${CURRENCY}</g:price>
     <g:link>${SITE_URL}/es#menu</g:link>
     <g:image_link>${escapeXml(item.image)}</g:image_link>
     <g:brand>${BRAND}</g:brand>
