@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Script from "next/script";
@@ -90,6 +90,25 @@ export default function CheckoutForm() {
   const [guests, setGuests] = useState<number | null>(null);
   const [card, setCard] = useState({ number: "", expiry: "", cvv: "", holderName: "" });
   const [availableSlots, setAvailableSlots] = useState<string[]>(ALL_TIME_SLOTS);
+
+  // Calculate order-level promotion discount
+  const orderDiscount = useMemo(() => {
+    const applicable = promotions.filter(
+      (p) =>
+        p.active &&
+        (p.targetOrderType === "all" || p.targetOrderType === orderType) &&
+        total >= (p.minOrderAmount || 0)
+    );
+    let bestAmt = 0;
+    let bestPromo: typeof promotions[0] | null = null;
+    for (const p of applicable) {
+      const amt = p.discountType === "percent"
+        ? Math.round(total * (p.discountValue / 100))
+        : Math.min(p.discountValue, total);
+      if (amt > bestAmt) { bestAmt = amt; bestPromo = p; }
+    }
+    return { amount: bestAmt, promo: bestPromo, finalTotal: total - bestAmt };
+  }, [promotions, orderType, total]);
 
   useEffect(() => {
     setAvailableSlots(getAvailableSlots());
@@ -286,26 +305,21 @@ export default function CheckoutForm() {
                 </div>
               );
             })}
-            {(() => {
-              const activePromos = promotions.filter(
-                (p) =>
-                  p.active &&
-                  (p.targetOrderType === "all" || p.targetOrderType === orderType) &&
-                  total >= p.minOrderAmount
-              );
-              if (activePromos.length === 0) return null;
-              return activePromos.map((promo) => (
-                <div key={promo.id} className="flex justify-between text-sm text-green-700 bg-green-50 -mx-1 px-1 py-1 rounded">
-                  <span>{locale === "es" ? promo.descriptionEs : promo.descriptionEn}</span>
-                  <span className="font-medium">
-                    -{promo.discountType === "percent" ? `${promo.discountValue}%` : `$${promo.discountValue}`}
-                  </span>
+            {orderDiscount.promo && (
+              <>
+                <div className="border-t border-gray-200 pt-2 flex justify-between text-sm">
+                  <span>Subtotal</span>
+                  <span>${total}</span>
                 </div>
-              ));
-            })()}
-            <div className="border-t border-gray-200 pt-2 flex justify-between font-bold">
-              <span>{t("orderSummary")}</span>
-              <span className="text-red-700">${total} MXN</span>
+                <div className="flex justify-between text-sm text-green-700 bg-green-50 -mx-1 px-1 py-1 rounded">
+                  <span>{locale === "es" ? orderDiscount.promo.descriptionEs : orderDiscount.promo.descriptionEn}</span>
+                  <span className="font-medium">-${orderDiscount.amount}</span>
+                </div>
+              </>
+            )}
+            <div className={`flex justify-between font-bold ${orderDiscount.promo ? "pt-1" : "border-t border-gray-200 pt-2"}`}>
+              <span>Total</span>
+              <span className="text-red-700">${orderDiscount.finalTotal} MXN</span>
             </div>
           </div>
         </div>
@@ -422,7 +436,7 @@ export default function CheckoutForm() {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
-              {`${t("pay")} $${total} MXN`}
+              {`${t("pay")} $${orderDiscount.finalTotal} MXN`}
             </span>
           )}
         </button>
