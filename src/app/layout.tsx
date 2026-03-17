@@ -13,7 +13,10 @@ export const metadata: Metadata = {
     "Descubre el auténtico sabor del pollo rostizado artesanal. Consulta nuestro menú, ubicación y horarios.",
   manifest: "/manifest.json",
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
