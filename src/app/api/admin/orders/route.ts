@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     .order("created_at", { ascending: false })
     .limit(50);
 
-  if (status) {
+  if (status && status !== "all") {
     query = query.eq("status", status);
   }
 
