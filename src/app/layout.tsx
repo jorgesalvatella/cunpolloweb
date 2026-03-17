@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
+    url: "https://cunpollo.com",
     siteName: "CUNPOLLO",
     locale: "es_MX",
     alternateLocale: "en_US",
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "CUNPOLLO - Pollo que salva tu día",
+        alt: "CUNPOLLO - Aqui todo lo hacemos con amor",
       },
     ],
   },
