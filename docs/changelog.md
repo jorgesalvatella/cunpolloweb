@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-03-16 — PWA completa (Progressive Web App)
+
+### Cambio
+- PWA completamente funcional: instalable en Android e iOS
+- Manifest completo con todos los campos requeridos y recomendados
+- Service worker con cache strategies (cache-first para assets, network-first para paginas)
+- Iconos generados del isotipo SVG en 8 tamaños (72-512px) + 2 maskable + SVG
+
+### Archivos nuevos
+- `src/components/PWARegister.tsx` — Componente que registra el service worker
+- `public/icon-{72,96,128,144,152,192,384,512}x{72,96,128,144,152,192,384,512}.png` — Iconos PWA
+- `public/icon-maskable-192x192.png` — Icono maskable 192px (Android adaptive)
+- `public/icon-maskable-512x512.png` — Icono maskable 512px (Android adaptive)
+
+### Archivos modificados
+- `public/manifest.json` — Reescrito: nombre, shortcuts, screenshots, iconos maskable, categorias, orientacion, scope, id
+- `public/sw.js` — Reescrito: pre-cache de assets estaticos, cache-first/network-first strategies, limpieza de caches viejos
+- `src/app/layout.tsx` — Viewport export con theme_color, PWARegister component
+- `src/lib/constants.ts` — `PWA_ENABLED: true`
+- `next.config.ts` — Headers para sw.js (Service-Worker-Allowed, no-cache)
+
+### Documentacion actualizada
+- `docs/features.md` — Nueva seccion PWA
+- `docs/architecture.md` — PWARegister en mapa
+- `docs/changelog.md` — Este entry
+
 ## 2026-03-15 — Autenticacion por roles + vistas especializadas admin
 
 ### Cambio

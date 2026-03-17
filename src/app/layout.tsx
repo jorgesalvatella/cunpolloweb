@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { montserrat, inter } from "@/lib/fonts";
+import PWARegister from "@/components/PWARegister";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
@@ -40,11 +41,18 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#BC2026",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es" className={`${montserrat.variable} ${inter.variable}`}>
       <body className="min-h-screen flex flex-col bg-white text-dark antialiased">
         {children}
+        <PWARegister />
       </body>
     </html>
   );

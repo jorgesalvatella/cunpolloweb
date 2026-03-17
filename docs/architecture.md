@@ -111,6 +111,7 @@ cunpolloweb/
     │   │   └── Badge.tsx              # Badge para tags del menú
     │   ├── seo/
     │   │   └── JsonLd.tsx             # Structured data
+    │   ├── PWARegister.tsx          # Registro del service worker (client-side)
     │   ├── WhatsAppButton.tsx       # Boton flotante WhatsApp Business (+529983871387)
     │   └── three/
     │       ├── SceneWrapper.tsx       # Canvas wrapper para 3D

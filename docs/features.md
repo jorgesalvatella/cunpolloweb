@@ -98,11 +98,20 @@
 |------|-------------|---------------|
 | — | Sin pendientes criticos | — |
 
+### PWA (Progressive Web App)
+- **Estado**: Produccion
+- **Feature flag**: `FEATURES.PWA_ENABLED` en `src/lib/constants.ts` (actualmente `true`)
+- **Manifest**: `public/manifest.json` — nombre, iconos (8 tamaños + 2 maskable + SVG), shortcuts (Menu, Carrito), screenshots, categorias
+- **Service Worker**: `public/sw.js` — cache-first para assets estaticos, network-first para paginas, sin cache para API/admin
+- **Registro**: `src/components/PWARegister.tsx` — componente client-side en root layout
+- **Iconos**: Generados del isotipo SVG (72px a 512px + maskable con padding blanco)
+- **Theme color**: `#BC2026` (rojo CUNPOLLO)
+- Instalable en Android (Add to Home Screen) y iOS (Add to Home Screen via Safari)
+
 ## Desactivadas
 
 | Feature | Flag | Razon |
 |---------|------|-------|
 | Delivery | `FEATURES.DELIVERY_ENABLED: false` | Solo pickup por ahora |
-| PWA | `FEATURES.PWA_ENABLED: false` | Futuro |
 | Chicken 3D model | Removido del scene | Preferencia del usuario |
 | Gradientes | N/A | Preferencia: colores solidos |

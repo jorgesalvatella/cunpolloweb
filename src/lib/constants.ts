@@ -1,7 +1,7 @@
 export const FEATURES = {
   ORDERING_ENABLED: true,
   DELIVERY_ENABLED: false,
-  PWA_ENABLED: false,
+  PWA_ENABLED: true,
   WHATSAPP_NOTIFICATIONS: true,
 } as const;
 
