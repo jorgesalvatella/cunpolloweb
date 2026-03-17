@@ -2,7 +2,7 @@
   "name": "CUNPOLLO - Pollo que salva tu dia",
   "short_name": "CUNPOLLO",
   "description": "Pollo rostizado artesanal en Cancun. Pide en linea, paga y recoge en 20 minutos.",
-  "start_url": "/es",
+  "start_url": "/es/menu",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
@@ -11,7 +11,7 @@
   "lang": "es-MX",
   "dir": "ltr",
   "categories": ["food", "shopping"],
-  "id": "/es",
+  "id": "/es/menu",
   "icons": [
     {
       "src": "/icon-72x72.png",
@@ -87,6 +87,13 @@
       "type": "image/jpeg",
       "form_factor": "wide",
       "label": "CUNPOLLO - Aqui todo lo hacemos con amor"
+    },
+    {
+      "src": "/screenshot-mobile.jpg",
+      "sizes": "540x960",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "CUNPOLLO - Pide y recoge en 20 minutos"
     }
   ],
   "shortcuts": [
