@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   // Optimize: resize to 800px max, convert to WebP, quality 80
   const buffer = Buffer.from(await file.arrayBuffer());
   const optimized = await sharp(buffer)
-    .resize(800, 800, { fit: "inside", withoutEnlargement: true })
+    .resize(1620, 1080, { fit: "inside", withoutEnlargement: true })
     .webp({ quality: 80 })
     .toBuffer();
 
