@@ -12,7 +12,12 @@ export const metadata: Metadata = {
   },
   description:
     "Descubre el auténtico sabor del pollo rostizado artesanal. Consulta nuestro menú, ubicación y horarios.",
-  manifest: "/manifest.json",
+  other: {
+    "mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-status-bar-style": "default",
+    "apple-mobile-web-app-title": "CUNPOLLO",
+  },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "32x32" },
@@ -50,6 +55,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es" className={`${montserrat.variable} ${inter.variable}`}>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body className="min-h-screen flex flex-col bg-white text-dark antialiased">
         {children}
         <PWARegister />
