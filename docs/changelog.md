@@ -1,5 +1,75 @@
 # Changelog
 
+## 2026-03-17 — Sistema completo de gestion de menu desde admin
+
+### Cambio
+- Menu migrado de archivos estaticos a base de datos Supabase
+- CRUD completo de productos desde el admin (crear, editar, eliminar)
+- Upload de imagenes con optimizacion automatica (sharp: resize + WebP)
+- Descuentos por producto (% o fijo) con precio tachado en el menu
+- Promociones por tipo de pedido (pickup/dine_in/ambos) con descuento en checkout
+- Validacion server-side de precios y descuentos al procesar pagos
+- Banner de promociones activas visible en la pagina del menu
+
+### Base de datos
+- Tabla `categories` — 8 categorias migradas
+- Tabla `menu_items` — 42 productos con precios, disponibilidad, descuentos
+- Tabla `promotions` — promos configurables por tipo de pedido
+- Columnas en `orders`: `discount_amount`, `discount_description`, `promotion_id`
+- Realtime habilitado para `menu_items` y `categories`
+
+### API
+- `GET /api/menu` — endpoint publico (categorias + items + promos activas)
+- `GET/POST/PUT/DELETE /api/admin/menu` — CRUD de productos
+- `GET/PUT /api/admin/menu/categories` — gestion de categorias
+- `GET/POST/PUT /api/admin/promotions` — gestion de promociones
+- `DELETE /api/admin/promotions/[id]` — eliminar promocion
+- `POST /api/admin/upload` — upload imagen con optimizacion (sharp → WebP)
+
+### Frontend
+- `MenuContext` reemplaza datos estaticos en todos los componentes
+- Descuentos por producto: precio original tachado + precio efectivo
+- Checkout: desglose subtotal → descuento promo → total final
+- Boton de pagar muestra total con descuento aplicado
+- Banner verde de promo activa en pagina del menu
+
+### Admin UI
+- Tab "Menu": buscar, filtrar, editar precio inline, toggle disponibilidad, descuentos, agregar/eliminar producto, upload imagen
+- Tab "Promos": crear/editar/eliminar promos, toggle activa, vista previa
+
+### Seguridad
+- Servidor recalcula todos los precios desde DB (no confia en el cliente)
+- Descuentos validados server-side con `calculateEffectivePrice` y `calculateOrderDiscount`
+- Openpay cobra el total calculado server-side
+- Upload: valida tipo (solo imagenes), tamano (max 10MB), auth requerido
+
+### Archivos nuevos
+- `src/lib/menu-data.ts` — fetchers DB + helpers de descuento
+- `src/context/MenuContext.tsx` — provider client-side para datos del menu
+- `src/app/api/menu/route.ts` — API publica del menu
+- `src/app/api/admin/menu/route.ts` — CRUD admin de items
+- `src/app/api/admin/menu/categories/route.ts` — gestion categorias
+- `src/app/api/admin/promotions/route.ts` — CRUD promos
+- `src/app/api/admin/promotions/[id]/route.ts` — eliminar promo
+- `src/app/api/admin/upload/route.ts` — upload imagen optimizada
+- `src/components/admin/MenuManager.tsx` — UI gestion menu
+- `src/components/admin/PromotionsManager.tsx` — UI gestion promos
+
+### Archivos modificados
+- `src/types/menu.ts` — tipos Db*, Promotion, campos de descuento
+- `src/app/[locale]/layout.tsx` — MenuProvider wrapping CartProvider
+- `src/context/CartContext.tsx` — usa MenuContext para precios efectivos
+- `src/components/menu/MenuContainer.tsx` — MenuContext + banner promos
+- `src/components/menu/MenuItemCard.tsx` — precio con descuento tachado
+- `src/components/menu/MenuItemModal.tsx` — precio con descuento
+- `src/components/landing/MenuPreview.tsx` — MenuContext
+- `src/components/cart/CartItemRow.tsx` — precio efectivo
+- `src/components/checkout/CheckoutForm.tsx` — desglose descuento + total final
+- `src/app/api/orders/route.ts` — precios desde DB + descuentos server-side
+- `src/app/api/orders/[id]/route.ts` — incluye campos de descuento
+- `src/app/api/catalog/feed/route.ts` — lee desde DB con precios efectivos
+- `src/app/admin/page.tsx` — tabs Menu y Promos
+
 ## 2026-03-17 — UI admin para gestion de menu y promociones
 
 ### Cambio

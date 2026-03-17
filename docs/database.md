@@ -65,6 +65,96 @@ pending → processing → success
 - Service role: acceso completo (usado por API routes del server)
 - Anon: lectura pública (para que el cliente consulte su orden por UUID)
 
+## Tabla: `categories`
+
+Categorias del menu.
+
+| Columna | Tipo | Default | Descripcion |
+|---------|------|---------|-------------|
+| `id` | TEXT | PK | Slug unico (ej: "especialidad") |
+| `name_es` | TEXT | NOT NULL | Nombre en espanol |
+| `name_en` | TEXT | NOT NULL | Nombre en ingles |
+| `icon` | TEXT | `''` | Emoji de la categoria |
+| `sort_order` | INTEGER | `0` | Orden de aparicion |
+| `active` | BOOLEAN | `true` | Si se muestra al cliente |
+| `created_at` | TIMESTAMPTZ | `now()` | Fecha de creacion |
+| `updated_at` | TIMESTAMPTZ | `now()` | Ultima actualizacion (trigger) |
+
+**Indices:** `idx_categories_sort` en `sort_order`
+**RLS:** Lectura publica, escritura solo `service_role`
+**Realtime:** Habilitado
+
+---
+
+## Tabla: `menu_items`
+
+Productos del menu.
+
+| Columna | Tipo | Default | Descripcion |
+|---------|------|---------|-------------|
+| `id` | TEXT | PK | Slug unico (ej: "pollo-rostizado") |
+| `category_id` | TEXT | FK → categories(id) | Categoria del producto |
+| `name_es` | TEXT | NOT NULL | Nombre en espanol |
+| `name_en` | TEXT | NOT NULL | Nombre en ingles |
+| `description_es` | TEXT | NOT NULL | Descripcion en espanol |
+| `description_en` | TEXT | NOT NULL | Descripcion en ingles |
+| `price` | INTEGER | NOT NULL | Precio en pesos MXN |
+| `image` | TEXT | NOT NULL | URL de imagen (Vercel Blob) |
+| `tags` | TEXT[] | `'{}'` | Tags: popular, spicy, new |
+| `available` | BOOLEAN | `true` | Si se muestra al cliente |
+| `is_promo` | BOOLEAN | `false` | Item solo display (sin agregar al carrito) |
+| `discount_percent` | INTEGER | NULL | Descuento porcentual (ej: 10 = 10%) |
+| `discount_fixed` | INTEGER | NULL | Descuento fijo en pesos (ej: 50 = -$50) |
+| `sort_order` | INTEGER | `0` | Orden de aparicion |
+| `created_at` | TIMESTAMPTZ | `now()` | Fecha de creacion |
+| `updated_at` | TIMESTAMPTZ | `now()` | Ultima actualizacion (trigger) |
+
+**Logica de descuento:** `discount_fixed` tiene prioridad sobre `discount_percent`. Precio efectivo = `price - discount_fixed` o `price * (1 - discount_percent/100)`.
+
+**Indices:** `idx_menu_items_category`, `idx_menu_items_available`, `idx_menu_items_sort`
+**RLS:** Lectura publica, escritura solo `service_role`
+**Realtime:** Habilitado
+
+---
+
+## Tabla: `promotions`
+
+Promociones a nivel de orden (descuentos generales por tipo de pedido).
+
+| Columna | Tipo | Default | Descripcion |
+|---------|------|---------|-------------|
+| `id` | UUID | `gen_random_uuid()` | PK |
+| `name` | TEXT | NOT NULL | Nombre interno (ej: "5% desc. para llevar") |
+| `description_es` | TEXT | `''` | Texto visible al cliente (espanol) |
+| `description_en` | TEXT | `''` | Texto visible al cliente (ingles) |
+| `discount_type` | TEXT | NOT NULL | `'percent'` o `'fixed'` |
+| `discount_value` | NUMERIC(10,2) | NOT NULL | Valor del descuento (% o pesos) |
+| `target_order_type` | TEXT | NOT NULL | `'pickup'`, `'dine_in'`, o `'all'` |
+| `min_order_amount` | INTEGER | `0` | Monto minimo de subtotal para aplicar |
+| `active` | BOOLEAN | `false` | Si esta activa |
+| `starts_at` | TIMESTAMPTZ | NULL | Inicio programado (opcional) |
+| `ends_at` | TIMESTAMPTZ | NULL | Fin programado (opcional) |
+| `created_at` | TIMESTAMPTZ | `now()` | Fecha de creacion |
+| `updated_at` | TIMESTAMPTZ | `now()` | Ultima actualizacion (trigger) |
+
+**Logica:** Si hay multiples promos activas para el mismo tipo de pedido, el servidor aplica la que da mayor descuento. Solo se aplica una promo por orden.
+
+**Indices:** `idx_promotions_active`
+**RLS:** Lectura publica, escritura solo `service_role`
+
+---
+
+## Columnas de descuento en `orders`
+
+| Columna | Tipo | Default | Descripcion |
+|---------|------|---------|-------------|
+| `discount_amount` | INTEGER | `0` | Descuento aplicado en pesos |
+| `discount_description` | TEXT | NULL | Nombre de la promo aplicada |
+| `promotion_id` | UUID | NULL | FK → promotions(id), promo utilizada |
+| `guests` | INTEGER | NULL | Numero de personas (solo dine_in) |
+
+---
+
 ## Tabla: `contacts`
 
 Contactos de WhatsApp para envio de promociones.

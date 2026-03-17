@@ -77,9 +77,11 @@ cunpolloweb/
     │           │   └── [id]/
     │           │       └── route.ts   # DELETE: desactivar contacto
     │           ├── menu/
-    │           │   ├── route.ts       # GET/PUT: listar/actualizar items del menu
+    │           │   ├── route.ts       # GET/POST/PUT/DELETE: CRUD items del menu
     │           │   └── categories/
     │           │       └── route.ts   # GET/PUT: listar/actualizar categorias
+    │           ├── upload/
+    │           │   └── route.ts       # POST: upload imagen a Vercel Blob (sharp optimize)
     │           ├── promotions/
     │           │   ├── route.ts       # GET/POST/PUT: listar/crear/actualizar promociones
     │           │   └── [id]/

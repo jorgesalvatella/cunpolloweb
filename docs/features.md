@@ -77,10 +77,13 @@
   - Filtro por categoria (tabs) + busqueda por nombre
   - Tabla de todos los items (incluso no disponibles, en gris)
   - Edicion inline: precio (clic para editar, guarda en blur/enter)
-  - Toggle de disponibilidad (switch)
+  - Toggle de disponibilidad (switch) — al desactivar, el producto desaparece del menu publico
   - Selector de descuento: sin descuento / % / $ fijo + valor
   - Items con descuento muestran precio original tachado + precio efectivo
   - Indicador de guardado (flash verde + texto "Guardado")
+  - **Agregar producto**: formulario con nombre ES/EN, descripcion, precio, categoria, imagen (upload directo)
+  - **Eliminar producto**: boton con confirmacion de 2 pasos
+  - **Upload de imagenes**: sube imagen desde el dispositivo, se optimiza automaticamente (resize max 1620x1080, conversion a WebP quality 80) y se almacena en Vercel Blob Storage
   - Supabase Realtime: se actualiza automaticamente si otro admin cambia algo
 - **Promotions Manager**:
   - Lista de promociones (activas resaltadas con borde verde)
@@ -89,7 +92,7 @@
   - Editar promocion existente (mismo formulario)
   - Toggle inline activa/inactiva
   - Eliminar con confirmacion (doble clic)
-- **API**: `/api/admin/menu` (GET, PUT), `/api/admin/promotions` (GET, POST, PUT, DELETE)
+- **API**: `/api/admin/menu` (GET, POST, PUT, DELETE), `/api/admin/promotions` (GET, POST, PUT, DELETE), `/api/admin/upload` (POST)
 
 ### Hub WhatsApp Promociones (Admin)
 - **Estado**: Implementado

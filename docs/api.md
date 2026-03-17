@@ -238,12 +238,72 @@ Ambos arrays ordenados por `sort_order` ASC.
 
 ---
 
+### `POST /api/admin/menu`
+Crea un nuevo item del menu (requiere cookie admin).
+
+**Request:**
+```json
+{
+  "id": "nuevo-producto",
+  "name_es": "Nombre en espanol",
+  "name_en": "English name",
+  "description_es": "Descripcion",
+  "description_en": "Description",
+  "price": 150,
+  "category_id": "especialidad",
+  "image": "https://...",
+  "tags": ["popular"],
+  "available": true,
+  "is_promo": false
+}
+```
+
+**Campos requeridos:** `id` (slug), `name_es`, `category_id`, `price`
+**Response 201:** Item creado
+**Response 400:** Campos requeridos faltantes o ID invalido
+**Response 409:** Ya existe un producto con ese ID
+
+---
+
 ### `PUT /api/admin/menu`
 Actualiza un item del menu (requiere cookie admin). Solo actualiza los campos proporcionados.
 
 **Request:** `{ "id": "pollo-entero", "price": 250, "available": false }`
 **Response 200:** Item actualizado
 **Response 400:** ID faltante o sin campos
+**Response 401:** No autorizado
+
+---
+
+### `DELETE /api/admin/menu?id=pollo-entero`
+Elimina un item del menu (requiere cookie admin).
+
+**Response 200:** `{ "success": true }`
+**Response 400:** ID faltante
+**Response 401:** No autorizado
+
+---
+
+### `POST /api/admin/upload`
+Sube una imagen al Vercel Blob Storage (requiere cookie admin). La imagen se optimiza automaticamente.
+
+**Request:** `multipart/form-data` con campo `file` (imagen)
+**Procesamiento:**
+- Valida tipo de archivo (solo imagenes) y tamano (max 10MB)
+- Redimensiona a max 1620x1080px (sin deformar, sin agrandar)
+- Convierte a WebP con calidad 80
+- Sube a Vercel Blob Storage en carpeta `menu/`
+
+**Response 200:**
+```json
+{
+  "url": "https://igwu4bqzucdjjkup.public.blob.vercel-storage.com/menu/nombre-1234567890.webp",
+  "originalSize": 3145728,
+  "optimizedSize": 87654
+}
+```
+
+**Response 400:** No se envio archivo, tipo invalido, o muy grande
 **Response 401:** No autorizado
 
 ---
