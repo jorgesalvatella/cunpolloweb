@@ -456,6 +456,7 @@ function AddProductForm({
   const [price, setPrice] = useState("");
   const [categoryId, setCategoryId] = useState(categories[0]?.id || "");
   const [image, setImage] = useState("");
+  const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -565,14 +566,48 @@ function AddProductForm({
           />
         </div>
         <div>
-          <label className="block text-xs text-dark/60 mb-1">URL de imagen</label>
-          <input
-            type="text"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-            placeholder="https://..."
-            className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
-          />
+          <label className="block text-xs text-dark/60 mb-1">Imagen del producto</label>
+          <div className="flex items-center gap-2">
+            <label className={`px-3 py-2 rounded-lg text-sm font-medium cursor-pointer transition-colors ${
+              uploading ? "bg-gray-200 text-dark/50" : "bg-white border border-gray-200 hover:bg-gray-50 text-dark/70"
+            }`}>
+              {uploading ? "Subiendo..." : image ? "Cambiar imagen" : "Subir imagen"}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                disabled={uploading}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setUploading(true);
+                  setError("");
+                  try {
+                    const fd = new FormData();
+                    fd.append("file", file);
+                    const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+                    if (res.ok) {
+                      const { url } = await res.json();
+                      setImage(url);
+                    } else {
+                      const err = await res.json();
+                      setError(err.error || "Error al subir imagen");
+                    }
+                  } catch {
+                    setError("Error al subir imagen");
+                  }
+                  setUploading(false);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+            {image && (
+              <div className="flex items-center gap-2">
+                <img src={image} alt="" className="w-10 h-10 rounded object-cover" />
+                <span className="text-xs text-green-600">Imagen lista</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       {error && <p className="text-red-600 text-sm">{error}</p>}
