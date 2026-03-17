@@ -21,8 +21,15 @@ export default function CocinaPage() {
   const [authed, setAuthed] = useState(false);
   const [checking, setChecking] = useState(true);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [now, setNow] = useState(Date.now());
   const prevCountRef = useRef(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Tick every 30s to update wait times and alert colors
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 30_000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     fetch("/api/admin/me")
@@ -130,24 +137,35 @@ export default function CocinaPage() {
               hour: "2-digit",
               minute: "2-digit",
             });
+            const waitMin = Math.round((now - new Date(order.created_at).getTime()) / 60000);
+            const isOverdue = isPaid && waitMin >= 15;
 
             return (
               <div
                 key={order.id}
                 className={`rounded-2xl p-5 border-2 ${
-                  isPaid
-                    ? "bg-blue-950 border-blue-500 animate-pulse"
-                    : "bg-gray-800 border-orange-500"
+                  isOverdue
+                    ? "bg-red-950 border-red-500 animate-pulse"
+                    : isPaid
+                      ? "bg-blue-950 border-blue-500 animate-pulse"
+                      : "bg-gray-800 border-orange-500"
                 }`}
               >
+                {/* Overdue alert banner */}
+                {isOverdue && (
+                  <div className="bg-red-600 text-white text-center text-sm font-bold py-1.5 rounded-lg mb-3">
+                    SIN ATENDER — {waitMin} MIN
+                  </div>
+                )}
+
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-4xl font-black text-white">#{order.order_number}</span>
                   <div className="text-right">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold text-white ${statusColors[order.status]}`}>
-                      {statusLabels[order.status]}
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold text-white ${isOverdue ? "bg-red-500" : statusColors[order.status]}`}>
+                      {isOverdue ? "URGENTE" : statusLabels[order.status]}
                     </span>
-                    <p className="text-white/50 text-sm mt-1">{time}</p>
+                    <p className="text-white/50 text-sm mt-1">{time} ({waitMin} min)</p>
                   </div>
                 </div>
 
