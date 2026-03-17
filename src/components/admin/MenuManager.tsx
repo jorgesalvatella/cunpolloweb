@@ -37,6 +37,8 @@ export default function MenuManager() {
   const [savedId, setSavedId] = useState<string | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
   const savedTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const fetchMenu = useCallback(async () => {
     const res = await fetch("/api/admin/menu");
@@ -88,6 +90,32 @@ export default function MenuManager() {
     setSavingId(null);
   };
 
+  const createItem = async (newItem: Record<string, unknown>) => {
+    const res = await fetch("/api/admin/menu", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newItem),
+    });
+    if (res.ok) {
+      const created = await res.json();
+      setItems((prev) => [...prev, created]);
+      setShowAddForm(false);
+      return null;
+    }
+    const err = await res.json();
+    return err.error || "Error al crear";
+  };
+
+  const deleteItem = async (id: string) => {
+    const res = await fetch(`/api/admin/menu?id=${encodeURIComponent(id)}`, {
+      method: "DELETE",
+    });
+    if (res.ok) {
+      setItems((prev) => prev.filter((i) => i.id !== id));
+      setDeletingId(null);
+    }
+  };
+
   const categoryName = (catId: string) => {
     const cat = categories.find((c) => c.id === catId);
     return cat ? cat.name_es : catId;
@@ -112,16 +140,27 @@ export default function MenuManager() {
 
   return (
     <div>
-      {/* Search bar */}
-      <div className="mb-4">
+      {/* Search bar + Add button */}
+      <div className="flex items-center gap-3 mb-4">
         <input
           type="text"
           placeholder="Buscar item por nombre..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full sm:w-80 px-4 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+          className="flex-1 sm:max-w-80 px-4 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
         />
+        <button
+          onClick={() => setShowAddForm(!showAddForm)}
+          className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 cursor-pointer whitespace-nowrap"
+        >
+          {showAddForm ? "Cancelar" : "+ Agregar producto"}
+        </button>
       </div>
+
+      {/* Add product form */}
+      {showAddForm && (
+        <AddProductForm categories={categories} onSubmit={createItem} />
+      )}
 
       {/* Category filter tabs */}
       <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
@@ -167,6 +206,10 @@ export default function MenuManager() {
               item={item}
               categoryName={categoryName(item.category_id)}
               onUpdate={updateItem}
+              onDelete={deleteItem}
+              isDeleting={deletingId === item.id}
+              onConfirmDelete={() => setDeletingId(item.id)}
+              onCancelDelete={() => setDeletingId(null)}
               isSaving={savingId === item.id}
               isSaved={savedId === item.id}
             />
@@ -181,12 +224,20 @@ function MenuItemRow({
   item,
   categoryName,
   onUpdate,
+  onDelete,
+  isDeleting,
+  onConfirmDelete,
+  onCancelDelete,
   isSaving,
   isSaved,
 }: {
   item: DbMenuItem;
   categoryName: string;
   onUpdate: (id: string, fields: Partial<DbMenuItem>) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
+  isDeleting: boolean;
+  onConfirmDelete: () => void;
+  onCancelDelete: () => void;
   isSaving: boolean;
   isSaved: boolean;
 }) {
@@ -357,7 +408,181 @@ function MenuItemRow({
             />
           </button>
         </div>
+
+        {/* Delete */}
+        <div className="flex items-center gap-1">
+          {isDeleting ? (
+            <>
+              <button
+                onClick={() => onDelete(item.id)}
+                className="px-2 py-1 text-xs bg-red-600 text-white rounded cursor-pointer hover:bg-red-700"
+              >
+                Confirmar
+              </button>
+              <button
+                onClick={onCancelDelete}
+                className="px-2 py-1 text-xs bg-gray-200 text-dark rounded cursor-pointer hover:bg-gray-300"
+              >
+                No
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={onConfirmDelete}
+              className="px-2 py-1 text-xs text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"
+              title="Eliminar producto"
+            >
+              Eliminar
+            </button>
+          )}
+        </div>
       </div>
     </div>
+  );
+}
+
+function AddProductForm({
+  categories,
+  onSubmit,
+}: {
+  categories: DbCategory[];
+  onSubmit: (item: Record<string, unknown>) => Promise<string | null>;
+}) {
+  const [id, setId] = useState("");
+  const [nameEs, setNameEs] = useState("");
+  const [nameEn, setNameEn] = useState("");
+  const [descEs, setDescEs] = useState("");
+  const [descEn, setDescEn] = useState("");
+  const [price, setPrice] = useState("");
+  const [categoryId, setCategoryId] = useState(categories[0]?.id || "");
+  const [image, setImage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  // Auto-generate ID from name
+  const autoId = nameEs
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    if (!nameEs || !price || !categoryId) {
+      setError("Nombre, precio y categoria son requeridos");
+      return;
+    }
+    setSubmitting(true);
+    const err = await onSubmit({
+      id: id || autoId,
+      name_es: nameEs,
+      name_en: nameEn || nameEs,
+      description_es: descEs,
+      description_en: descEn,
+      price: parseInt(price, 10),
+      category_id: categoryId,
+      image: image || "/logo.png",
+    });
+    if (err) setError(err);
+    setSubmitting(false);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 space-y-3">
+      <h3 className="font-bold text-dark">Nuevo producto</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label className="block text-xs text-dark/60 mb-1">Nombre (ES) *</label>
+          <input
+            type="text"
+            value={nameEs}
+            onChange={(e) => setNameEs(e.target.value)}
+            className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-xs text-dark/60 mb-1">Nombre (EN)</label>
+          <input
+            type="text"
+            value={nameEn}
+            onChange={(e) => setNameEn(e.target.value)}
+            placeholder={nameEs}
+            className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+          />
+        </div>
+        <div>
+          <label className="block text-xs text-dark/60 mb-1">Descripcion (ES)</label>
+          <input
+            type="text"
+            value={descEs}
+            onChange={(e) => setDescEs(e.target.value)}
+            className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+          />
+        </div>
+        <div>
+          <label className="block text-xs text-dark/60 mb-1">Descripcion (EN)</label>
+          <input
+            type="text"
+            value={descEn}
+            onChange={(e) => setDescEn(e.target.value)}
+            className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+          />
+        </div>
+        <div>
+          <label className="block text-xs text-dark/60 mb-1">Precio (MXN) *</label>
+          <input
+            type="number"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            min={0}
+            className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-xs text-dark/60 mb-1">Categoria *</label>
+          <select
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+            className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 bg-white cursor-pointer"
+          >
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>{c.name_es}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs text-dark/60 mb-1">ID (slug, auto-generado)</label>
+          <input
+            type="text"
+            value={id}
+            onChange={(e) => setId(e.target.value)}
+            placeholder={autoId}
+            className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+          />
+        </div>
+        <div>
+          <label className="block text-xs text-dark/60 mb-1">URL de imagen</label>
+          <input
+            type="text"
+            value={image}
+            onChange={(e) => setImage(e.target.value)}
+            placeholder="https://..."
+            className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+          />
+        </div>
+      </div>
+      {error && <p className="text-red-600 text-sm">{error}</p>}
+      <button
+        type="submit"
+        disabled={submitting}
+        className="px-6 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 disabled:opacity-50 cursor-pointer"
+      >
+        {submitting ? "Creando..." : "Crear producto"}
+      </button>
+    </form>
   );
 }
