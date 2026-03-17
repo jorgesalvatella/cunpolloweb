@@ -166,10 +166,10 @@ export async function POST(request: Request) {
       })
       .eq("id", order.id);
 
-    // Fire-and-forget WhatsApp notification
+    // Fire-and-forget WhatsApp notifications
     try {
-      const { notifyAdminNewOrder } = await import("@/lib/twilio");
-      notifyAdminNewOrder({
+      const { notifyAdminNewOrder, notifyCustomerStatusChange } = await import("@/lib/twilio");
+      const orderData = {
         id: order.id,
         order_number: order.order_number,
         customer_name: name,
@@ -177,15 +177,17 @@ export async function POST(request: Request) {
         items: orderItems,
         subtotal,
         total,
-        status: "paid",
-        payment_status: "success",
+        status: "paid" as const,
+        payment_status: "success" as const,
         payment_reference: chargeResult.chargeId || null,
         order_type: body.orderType,
         pickup_time: body.pickupTime,
         guests: body.orderType === "dine_in" ? body.guests : null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-      });
+      };
+      notifyAdminNewOrder(orderData);
+      notifyCustomerStatusChange(orderData);
     } catch {}
 
     return NextResponse.json({

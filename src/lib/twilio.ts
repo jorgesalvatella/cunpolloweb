@@ -6,6 +6,13 @@ const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 const TWILIO_WHATSAPP_FROM = process.env.TWILIO_WHATSAPP_FROM || "whatsapp:+5219983871387";
 const ADMIN_WHATSAPP_PHONES = process.env.ADMIN_WHATSAPP_PHONES || "";
 
+const ORDER_TEMPLATES = {
+  paid: "HXe143bed5f4275bbbf474b90e786c13bd",
+  preparing: "HX6aff8112c4132390176675f61eeca319",
+  ready: "HXbb486ff7a35664d57d39dc76a1c6fc6d",
+  cancelled: "HXedd7f5a92740634f330fbc5a3198d3c9",
+} as const;
+
 function isConfigured(): boolean {
   return !!(TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN && FEATURES.WHATSAPP_NOTIFICATIONS);
 }
@@ -181,11 +188,33 @@ export async function sendWhatsAppTemplate(
 export function notifyCustomerStatusChange(order: Order): void {
   if (!isConfigured()) return;
 
-  const message = getCustomerMessage(order);
-  if (!message) return;
+  const templateSid = ORDER_TEMPLATES[order.status as keyof typeof ORDER_TEMPLATES];
+  if (!templateSid) return;
 
   const to = formatPhone(order.customer_phone);
-  sendWhatsApp(to, message).catch((err) => {
+
+  let variables: Record<string, string>;
+
+  if (order.status === "paid") {
+    const itemLines = order.items
+      .map((i) => `- ${i.quantity}x ${i.name} (${formatCurrency(i.lineTotal)})`)
+      .join("\n");
+    const typeLabel = order.order_type === "dine_in" ? "Comer en restaurante" : "Para llevar";
+    variables = {
+      "1": order.customer_name,
+      "2": String(order.order_number),
+      "3": itemLines,
+      "4": formatCurrency(order.total),
+      "5": typeLabel,
+    };
+  } else {
+    variables = {
+      "1": order.customer_name,
+      "2": String(order.order_number),
+    };
+  }
+
+  sendWhatsAppTemplate(to, templateSid, variables).catch((err) => {
     console.error("[Twilio] Failed to notify customer:", err);
   });
 }
