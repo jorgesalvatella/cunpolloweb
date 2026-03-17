@@ -137,24 +137,34 @@ export default function CocinaPage() {
               hour: "2-digit",
               minute: "2-digit",
             });
-            const waitMin = Math.round((now - new Date(order.created_at).getTime()) / 60000);
-            const isOverdue = isPaid && waitMin >= 15;
+            // Check if pickup time is approaching (<=15 min left) and order still not started
+            let minutesLeft: number | null = null;
+            let isUrgent = false;
+            if (isPaid && order.pickup_time) {
+              const [h, m] = order.pickup_time.split(":").map(Number);
+              const pickup = new Date();
+              pickup.setHours(h, m, 0, 0);
+              minutesLeft = Math.round((pickup.getTime() - now) / 60000);
+              isUrgent = minutesLeft <= 15;
+            }
 
             return (
               <div
                 key={order.id}
                 className={`rounded-2xl p-5 border-2 ${
-                  isOverdue
+                  isUrgent
                     ? "bg-red-950 border-red-500 animate-pulse"
                     : isPaid
                       ? "bg-blue-950 border-blue-500 animate-pulse"
                       : "bg-gray-800 border-orange-500"
                 }`}
               >
-                {/* Overdue alert banner */}
-                {isOverdue && (
+                {/* Urgent alert banner */}
+                {isUrgent && minutesLeft !== null && (
                   <div className="bg-red-600 text-white text-center text-sm font-bold py-1.5 rounded-lg mb-3">
-                    SIN ATENDER — {waitMin} MIN
+                    {minutesLeft <= 0
+                      ? `HORA PASADA — ${Math.abs(minutesLeft)} MIN DE RETRASO`
+                      : `FALTAN ${minutesLeft} MIN — SIN ATENDER`}
                   </div>
                 )}
 
@@ -162,10 +172,10 @@ export default function CocinaPage() {
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-4xl font-black text-white">#{order.order_number}</span>
                   <div className="text-right">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold text-white ${isOverdue ? "bg-red-500" : statusColors[order.status]}`}>
-                      {isOverdue ? "URGENTE" : statusLabels[order.status]}
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold text-white ${isUrgent ? "bg-red-500" : statusColors[order.status]}`}>
+                      {isUrgent ? "URGENTE" : statusLabels[order.status]}
                     </span>
-                    <p className="text-white/50 text-sm mt-1">{time} ({waitMin} min)</p>
+                    <p className="text-white/50 text-sm mt-1">{time}</p>
                   </div>
                 </div>
 
