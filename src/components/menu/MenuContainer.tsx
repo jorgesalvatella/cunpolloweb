@@ -7,11 +7,13 @@ import CategoryTabs from "./CategoryTabs";
 import MenuItemCard from "./MenuItemCard";
 import MenuItemModal from "./MenuItemModal";
 import { useMenu } from "@/context/MenuContext";
+import { useLocale } from "next-intl";
 import type { MenuItem } from "@/types/menu";
 
 export default function MenuContainer() {
   const t = useTranslations("menu");
-  const { categories, items: allItems, loading } = useMenu();
+  const locale = useLocale();
+  const { categories, items: allItems, promotions, loading } = useMenu();
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
 
@@ -36,6 +38,37 @@ export default function MenuContainer() {
 
   return (
     <div>
+      {/* Promotion banners */}
+      {promotions.length > 0 && (
+        <div className="space-y-2 mb-4">
+          {promotions.map((promo) => {
+            const desc = locale === "es" ? promo.descriptionEs : promo.descriptionEn;
+            const typeLabel =
+              promo.targetOrderType === "pickup"
+                ? locale === "es" ? "Para llevar" : "Pickup"
+                : promo.targetOrderType === "dine_in"
+                  ? locale === "es" ? "Comer aqui" : "Dine-in"
+                  : "";
+            return (
+              <div
+                key={promo.id}
+                className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 flex items-center justify-between"
+              >
+                <div>
+                  <p className="font-bold text-green-800 text-sm sm:text-base">{desc || promo.name}</p>
+                  {typeLabel && (
+                    <p className="text-green-600 text-xs">{typeLabel}</p>
+                  )}
+                </div>
+                <span className="text-green-700 font-black text-lg sm:text-xl">
+                  -{promo.discountType === "percent" ? `${promo.discountValue}%` : `$${promo.discountValue}`}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       <div className="sticky top-[4.5rem] sm:top-20 md:top-24 z-30 bg-white/95 backdrop-blur-sm py-2 sm:py-3 border-b border-red-500/10">
         <CategoryTabs
           categories={categories}
