@@ -111,7 +111,9 @@
     "dineIn": "Dine in",
     "pickup": "Pickup",
     "readyBy": "Ready by",
-    "guests": "guests"
+    "guests": "guests",
+    "paymentFailed": "Payment Failed",
+    "paymentFailedMessage": "Your payment could not be processed. No charge was made to your card. Please try again."
   },
   "location": {
     "title": "Find Us",

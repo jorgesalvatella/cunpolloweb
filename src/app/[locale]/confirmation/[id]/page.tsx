@@ -55,6 +55,9 @@ export default function ConfirmationPage() {
     );
   }
 
+  const isPaid = order.status === "paid" || order.status === "preparing" || order.status === "ready" || order.status === "picked_up";
+  const isFailed = order.status === "cancelled" || order.payment_status === "failed";
+
   const addressFull = `${RESTAURANT.address.street}, ${RESTAURANT.address.city}, ${RESTAURANT.address.state} ${RESTAURANT.address.zip}`;
   const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${RESTAURANT.coordinates.lat},${RESTAURANT.coordinates.lng}`;
 
@@ -159,76 +162,121 @@ export default function ConfirmationPage() {
     <section className="pt-28 pb-16 min-h-screen bg-white">
       <Container>
         <div className="max-w-lg mx-auto text-center">
-          {/* Animated checkmark */}
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", damping: 15, stiffness: 200, delay: 0.1 }}
-            className="w-20 h-20 mx-auto mb-6 bg-green-100 rounded-full flex items-center justify-center"
-          >
-            <motion.svg
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="w-10 h-10 text-green-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <motion.path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={3}
-                d="M5 13l4 4L19 7"
-              />
-            </motion.svg>
-          </motion.div>
+          {isFailed ? (
+            <>
+              {/* Failed payment icon */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", damping: 15, stiffness: 200, delay: 0.1 }}
+                className="w-20 h-20 mx-auto mb-6 bg-red-100 rounded-full flex items-center justify-center"
+              >
+                <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="text-3xl font-bold text-red-700 font-(family-name:--font-heading) mb-2"
-          >
-            {t("title")}
-          </motion.h1>
+              <motion.h1
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-3xl font-bold text-red-700 font-(family-name:--font-heading) mb-2"
+              >
+                {t("paymentFailed")}
+              </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-dark/50 mb-2"
-          >
-            {t("orderNumber")} #{order.order_number}
-          </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="text-dark/50 mb-2"
+              >
+                {t("orderNumber")} #{order.order_number}
+              </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="bg-red-50 rounded-2xl p-6 my-8"
-          >
-            <div className="flex items-center justify-center gap-3 mb-2">
-              <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                order.order_type === "dine_in"
-                  ? "bg-purple-100 text-purple-800"
-                  : "bg-teal-100 text-teal-800"
-              }`}>
-                {order.order_type === "dine_in" ? t("dineIn") : t("pickup")}
-              </span>
-              {order.pickup_time && (
-                <span className="px-3 py-1 rounded-full text-sm font-semibold bg-amber-100 text-amber-800">
-                  {t("readyBy")} {order.pickup_time}
-                </span>
-              )}
-              {order.guests && (
-                <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800">
-                  {order.guests} {t("guests")}
-                </span>
-              )}
-            </div>
-            <p className="text-xl font-bold text-red-700">{t("message")}</p>
-          </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="bg-red-50 rounded-2xl p-6 my-8"
+              >
+                <p className="text-lg text-red-700">{t("paymentFailedMessage")}</p>
+              </motion.div>
+            </>
+          ) : (
+            <>
+              {/* Animated checkmark */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", damping: 15, stiffness: 200, delay: 0.1 }}
+                className="w-20 h-20 mx-auto mb-6 bg-green-100 rounded-full flex items-center justify-center"
+              >
+                <motion.svg
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="w-10 h-10 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <motion.path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M5 13l4 4L19 7"
+                  />
+                </motion.svg>
+              </motion.div>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-3xl font-bold text-red-700 font-(family-name:--font-heading) mb-2"
+              >
+                {t("title")}
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="text-dark/50 mb-2"
+              >
+                {t("orderNumber")} #{order.order_number}
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="bg-red-50 rounded-2xl p-6 my-8"
+              >
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    order.order_type === "dine_in"
+                      ? "bg-purple-100 text-purple-800"
+                      : "bg-teal-100 text-teal-800"
+                  }`}>
+                    {order.order_type === "dine_in" ? t("dineIn") : t("pickup")}
+                  </span>
+                  {order.pickup_time && (
+                    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-amber-100 text-amber-800">
+                      {t("readyBy")} {order.pickup_time}
+                    </span>
+                  )}
+                  {order.guests && (
+                    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800">
+                      {order.guests} {t("guests")}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xl font-bold text-red-700">{t("message")}</p>
+              </motion.div>
+            </>
+          )}
 
           {/* Order summary */}
           <motion.div
@@ -278,12 +326,14 @@ export default function ConfirmationPage() {
                 {t("call")}
               </a>
             </div>
-            <button
-              onClick={downloadReceipt}
-              className="w-full bg-yellow-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-yellow-600 transition-colors text-center mt-3"
-            >
-              {t("downloadReceipt")}
-            </button>
+            {isPaid && (
+              <button
+                onClick={downloadReceipt}
+                className="w-full bg-yellow-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-yellow-600 transition-colors text-center mt-3"
+              >
+                {t("downloadReceipt")}
+              </button>
+            )}
           </motion.div>
 
           <Link

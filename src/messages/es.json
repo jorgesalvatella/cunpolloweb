@@ -111,7 +111,9 @@
     "dineIn": "Comer en restaurante",
     "pickup": "Para llevar",
     "readyBy": "Listo a las",
-    "guests": "personas"
+    "guests": "personas",
+    "paymentFailed": "Pago no procesado",
+    "paymentFailedMessage": "Tu pago no se pudo completar. No se realizo ningun cargo a tu tarjeta. Por favor intenta de nuevo."
   },
   "location": {
     "title": "Encuéntranos",
