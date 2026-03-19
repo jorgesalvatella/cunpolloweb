@@ -60,7 +60,6 @@ export default function MenuItemCard({
           height={500}
           className="w-full h-auto rounded-lg"
           sizes="(max-width: 640px) 50vw, 25vw"
-          unoptimized
         />
         {FEATURES.ORDERING_ENABLED && !item.promo && (
           <motion.div

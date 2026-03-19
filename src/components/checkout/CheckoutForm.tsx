@@ -120,6 +120,7 @@ export default function CheckoutForm() {
   const [deviceSessionId, setDeviceSessionId] = useState("");
   const [mainScriptLoaded, setMainScriptLoaded] = useState(false);
   const [dataScriptLoaded, setDataScriptLoaded] = useState(false);
+  const submittingRef = useRef(false);
 
   const initOpenPay = useCallback(() => {
     if (typeof window === "undefined" || !window.OpenPay) return;
@@ -189,8 +190,18 @@ export default function CheckoutForm() {
     setTimeout(() => errorRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 100);
   };
 
+  // Warn user if they try to close during payment processing
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (loading) { e.preventDefault(); }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [loading]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submittingRef.current) return;
     setError("");
 
     if (!customerName || !customerPhone) {
@@ -215,14 +226,17 @@ export default function CheckoutForm() {
     }
 
     if (!openpayReady) {
-      showError("El sistema de pago no esta listo. Intenta de nuevo.");
+      showError(t("paymentNotReady"));
       return;
     }
 
     setLoading(true);
+    submittingRef.current = true;
 
     try {
       const tokenId = await tokenizeCard();
+
+      const idempotencyKey = crypto.randomUUID();
 
       const res = await fetch("/api/orders", {
         method: "POST",
@@ -236,6 +250,7 @@ export default function CheckoutForm() {
           orderType,
           pickupTime,
           guests: orderType === "dine_in" ? guests : null,
+          idempotencyKey,
         }),
       });
 
@@ -247,9 +262,8 @@ export default function CheckoutForm() {
         return;
       }
 
-      // 3D Secure redirect
+      // 3D Secure redirect — do NOT clear cart yet, clear on confirmation page
       if (data.redirectUrl) {
-        clearCart();
         window.location.href = data.redirectUrl;
         return;
       }
@@ -259,6 +273,7 @@ export default function CheckoutForm() {
     } catch (err) {
       showError(err instanceof Error ? err.message : t("errorGeneric"));
       setLoading(false);
+      submittingRef.current = false;
     }
   };
 

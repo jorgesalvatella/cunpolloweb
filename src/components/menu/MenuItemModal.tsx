@@ -61,7 +61,6 @@ export default function MenuItemModal({
                 height={500}
                 className="w-full h-auto rounded-xl"
                 sizes="(max-width: 640px) 100vw, 512px"
-                unoptimized
               />
               <button
                 onClick={onClose}

@@ -7,11 +7,13 @@ import { motion } from "framer-motion";
 import Container from "@/components/ui/Container";
 import { Link } from "@/i18n/navigation";
 import { RESTAURANT } from "@/lib/constants";
+import { useCart } from "@/context/CartContext";
 import type { Order } from "@/types/order";
 
 export default function ConfirmationPage() {
   const t = useTranslations("confirmation");
   const { id } = useParams<{ id: string }>();
+  const { clearCart } = useCart();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -29,11 +31,17 @@ export default function ConfirmationPage() {
         const res = await fetch(`/api/orders/${id}`);
         const data = await res.json();
         setOrder(data);
+
+        // Clear cart after confirming payment was successful
+        const isPaidStatus = ["paid", "preparing", "ready", "picked_up"].includes(data?.status);
+        if (isPaidStatus) {
+          clearCart();
+        }
       } catch {}
       setLoading(false);
     }
     loadOrder();
-  }, [id]);
+  }, [id, clearCart]);
 
   if (loading) {
     return (
@@ -94,7 +102,7 @@ export default function ConfirmationPage() {
       y += 7;
     }
 
-    const typeLabel = order.order_type === "dine_in" ? "Comer en restaurante" : "Para llevar";
+    const typeLabel = order.order_type === "dine_in" ? t("dineIn") : t("pickup");
     doc.text(`Tipo: ${typeLabel}`, 20, y);
     y += 7;
     if (order.pickup_time) {

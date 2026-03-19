@@ -30,6 +30,14 @@ Archivo de referencia: `.env.example`
 | `TWILIO_WHATSAPP_FROM` | Server | Numero de WhatsApp remitente | Formato: `whatsapp:+529983871387` |
 | `ADMIN_WHATSAPP_PHONES` | Server | Numeros WhatsApp del equipo | Separados por coma: `whatsapp:+521234567890,whatsapp:+529876543210` |
 
+## Seguridad
+
+| Variable | Tipo | Descripcion | Donde obtener |
+|----------|------|-------------|---------------|
+| `ADMIN_COOKIE_SECRET` | Secret | Salt para HMAC de cookies admin (string aleatorio largo) | Generar: `openssl rand -hex 32` |
+| `OPENPAY_WEBHOOK_TOKEN` | Secret | Token para verificar webhooks de Openpay | Generar: `openssl rand -hex 32` |
+| `CRON_SECRET` | Secret | Token para autenticar cron jobs de Vercel | Generar: `openssl rand -hex 32` |
+
 ## Vercel Blob Storage
 
 | Variable | Tipo | Descripcion | Donde obtener |

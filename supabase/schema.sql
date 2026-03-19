@@ -12,6 +12,7 @@ CREATE TABLE orders (
   status TEXT NOT NULL DEFAULT 'pending',
   payment_reference TEXT,
   payment_status TEXT DEFAULT 'pending',
+  idempotency_key TEXT UNIQUE,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -20,6 +21,9 @@ CREATE TABLE orders (
 CREATE INDEX idx_orders_status ON orders(status);
 CREATE INDEX idx_orders_created_at ON orders(created_at DESC);
 CREATE INDEX idx_orders_payment_status ON orders(payment_status);
+CREATE INDEX idx_orders_order_number ON orders(order_number);
+CREATE INDEX idx_orders_customer_phone ON orders(customer_phone);
+CREATE INDEX idx_orders_idempotency_key ON orders(idempotency_key) WHERE idempotency_key IS NOT NULL;
 
 -- Auto-update updated_at
 CREATE OR REPLACE FUNCTION update_updated_at()
@@ -45,6 +49,4 @@ CREATE POLICY "Service role full access"
   ON orders FOR ALL
   USING (auth.role() = 'service_role');
 
-CREATE POLICY "Public read by id"
-  ON orders FOR SELECT
-  USING (true);
+-- No public read policy — all reads go through API routes using service_role

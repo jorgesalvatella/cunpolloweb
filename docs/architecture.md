@@ -22,6 +22,8 @@ cunpolloweb/
     ├── middleware.ts                   # next-intl middleware (excluye /api, /admin)
     ├── app/
     │   ├── layout.tsx                 # Root layout (HTML, fonts, body)
+    │   ├── error.tsx                  # Error boundary (branded, con WhatsApp link)
+    │   ├── global-error.tsx           # Global error boundary (fallback minimal)
     │   ├── page.tsx                   # Redirect root → /es
     │   ├── sitemap.ts                 # Sitemap dinámico
     │   ├── robots.ts                  # Robots.txt
@@ -63,6 +65,9 @@ cunpolloweb/
     │       │       └── route.ts           # GET: XML feed para Meta Commerce Manager
     │       ├── menu/
     │       │   └── route.ts               # GET: public menu data (categories, items, promotions)
+    │       ├── webhooks/
+    │       │   └── openpay/
+    │       │       └── route.ts           # POST: webhook de Openpay (3DS completados, pagos fallidos)
     │       └── admin/
     │           ├── login/
     │           │   └── route.ts       # POST: auth con usuario+contraseña, devuelve rol
@@ -153,6 +158,8 @@ cunpolloweb/
     │   ├── twilio.ts                  # Twilio WhatsApp notifications (server-only)
     │   ├── admin-auth.ts              # Auth admin por cookie
     │   ├── menu-data.ts               # Server-side menu data from Supabase (DB fetchers + helpers)
+    │   ├── rate-limit.ts              # In-memory rate limiter (sliding window)
+    │   ├── audit-log.ts               # Audit log utility para acciones admin
     │   └── supabase/
     │       ├── client.ts              # Supabase browser client (anon key)
     │       └── server.ts             # Supabase server client (service_role)
@@ -175,8 +182,9 @@ cunpolloweb/
   CartPage → CheckoutForm → POST /api/orders
 
 [Servidor]
-  POST /api/orders → validar items → Supabase INSERT → Openpay charge (tarjeta) → Supabase UPDATE → WhatsApp notify → response
+  POST /api/orders → rate limit → idempotency check → batch fetch items → Supabase INSERT → Openpay charge → Supabase UPDATE → WhatsApp notify → response
   POST /api/orders/[id]/verify → verificar cobro 3DS con Openpay → Supabase UPDATE → WhatsApp notify
+  POST /api/webhooks/openpay → verificar token → buscar orden → verificar cargo con Openpay API → Supabase UPDATE → WhatsApp notify
 
 [Admin]
   /admin/login → POST /api/admin/login → cookie

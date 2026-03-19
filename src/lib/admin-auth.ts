@@ -33,8 +33,9 @@ function getAdminUsers(): AdminUser[] {
 }
 
 function hashCredentials(username: string, password: string): string {
+  const salt = process.env.ADMIN_COOKIE_SECRET || "cunpollo-admin-salt";
   return crypto
-    .createHmac("sha256", "cunpollo-admin-salt")
+    .createHmac("sha256", salt)
     .update(`${username}:${password}`)
     .digest("hex");
 }
@@ -77,6 +78,23 @@ export function validateCredentials(
     }
   }
   return null;
+}
+
+const ALLOWED_ORIGINS = [
+  "https://cunpollo.com",
+  "https://www.cunpollo.com",
+  "https://cunpolloweb.vercel.app",
+];
+
+export function verifyCsrfOrigin(request: Request): boolean {
+  // In development, skip check
+  if (process.env.NODE_ENV !== "production") return true;
+
+  const origin = request.headers.get("origin");
+  // No origin header (e.g., same-origin requests from some browsers) — allow
+  if (!origin) return true;
+
+  return ALLOWED_ORIGINS.some((allowed) => origin === allowed);
 }
 
 export function getAdminCookieName(): string {

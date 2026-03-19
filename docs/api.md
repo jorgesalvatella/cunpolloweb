@@ -38,14 +38,23 @@ Crea una orden.
 **Errores:**
 - `400` — Datos incompletos, producto no disponible
 - `402` — Error de pago (Openpay)
+- `429` — Rate limit excedido (10 req/min por IP)
 - `500` — Error interno
 
+**Seguridad:**
+- Rate limiting: 10 requests por minuto por IP
+- Idempotency key: si se envia `idempotencyKey`, previene cargos duplicados
+- Origin validation: redirect URL validada contra whitelist
+- Batch fetch: items del menu se obtienen en una sola query (no N+1)
+
 **Flujo interno:**
-1. Valida items contra menu (recalcula precios server-side)
-2. INSERT en Supabase (status: pending, payment_status: processing)
-3. Cobra con Openpay (tarjeta tokenizada)
-4. Si requiere 3D Secure: responde con `redirectUrl`, orden queda en `pending_3ds`
-5. Si pago directo: actualiza a `paid`, envia WhatsApp y responde con orderId
+1. Rate limit check por IP
+2. Si hay `idempotencyKey`, verifica que no exista orden duplicada
+3. Batch fetch de items del menu y validacion server-side de precios
+4. INSERT en Supabase (status: pending, payment_status: processing)
+5. Cobra con Openpay (tarjeta tokenizada)
+6. Si requiere 3D Secure: responde con `redirectUrl`, orden queda en `pending_3ds`
+7. Si pago directo: actualiza a `paid`, envia WhatsApp y responde con orderId
 
 ---
 
@@ -86,6 +95,31 @@ Si el cobro fue exitoso, actualiza la orden a `paid` y envia notificacion WhatsA
 
 ---
 
+## Webhooks
+
+### `POST /api/webhooks/openpay`
+Recibe notificaciones de Openpay cuando un cargo cambia de estado. Maneja el caso donde el usuario completa 3D Secure pero nunca regresa a la pagina de confirmacion.
+
+**Autenticacion:** Token via header `Authorization: Bearer <token>` o query param `?token=<token>`. Configurar `OPENPAY_WEBHOOK_TOKEN` en env vars.
+
+**Flujo:**
+1. Valida token de autenticacion
+2. Extrae `order_id` del payload
+3. Verifica estado del cargo directamente con Openpay API (no confia solo en payload)
+4. Si `completed`: actualiza orden a `paid`, envia WhatsApp al admin y cliente
+5. Si `failed`: actualiza orden a `cancelled`
+
+**Configurar en Openpay dashboard:** `https://cunpollo.com/api/webhooks/openpay?token=<OPENPAY_WEBHOOK_TOKEN>`
+
+---
+
+### `GET /api/webhooks/openpay`
+Health check para verificacion del webhook.
+
+**Response 200:** `{ "ok": true, "service": "cunpollo-openpay-webhook" }`
+
+---
+
 ## Admin
 
 ### `POST /api/admin/login`
@@ -94,6 +128,7 @@ Autentica con usuario y contrasena. Devuelve el rol asignado.
 **Request:** `{ "username": "cocinero", "password": "..." }`
 **Response 200:** `{ "ok": true, "role": "cocina" }` + cookie `cunpollo-admin`
 **Response 401:** `{ "error": "Credenciales incorrectas" }`
+**Response 429:** `{ "error": "Demasiados intentos. Espera 15 minutos." }` — Max 5 intentos/15 min por IP
 
 **Roles y vistas:**
 | Rol | Vista permitida |
@@ -131,8 +166,75 @@ Cambia el status de una orden (requiere cookie admin).
 
 **Request:** `{ "status": "preparing" }`
 **Status validos:** pending, paid, preparing, ready, picked_up, cancelled
+
+**Transiciones validas (state machine):**
+```
+pending → paid, cancelled
+paid → preparing, cancelled
+preparing → ready, cancelled
+ready → picked_up
+picked_up → (terminal)
+cancelled → (terminal)
+```
+
 **Response 200:** Objeto `Order` actualizado
-**Response 400/401/500:** Error
+**Response 400:** Estado invalido o transicion no permitida
+**Response 401:** No autorizado
+**Response 404:** Pedido no encontrado
+
+---
+
+### `POST /api/admin/orders/[id]/refund`
+Procesa un reembolso via Openpay API (requiere cookie admin).
+
+**Requisitos:** Orden debe tener `payment_status: "success"` y `payment_reference` valido.
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "refundId": "tr_...",
+  "orderNumber": 1042
+}
+```
+
+**Efectos:**
+- Procesa refund en Openpay
+- Actualiza orden a `payment_status: "refunded"`, `status: "cancelled"`
+- Registra accion en audit log
+
+**Response 400:** Pago no exitoso o sin referencia
+**Response 401:** No autorizado
+**Response 404:** Pedido no encontrado
+**Response 500:** Error al procesar reembolso en Openpay
+
+---
+
+## Cron Jobs
+
+### `GET /api/cron/timeout-orders`
+Verifica ordenes en `processing` o `pending_3ds` por mas de 30 minutos. Para cada una, consulta Openpay y resuelve el estado.
+
+**Autenticacion:** `Authorization: Bearer <CRON_SECRET>` o `?token=<CRON_SECRET>`
+
+**Frecuencia:** Cada 15 minutos (configurado en `vercel.json`)
+
+**Response 200:**
+```json
+{
+  "processed": 2,
+  "results": [
+    { "id": "uuid", "order_number": 10, "action": "marked_paid" },
+    { "id": "uuid", "order_number": 11, "action": "timeout_cancelled" }
+  ]
+}
+```
+
+**Acciones posibles:**
+- `marked_paid` — Openpay confirmo pago exitoso
+- `marked_failed` — Openpay reporto pago fallido
+- `timeout_cancelled` — Sin respuesta despues de 30 min, cancelado
+- `timeout_no_ref` — Sin referencia de pago, cancelado
 
 ---
 

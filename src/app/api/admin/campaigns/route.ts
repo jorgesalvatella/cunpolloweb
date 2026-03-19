@@ -38,8 +38,12 @@ export async function POST(request: Request) {
 
   const supabase = getSupabaseAdmin();
 
-  // Get contacts to send to
-  let query = supabase.from("contacts").select("*").eq("active", true);
+  // Get contacts to send to (only active + opted-in for marketing)
+  let query = supabase
+    .from("contacts")
+    .select("*")
+    .eq("active", true)
+    .eq("opted_in_marketing", true);
 
   if (contactIds && contactIds.length > 0) {
     query = query.in("id", contactIds);
@@ -89,9 +93,9 @@ export async function POST(request: Request) {
       sentCount++;
     } else {
       failedCount++;
-      const errMsg = `${contact.phone}: ${result.error}`;
-      errors.push(errMsg);
-      console.error(`[Campaign ${campaign.id}] ${errMsg}`);
+      // Log full details server-side, but don't expose phone numbers in response
+      console.error(`[Campaign ${campaign.id}] ${contact.phone}: ${result.error}`);
+      errors.push(result.error || "Error de envio");
     }
   }
 

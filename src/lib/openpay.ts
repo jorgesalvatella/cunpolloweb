@@ -15,6 +15,40 @@ type ChargeResult = {
   status?: string;
 };
 
+type RefundResult = {
+  success: boolean;
+  refundId?: string;
+  error?: string;
+};
+
+export async function refundCharge(
+  chargeId: string,
+  description: string
+): Promise<RefundResult> {
+  return new Promise((resolve) => {
+    openpay.charges.refund(
+      chargeId,
+      { description },
+      (error: unknown, refund: { id?: string }) => {
+        if (error) {
+          const err = error as { description?: string; error_code?: number };
+          console.error("Openpay refund error:", {
+            chargeId,
+            error_code: err.error_code,
+            description: err.description,
+          });
+          resolve({
+            success: false,
+            error: err.description || "Error al procesar el reembolso",
+          });
+          return;
+        }
+        resolve({ success: true, refundId: refund.id });
+      }
+    );
+  });
+}
+
 export async function getCharge(chargeId: string): Promise<{ status?: string; error?: string }> {
   return new Promise((resolve) => {
     openpay.charges.get(

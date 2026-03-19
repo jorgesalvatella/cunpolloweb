@@ -1,16 +1,34 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import {
-  getMenuItemByIdFromDB,
   calculateEffectivePrice,
   getActivePromotions,
   calculateOrderDiscount,
+  dbToMenuItem,
 } from "@/lib/menu-data";
 import { createCharge } from "@/lib/openpay";
+import { checkRateLimit } from "@/lib/rate-limit";
 import type { CreateOrderRequest, OrderItem } from "@/types/order";
+import type { DbMenuItem } from "@/types/menu";
+
+const VALID_ORIGINS = [
+  "https://cunpollo.com",
+  "https://www.cunpollo.com",
+  "https://cunpolloweb.vercel.app",
+];
 
 export async function POST(request: Request) {
   try {
+    // Rate limit: 10 requests per minute per IP
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const rl = checkRateLimit(`orders:${ip}`, 10, 60_000);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: "Demasiados intentos. Espera un momento." },
+        { status: 429, headers: { "Retry-After": String(Math.ceil(rl.retryAfterMs / 1000)) } }
+      );
+    }
+
     const body: CreateOrderRequest = await request.json();
 
     // Validate required fields
@@ -51,6 +69,39 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Demasiados productos en el pedido" }, { status: 400 });
     }
 
+    // Validate idempotency key if provided
+    if (body.idempotencyKey) {
+      const { data: existing } = await supabaseAdmin
+        .from("orders")
+        .select("id, order_number, payment_status")
+        .eq("idempotency_key", body.idempotencyKey)
+        .single();
+
+      if (existing) {
+        return NextResponse.json({
+          orderId: existing.id,
+          orderNumber: existing.order_number,
+          duplicate: true,
+        });
+      }
+    }
+
+    // Batch fetch all menu items in a single query (fix N+1)
+    const menuItemIds = body.items.map((i) => i.menuItemId);
+    const { data: rawMenuItems, error: menuError } = await supabaseAdmin
+      .from("menu_items")
+      .select("*")
+      .in("id", menuItemIds)
+      .eq("available", true);
+
+    if (menuError || !rawMenuItems) {
+      return NextResponse.json({ error: "Error al verificar productos" }, { status: 500 });
+    }
+
+    const menuItemsMap = new Map(
+      (rawMenuItems as DbMenuItem[]).map((row) => [row.id, dbToMenuItem(row)])
+    );
+
     // Validate items and recalculate prices server-side from DB
     const orderItems: OrderItem[] = [];
     for (const item of body.items) {
@@ -58,8 +109,8 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Cantidad invalida (1-100)" }, { status: 400 });
       }
 
-      const menuItem = await getMenuItemByIdFromDB(item.menuItemId);
-      if (!menuItem || !menuItem.available || menuItem.promo) {
+      const menuItem = menuItemsMap.get(item.menuItemId);
+      if (!menuItem || menuItem.promo) {
         return NextResponse.json(
           { error: "Uno o mas productos no estan disponibles" },
           { status: 400 }
@@ -83,23 +134,28 @@ export async function POST(request: Request) {
     const total = subtotal - discount.amount;
 
     // Create order in Supabase (status: pending)
+    const insertData: Record<string, unknown> = {
+      customer_name: name,
+      customer_phone: phone,
+      items: orderItems,
+      subtotal,
+      total,
+      status: "pending",
+      payment_status: "processing",
+      order_type: body.orderType,
+      pickup_time: body.pickupTime,
+      guests: body.orderType === "dine_in" ? body.guests : null,
+      discount_amount: discount.amount,
+      discount_description: discount.description || null,
+      promotion_id: discount.promotionId || null,
+    };
+    if (body.idempotencyKey) {
+      insertData.idempotency_key = body.idempotencyKey;
+    }
+
     const { data: order, error: dbError } = await supabaseAdmin
       .from("orders")
-      .insert({
-        customer_name: name,
-        customer_phone: phone,
-        items: orderItems,
-        subtotal,
-        total,
-        status: "pending",
-        payment_status: "processing",
-        order_type: body.orderType,
-        pickup_time: body.pickupTime,
-        guests: body.orderType === "dine_in" ? body.guests : null,
-        discount_amount: discount.amount,
-        discount_description: discount.description || null,
-        promotion_id: discount.promotionId || null,
-      })
+      .insert(insertData)
       .select("id, order_number")
       .single();
 
@@ -108,8 +164,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Error al crear el pedido" }, { status: 500 });
     }
 
-    // Build redirect URL for 3D Secure
-    const origin = request.headers.get("origin") || "https://cunpollo.com";
+    // Build redirect URL for 3D Secure (validate origin against whitelist)
+    const rawOrigin = request.headers.get("origin") || "";
+    const origin = VALID_ORIGINS.includes(rawOrigin) ? rawOrigin : "https://cunpollo.com";
     const locale = request.headers.get("accept-language")?.startsWith("en") ? "en" : "es";
     const confirmationUrl = `${origin}/${locale}/confirmation/${order.id}`;
 

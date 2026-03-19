@@ -44,7 +44,7 @@ async function sendWhatsApp(to: string, body: string): Promise<void> {
   }
 }
 
-function formatPhone(phone: string): string {
+export function formatPhone(phone: string): string {
   const cleaned = phone.replace(/[\s\-()]/g, "");
   if (cleaned.startsWith("whatsapp:")) return cleaned;
   if (cleaned.startsWith("+")) return `whatsapp:${cleaned}`;

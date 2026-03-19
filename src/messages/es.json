@@ -96,7 +96,10 @@
     "guests": "Numero de personas",
     "selectGuests": "Selecciona",
     "guestsCount": "{count} {count, plural, one {persona} other {personas}}",
-    "errorGuests": "Por favor selecciona el numero de personas."
+    "errorGuests": "Por favor selecciona el numero de personas.",
+    "paymentNotReady": "El sistema de pago no esta listo. Intenta de nuevo.",
+    "invalidCard": "Numero de tarjeta invalido",
+    "invalidExpiry": "Fecha de vencimiento invalida"
   },
   "confirmation": {
     "title": "¡Pedido Confirmado!",

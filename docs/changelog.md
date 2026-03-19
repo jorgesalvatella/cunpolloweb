@@ -1,5 +1,97 @@
 # Changelog
 
+## 2026-03-18 — Auditoria de seguridad pre-launch: 25 issues corregidos
+
+### Cambio
+Correccion masiva de seguridad, estabilidad y UX basada en la auditoria pre-launch (`docs/pre-launch-audit.md`). Se resolvieron los 30 issues: 6 criticos, 7 altos, 11 medios y 6 bajos.
+
+### CRITICOS
+- **RLS orders**: Eliminada policy `USING (true)` que permitia leer todas las ordenes sin auth. Solo service_role accede.
+- **Rate limiting**: `/api/orders` (10 req/min/IP) y `/api/admin/login` (5 intentos/15 min/IP) con sliding window.
+- **Idempotency key**: Nueva columna `idempotency_key` UNIQUE en orders. Cliente genera UUID antes de pagar, server rechaza duplicados.
+- **clearCart() movido**: Ya no se limpia antes del redirect 3DS. Se limpia en la pagina de confirmacion despues de verificar pago exitoso.
+- **Webhook Openpay**: Nuevo endpoint `/api/webhooks/openpay` que captura pagos 3DS completados cuando el usuario no regresa.
+
+### ALTOS
+- **UUID validation**: Validacion regex en endpoints DELETE de contacts y promotions.
+- **Security headers**: `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy` en next.config.ts.
+- **Admin cookie salt**: Ahora usa env var `ADMIN_COOKIE_SECRET` en vez de salt hardcodeado.
+- **State machine**: Transiciones de estado de ordenes validadas (no se puede ir de `picked_up` a `pending`).
+- **Doble-click**: `submittingRef` previene envio duplicado del formulario de pago.
+- **Origin validation**: URL de redirect 3DS validada contra whitelist de dominios.
+- **N+1 queries**: Items del menu se obtienen en batch con `.in()` en vez de uno por uno.
+
+### MEDIOS
+- **Error boundaries**: `error.tsx` y `global-error.tsx` con branding CUNPOLLO y enlace WhatsApp.
+- **Luhn + expiry validation**: CardInput valida numero de tarjeta y fecha de vencimiento antes de tokenizar.
+- **Cart validation**: Items eliminados del menu se filtran al cargar el carrito.
+- **Floating-point**: `Math.round(total * 100) / 100` en CartContext.
+- **Phone normalization**: `formatPhone()` exportado como funcion compartida.
+- **Images optimized**: Removido flag `unoptimized` de MenuItemCard y MenuItemModal.
+
+### MEDIOS (cont.)
+- **Timeout orders**: Cron job cada 15 min verifica ordenes en `processing`/`pending_3ds` por mas de 30 min, las resuelve con Openpay o las cancela.
+- **Refund**: Nuevo endpoint `POST /api/admin/orders/[id]/refund` que procesa reembolso via Openpay API.
+- **Audit log**: Nueva tabla `admin_audit_log` con registro de acciones admin (quien, que, cuando, valores antes/despues).
+- **Opt-in marketing**: Campañas WhatsApp ahora filtran contactos por `opted_in_marketing = true`.
+
+### BAJOS
+- **CSRF**: Origin header validation en admin mutation routes + sameSite: lax cookies.
+- **Indexes**: 5 nuevos indexes en columnas frecuentemente consultadas.
+- **Traducciones**: Strings hardcodeados en espanol movidos a messages JSON.
+- **Autocomplete**: `cc-number`, `cc-exp`, `cc-csc`, `cc-name` en inputs de tarjeta.
+- **beforeunload**: Warning al cerrar pestaña durante procesamiento de pago.
+- **Campaign errors**: Telefonos ya no se exponen en response de errores.
+
+### Archivos nuevos
+- `src/lib/rate-limit.ts` — Rate limiter in-memory (sliding window)
+- `src/lib/audit-log.ts` — Utility para registrar acciones admin
+- `src/app/api/webhooks/openpay/route.ts` — Webhook de Openpay
+- `src/app/api/admin/orders/[id]/refund/route.ts` — Endpoint de reembolso
+- `src/app/api/cron/timeout-orders/route.ts` — Cron para timeout de ordenes
+- `src/app/error.tsx` — Error boundary con branding
+- `src/app/global-error.tsx` — Global error boundary
+- `vercel.json` — Configuracion de cron jobs
+
+### Archivos modificados
+- `src/app/api/orders/route.ts` — Rate limit, idempotency, batch fetch, origin validation
+- `src/app/api/admin/login/route.ts` — Rate limit
+- `src/app/api/admin/orders/[id]/route.ts` — UUID validation, state machine
+- `src/app/api/admin/contacts/[id]/route.ts` — UUID validation
+- `src/app/api/admin/promotions/[id]/route.ts` — UUID validation
+- `src/app/api/admin/campaigns/route.ts` — Phone masking in errors
+- `src/components/checkout/CheckoutForm.tsx` — clearCart moved, double-click prevention, beforeunload, idempotency key, translated strings
+- `src/components/checkout/CardInput.tsx` — Luhn validation, expiry validation, autocomplete hints
+- `src/context/CartContext.tsx` — Cart validation, floating-point fix
+- `src/app/[locale]/confirmation/[id]/page.tsx` — clearCart on successful payment, translated receipt
+- `src/components/menu/MenuItemCard.tsx` — Removed unoptimized
+- `src/components/menu/MenuItemModal.tsx` — Removed unoptimized
+- `src/lib/admin-auth.ts` — Dynamic salt from env var
+- `src/lib/twilio.ts` — Exported formatPhone
+- `src/types/order.ts` — idempotencyKey field
+- `next.config.ts` — Security headers
+- `supabase/schema.sql` — Updated RLS, idempotency_key column, indexes
+
+### Migraciones DB aplicadas
+- `fix_rls_orders_policy` — Eliminada policy `USING (true)`
+- `add_idempotency_key_to_orders` — Columna + index
+- `add_missing_indexes` — 5 indexes en columnas frecuentes
+- `add_admin_audit_log_table` — Tabla de audit log con RLS
+- `add_opted_in_marketing_to_contacts` — Columna opt-in en contacts
+
+### Env vars nuevas (configurar en Vercel)
+- `ADMIN_COOKIE_SECRET` — Salt para cookies admin
+- `OPENPAY_WEBHOOK_TOKEN` — Token de verificacion del webhook
+- `CRON_SECRET` — Token para autenticar cron jobs de Vercel
+
+### Pendiente manual
+- Configurar env vars en Vercel (ADMIN_COOKIE_SECRET, OPENPAY_WEBHOOK_TOKEN, CRON_SECRET)
+- Registrar URL del webhook en Openpay dashboard
+- Eliminar producto de prueba "Prueba" ($2) desde admin
+- Hacer pedido de prueba completo con tarjeta real
+
+---
+
 ## 2026-03-17 — Sistema completo de gestion de menu desde admin
 
 ### Cambio

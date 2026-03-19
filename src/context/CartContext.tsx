@@ -57,9 +57,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    setItems(loadCart());
+    const saved = loadCart();
+    // Filter out items that are no longer available in the menu
+    const valid = saved.filter((item) => {
+      const menuItem = getItemById(item.menuItemId);
+      return menuItem && menuItem.available;
+    });
+    setItems(valid);
     setHydrated(true);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (hydrated) saveCart(items);
@@ -99,10 +105,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems([]);
   }, []);
 
-  const total = items.reduce((sum, item) => {
-    const menuItem = getItemById(item.menuItemId);
-    return sum + (menuItem ? getEffectivePrice(menuItem) * item.quantity : 0);
-  }, 0);
+  const total = Math.round(
+    items.reduce((sum, item) => {
+      const menuItem = getItemById(item.menuItemId);
+      return sum + (menuItem ? getEffectivePrice(menuItem) * item.quantity : 0);
+    }, 0) * 100
+  ) / 100;
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 

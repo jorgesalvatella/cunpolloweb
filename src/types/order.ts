@@ -24,7 +24,8 @@ export type PaymentStatus =
   | "pending"
   | "processing"
   | "success"
-  | "failed";
+  | "failed"
+  | "refunded";
 
 export type OrderType = "dine_in" | "pickup";
 
@@ -55,6 +56,7 @@ export type CreateOrderRequest = {
   orderType: OrderType;
   pickupTime: string | null;
   guests: number | null;
+  idempotencyKey?: string;
 };
 
 export type CreateOrderResponse = {

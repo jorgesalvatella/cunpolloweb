@@ -96,7 +96,10 @@
     "guests": "Number of guests",
     "selectGuests": "Select",
     "guestsCount": "{count} {count, plural, one {guest} other {guests}}",
-    "errorGuests": "Please select the number of guests."
+    "errorGuests": "Please select the number of guests.",
+    "paymentNotReady": "Payment system is not ready. Please try again.",
+    "invalidCard": "Invalid card number",
+    "invalidExpiry": "Invalid expiration date"
   },
   "confirmation": {
     "title": "Order Confirmed!",

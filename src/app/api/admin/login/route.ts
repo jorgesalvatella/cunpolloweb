@@ -1,7 +1,18 @@
 import { NextResponse } from "next/server";
 import { validateCredentials, getAdminCookieName, getAdminCookieValue } from "@/lib/admin-auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  // Rate limit: 5 attempts per 15 minutes per IP
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const rl = checkRateLimit(`admin-login:${ip}`, 5, 15 * 60_000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Demasiados intentos. Espera 15 minutos." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil(rl.retryAfterMs / 1000)) } }
+    );
+  }
+
   const { username, password } = await request.json();
 
   const user = validateCredentials(username || "", password || "");
