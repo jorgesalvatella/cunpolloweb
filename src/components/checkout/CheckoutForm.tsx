@@ -191,13 +191,14 @@ export default function CheckoutForm() {
   };
 
   // Warn user if they try to close during payment processing
+  const payingRef = useRef(false);
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
-      if (loading) { e.preventDefault(); }
+      if (payingRef.current) { e.preventDefault(); }
     };
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
-  }, [loading]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -232,6 +233,7 @@ export default function CheckoutForm() {
 
     setLoading(true);
     submittingRef.current = true;
+    payingRef.current = true;
 
     try {
       const tokenId = await tokenizeCard();
@@ -260,23 +262,27 @@ export default function CheckoutForm() {
         showError(data.error || t("errorGeneric"));
         setLoading(false);
         submittingRef.current = false;
+        payingRef.current = false;
         return;
       }
 
       // 3D Secure redirect — do NOT clear cart yet, clear on confirmation page
       if (data.redirectUrl) {
+        payingRef.current = false;
         setLoading(false);
         window.location.href = data.redirectUrl;
         return;
       }
 
       clearCart();
+      payingRef.current = false;
       setLoading(false);
       router.push(`/${locale}/confirmation/${data.orderId}`);
     } catch (err) {
       showError(err instanceof Error ? err.message : t("errorGeneric"));
       setLoading(false);
       submittingRef.current = false;
+      payingRef.current = false;
     }
   };
 
