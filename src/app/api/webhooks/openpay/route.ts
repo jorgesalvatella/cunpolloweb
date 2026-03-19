@@ -25,6 +25,12 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
+    // Handle Openpay webhook verification — echo back the verification_code
+    if (body.verification_code) {
+      console.log("[Webhook] Verification code received:", body.verification_code);
+      return NextResponse.json({ verification_code: body.verification_code });
+    }
+
     // Openpay sends: { type, transaction: { id, status, order_id, ... } }
     const transaction = body.transaction;
     if (!transaction?.order_id) {
