@@ -10,6 +10,7 @@ interface Campaign {
   sent_count: number;
   failed_count: number;
   status: string;
+  error_details: string | null;
   created_at: string;
 }
 
@@ -58,9 +59,14 @@ export default function CampaignHistory() {
           <div className="flex gap-4 mt-2 text-xs text-dark/50">
             <span>Destinatarios: {c.recipients_count}</span>
             <span>Enviados: {c.sent_count}</span>
-            <span>Fallidos: {c.failed_count}</span>
+            {c.failed_count > 0 && <span className="text-red-600">Fallidos: {c.failed_count}</span>}
             <span>{new Date(c.created_at).toLocaleString("es-MX")}</span>
           </div>
+          {c.failed_count > 0 && c.error_details && (
+            <div className="mt-2 bg-red-50 rounded p-2 text-xs text-red-700 whitespace-pre-wrap">
+              {c.error_details}
+            </div>
+          )}
         </div>
       ))}
     </div>
