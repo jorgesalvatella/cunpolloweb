@@ -259,16 +259,19 @@ export default function CheckoutForm() {
       if (!res.ok) {
         showError(data.error || t("errorGeneric"));
         setLoading(false);
+        submittingRef.current = false;
         return;
       }
 
       // 3D Secure redirect — do NOT clear cart yet, clear on confirmation page
       if (data.redirectUrl) {
+        setLoading(false);
         window.location.href = data.redirectUrl;
         return;
       }
 
       clearCart();
+      setLoading(false);
       router.push(`/${locale}/confirmation/${data.orderId}`);
     } catch (err) {
       showError(err instanceof Error ? err.message : t("errorGeneric"));

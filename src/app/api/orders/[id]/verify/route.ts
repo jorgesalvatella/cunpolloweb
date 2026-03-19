@@ -59,8 +59,9 @@ export async function POST(
         .single();
 
       if (fullOrder.data) {
-        const { notifyAdminNewOrder } = await import("@/lib/twilio");
+        const { notifyAdminNewOrder, notifyCustomerStatusChange } = await import("@/lib/twilio");
         notifyAdminNewOrder(fullOrder.data);
+        notifyCustomerStatusChange(fullOrder.data);
       }
     } catch {}
 

@@ -52,20 +52,28 @@ function saveCart(items: CartItem[]) {
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const { getItemById, getEffectivePrice } = useMenu();
+  const { items: menuItems, getItemById, getEffectivePrice, loading: menuLoading } = useMenu();
   const [items, setItems] = useState<CartItem[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
+  // Load cart from localStorage immediately
   useEffect(() => {
-    const saved = loadCart();
-    // Filter out items that are no longer available in the menu
-    const valid = saved.filter((item) => {
-      const menuItem = getItemById(item.menuItemId);
-      return menuItem && menuItem.available;
-    });
-    setItems(valid);
+    setItems(loadCart());
     setHydrated(true);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Filter out unavailable items only after menu has loaded
+  useEffect(() => {
+    if (menuLoading || !hydrated || menuItems.length === 0) return;
+    setItems((prev) => {
+      const valid = prev.filter((item) => {
+        const menuItem = getItemById(item.menuItemId);
+        return menuItem && menuItem.available;
+      });
+      // Only update if something was actually removed
+      return valid.length === prev.length ? prev : valid;
+    });
+  }, [menuLoading, menuItems, hydrated, getItemById]);
 
   useEffect(() => {
     if (hydrated) saveCart(items);
