@@ -15,6 +15,24 @@ const statusConfig: Record<OrderStatus, { label: string; color: string }> = {
   cancelled: { label: "Cancelado", color: "bg-red-100 text-red-800" },
 };
 
+function getDisplayStatus(order: Order): { label: string; color: string } {
+  if (order.status === "pending") {
+    if (order.payment_status === "pending_3ds") {
+      return { label: "Esperando pago 3DS", color: "bg-amber-100 text-amber-800" };
+    }
+    if (order.payment_status === "failed") {
+      return { label: "Pago fallido", color: "bg-red-100 text-red-800" };
+    }
+    if (order.payment_status === "processing") {
+      return { label: "Procesando pago", color: "bg-yellow-100 text-yellow-800" };
+    }
+  }
+  if (order.payment_status === "refunded") {
+    return { label: "Reembolsado", color: "bg-purple-100 text-purple-800" };
+  }
+  return statusConfig[order.status];
+}
+
 export default function GerentePage() {
   const router = useRouter();
   const [authed, setAuthed] = useState(false);
@@ -209,8 +227,8 @@ export default function GerentePage() {
                     </td>
                     <td className="px-4 py-3 text-right font-medium">${order.total}</td>
                     <td className="px-4 py-3 text-center">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${statusConfig[order.status].color}`}>
-                        {statusConfig[order.status].label}
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${getDisplayStatus(order).color}`}>
+                        {getDisplayStatus(order).label}
                       </span>
                     </td>
                   </tr>

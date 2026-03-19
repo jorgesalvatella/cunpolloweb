@@ -23,6 +23,7 @@ export type OrderStatus =
 export type PaymentStatus =
   | "pending"
   | "processing"
+  | "pending_3ds"
   | "success"
   | "failed"
   | "refunded";

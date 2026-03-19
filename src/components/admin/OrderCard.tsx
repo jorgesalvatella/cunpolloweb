@@ -20,6 +20,16 @@ const statusLabels: Record<OrderStatus, string> = {
   cancelled: "Cancelado",
 };
 
+function getLabel(order: Order): { label: string; color: string } {
+  if (order.status === "pending") {
+    if (order.payment_status === "pending_3ds") return { label: "Esperando pago 3DS", color: "bg-amber-100 text-amber-800" };
+    if (order.payment_status === "failed") return { label: "Pago fallido", color: "bg-red-100 text-red-800" };
+    if (order.payment_status === "processing") return { label: "Procesando pago", color: "bg-yellow-100 text-yellow-800" };
+  }
+  if (order.payment_status === "refunded") return { label: "Reembolsado", color: "bg-purple-100 text-purple-800" };
+  return { label: statusLabels[order.status], color: statusColors[order.status] };
+}
+
 const nextStatus: Partial<Record<OrderStatus, OrderStatus>> = {
   paid: "preparing",
   preparing: "ready",
@@ -46,8 +56,8 @@ export default function OrderCard({
           <span className="text-lg font-bold text-dark">#{order.order_number}</span>
           <span className="text-sm text-dark/50 ml-2">{time}</span>
         </div>
-        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColors[order.status]}`}>
-          {statusLabels[order.status]}
+        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getLabel(order).color}`}>
+          {getLabel(order).label}
         </span>
       </div>
 
