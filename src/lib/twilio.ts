@@ -13,7 +13,9 @@ const ORDER_TEMPLATES = {
   cancelled: "HXedd7f5a92740634f330fbc5a3198d3c9",
 } as const;
 
-const ADMIN_NEW_ORDER_TEMPLATE = "HXaee917f664bcf721aa3bd48cd8c626fd";
+// Reuse the working order_confirmed template for admin notifications
+// (new templates are being blocked by Meta quality restrictions)
+const ADMIN_NEW_ORDER_TEMPLATE = "HXe143bed5f4275bbbf474b90e786c13bd";
 
 function isConfigured(): boolean {
   return !!(TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN && FEATURES.WHATSAPP_NOTIFICATIONS);
@@ -245,17 +247,17 @@ export function notifyAdminNewOrder(order: Order): void {
   if (phones.length === 0) return;
 
   const typeLabel = order.order_type === "dine_in" ? "Comer aqui" : "Para llevar";
-  const itemLines = order.items.map((i) => `${i.quantity}x ${i.name}`).join(", ");
+  const itemLines = order.items
+    .map((i) => `- ${i.quantity}x ${i.name} (${formatCurrency(i.lineTotal)})`)
+    .join("\n");
 
-  const detail = [
-    `${order.customer_name} — ${typeLabel}`,
-    itemLines,
-    `Total: ${formatCurrency(order.total)}`,
-  ].join("\n");
-
+  // Uses order_confirmed template (5 vars) since new templates are blocked by Meta
   const variables = {
-    "1": String(order.order_number),
-    "2": detail,
+    "1": `ADMIN - ${order.customer_name}`,
+    "2": String(order.order_number),
+    "3": itemLines,
+    "4": formatCurrency(order.total),
+    "5": typeLabel,
   };
 
   const promises = phones.map((phone) =>
