@@ -53,20 +53,22 @@
 
 ### Vistas Especializadas Admin
 - **Estado**: Produccion
-- **Cocina** (`/admin/cocina`): Dark theme optimizado para tablet en cocina. Muestra solo pedidos "paid" y "preparing". Sonido de notificacion para pedidos nuevos. Botones grandes: EMPEZAR (paid→preparing), LISTO (preparing→ready). Supabase Realtime.
-- **Entrega** (`/admin/entrega`): White theme para cajera/mostrador. Muestra solo pedidos "ready". Nombre del cliente y telefono prominentes (clickeable para llamar). Boton ENTREGADO (ready→picked_up). Supabase Realtime.
-- **Gerente** (`/admin/gerente`): Dashboard ejecutivo con stats del dia: pedidos totales, ingresos, ticket promedio, completados. Desglose por tipo (comer aqui vs llevar). Conteo por status. Alerta para pedidos sin atender (+15 min). Tabla completa de pedidos del dia. Supabase Realtime.
+- **Realtime + Polling**: Todas las vistas usan Supabase Realtime para actualizaciones instantaneas + polling cada 10 segundos como fallback. Si el WebSocket se cae, los pedidos se actualizan en maximo 10 segundos sin recargar.
+- **Cocina** (`/admin/cocina`): Dark theme optimizado para tablet en cocina. Muestra solo pedidos "paid" y "preparing". Sonido de notificacion para pedidos nuevos. Botones grandes: EMPEZAR (paid→preparing), LISTO (preparing→ready).
+- **Entrega** (`/admin/entrega`): White theme para cajera/mostrador. Muestra solo pedidos "ready". Nombre del cliente y telefono prominentes (clickeable para llamar). Boton ENTREGADO (ready→picked_up).
+- **Gerente** (`/admin/gerente`): Dashboard ejecutivo con stats del dia: pedidos totales, ingresos, ticket promedio, completados. Desglose por tipo (comer aqui vs llevar). Conteo por status. Alerta para pedidos sin atender (+15 min). Tabla completa de pedidos del dia.
 
 ### Notificaciones WhatsApp
 - **Estado**: Produccion (WhatsApp Business Sender registrado)
 - **Numero**: +529983871387 (Twilio, registrado en WABA ID 1475932520606512)
 - **Feature flag**: `FEATURES.WHATSAPP_NOTIFICATIONS` en `src/lib/constants.ts` (actualmente `true`)
 - **Archivo**: `src/lib/twilio.ts` — wrapper sin SDK, fetch directo al REST API de Twilio
-- **Cliente**: recibe WhatsApp en cada cambio de status (paid, preparing, ready, picked_up, cancelled)
-- **Admin/Cocina**: recibe WhatsApp cuando entra un pedido nuevo
+- **Cliente**: recibe WhatsApp en cada cambio de status via templates aprobados (paid, preparing, ready, picked_up, cancelled)
+- **Admin/Cocina**: recibe WhatsApp cuando entra un pedido nuevo via template aprobado (`cunpollo_new_order_admin_v2`, SID: `HXc3551bb7c64df102453ff7c7bc61522e`). Mensaje incluye numero de pedido, cliente, tipo, items y total.
+- **Equipo notificado**: Jorge Salvatella, Alex (Chef), Jose Luis Olmos (Gerente), Adrian Rivera (Jefe de Piso) — configurados en `ADMIN_WHATSAPP_PHONES`
 - **Boton flotante**: `src/components/WhatsAppButton.tsx` — abre chat con el numero de WhatsApp Business
 - Fire-and-forget: errores se loguean pero nunca bloquean el flujo del pedido
-- Soporta multiples numeros admin via `ADMIN_WHATSAPP_PHONES` (separados por coma)
+- Todos los mensajes usan templates de Twilio Content API (no texto libre), garantizando entrega sin ventana de 24h
 - Sin dependencias nuevas (0 paquetes agregados)
 
 ### Gestion de Menu y Promociones (Admin)

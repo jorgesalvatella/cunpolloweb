@@ -1,5 +1,37 @@
 # Changelog
 
+## 2026-03-20 — Realtime robusto en admin + WhatsApp template para notificacion de pedidos
+
+### Problema
+Las vistas admin (cocina, entrega, gerente, dashboard) usaban Supabase Realtime para actualizar pedidos, pero si la conexion WebSocket se caia silenciosamente, el staff no veia pedidos nuevos hasta recargar la pagina. Ademas, la notificacion WhatsApp a admins usaba texto libre (`sendWhatsApp`), que solo funciona dentro de la ventana de 24 horas de WhatsApp Business API.
+
+### Cambios — Realtime robusto
+- **Polling fallback**: Todas las vistas admin ahora hacen polling cada 10 segundos como respaldo. Si Realtime funciona, los pedidos llegan al instante; si no, llegan en maximo 10 segundos.
+- **Fix Supabase Proxy**: Reemplazado el import deprecated `supabase` (Proxy) por `getSupabase()` directo en todas las vistas admin. El Proxy podia causar problemas con el contexto `this` en el cliente Realtime.
+- **Monitoreo de conexion**: Callback en `.subscribe()` loguea `CHANNEL_ERROR` y `TIMED_OUT` para debugging.
+
+### Cambios — WhatsApp template para admins
+- **Nuevo template**: Creado `cunpollo_new_order_admin_v2` en Twilio Content API (SID: `HXc3551bb7c64df102453ff7c7bc61522e`), categoria UTILITY, pendiente aprobacion de Meta.
+- **`notifyAdminNewOrder()`**: Ahora usa `sendWhatsAppTemplate()` con 2 variables (numero de orden + detalle combinado) en vez de `sendWhatsApp()` con texto libre. Garantiza entrega sin depender de ventana de 24h.
+- **Equipo notificado**: 4 numeros configurados en `ADMIN_WHATSAPP_PHONES`.
+
+### Archivos modificados
+- `src/app/admin/cocina/page.tsx` — `getSupabase()` + polling 10s + subscribe callback
+- `src/app/admin/entrega/page.tsx` — Idem
+- `src/app/admin/gerente/page.tsx` — Idem
+- `src/components/admin/OrdersDashboard.tsx` — Idem
+- `src/components/admin/MenuManager.tsx` — `getSupabase()` (sin polling, no es critico)
+- `src/lib/twilio.ts` — `ADMIN_NEW_ORDER_TEMPLATE`, `notifyAdminNewOrder()` usa template con 2 vars
+
+### Env vars actualizadas (Vercel Production)
+- `ADMIN_WHATSAPP_PHONES` — Actualizada con 4 numeros del equipo
+
+### Notas
+- El polling es un respaldo; puede removerse si se confirma que Realtime es estable post-launch.
+- El template debe ser aprobado por Meta antes de que los mensajes se entreguen. Status: pendiente.
+
+---
+
 ## 2026-03-18 — Auditoria de seguridad pre-launch: 25 issues corregidos
 
 ### Cambio

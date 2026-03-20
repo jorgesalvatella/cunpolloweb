@@ -28,7 +28,7 @@ Archivo de referencia: `.env.example`
 | `TWILIO_ACCOUNT_SID` | Secret | Account SID de Twilio | Twilio Console > Account Info |
 | `TWILIO_AUTH_TOKEN` | Secret | Auth Token de Twilio | Twilio Console > Account Info |
 | `TWILIO_WHATSAPP_FROM` | Server | Numero de WhatsApp remitente | Formato: `whatsapp:+529983871387` |
-| `ADMIN_WHATSAPP_PHONES` | Server | Numeros WhatsApp del equipo | Separados por coma: `whatsapp:+521234567890,whatsapp:+529876543210` |
+| `ADMIN_WHATSAPP_PHONES` | Server | Numeros WhatsApp del equipo (notificacion pedidos nuevos) | Separados por coma, 10 digitos MX: `9842357986,5613449792` (se formatean automaticamente a `whatsapp:+521...`) |
 
 ## Seguridad
 
