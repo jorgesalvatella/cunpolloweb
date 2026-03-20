@@ -13,7 +13,7 @@ const ORDER_TEMPLATES = {
   cancelled: "HXedd7f5a92740634f330fbc5a3198d3c9",
 } as const;
 
-const ADMIN_NEW_ORDER_TEMPLATE = "HXc3551bb7c64df102453ff7c7bc61522e";
+const ADMIN_NEW_ORDER_TEMPLATE = "HXaee917f664bcf721aa3bd48cd8c626fd";
 
 function isConfigured(): boolean {
   return !!(TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN && FEATURES.WHATSAPP_NOTIFICATIONS);
@@ -151,23 +151,26 @@ export async function sendWhatsAppTemplate(
   to: string,
   contentSid: string,
   variables?: Record<string, string>
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; error?: string; messageSid?: string }> {
   if (!isConfigured()) {
     return { success: false, error: "Twilio not configured" };
   }
 
+  const formattedTo = formatPhone(to);
   const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
   const auth = Buffer.from(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`).toString("base64");
 
   const params = new URLSearchParams({
     From: TWILIO_WHATSAPP_FROM,
-    To: formatPhone(to),
+    To: formattedTo,
     ContentSid: contentSid,
   });
 
   if (variables) {
     params.set("ContentVariables", JSON.stringify(variables));
   }
+
+  console.log(`[Twilio] Sending template ${contentSid} from ${TWILIO_WHATSAPP_FROM} to ${formattedTo}`);
 
   const res = await fetch(url, {
     method: "POST",
@@ -178,13 +181,24 @@ export async function sendWhatsAppTemplate(
     body: params.toString(),
   });
 
+  const responseBody = await res.text();
+
   if (!res.ok) {
-    const error = await res.text();
-    console.error(`[Twilio] Template send error to ${to}: ${res.status} ${error}`);
-    return { success: false, error: `${res.status}: ${error}` };
+    console.error(`[Twilio] Template send error to ${formattedTo}: ${res.status} ${responseBody}`);
+    return { success: false, error: `${res.status}: ${responseBody}` };
   }
 
-  return { success: true };
+  // Parse response to get message SID and status
+  try {
+    const data = JSON.parse(responseBody);
+    console.log(`[Twilio] Message queued: SID=${data.sid} status=${data.status} to=${formattedTo}`);
+    if (data.status === "failed" || data.status === "undelivered") {
+      return { success: false, error: `Twilio status: ${data.status} (code: ${data.error_code})`, messageSid: data.sid };
+    }
+    return { success: true, messageSid: data.sid };
+  } catch {
+    return { success: true };
+  }
 }
 
 export function notifyCustomerStatusChange(order: Order): void {
