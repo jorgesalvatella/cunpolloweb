@@ -13,6 +13,8 @@ const ORDER_TEMPLATES = {
   cancelled: "HXedd7f5a92740634f330fbc5a3198d3c9",
 } as const;
 
+const ADMIN_NEW_ORDER_TEMPLATE = "HXc3551bb7c64df102453ff7c7bc61522e";
+
 function isConfigured(): boolean {
   return !!(TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN && FEATURES.WHATSAPP_NOTIFICATIONS);
 }
@@ -228,10 +230,22 @@ export function notifyAdminNewOrder(order: Order): void {
 
   if (phones.length === 0) return;
 
-  const message = getAdminMessage(order);
+  const typeLabel = order.order_type === "dine_in" ? "Comer aqui" : "Para llevar";
+  const itemLines = order.items.map((i) => `${i.quantity}x ${i.name}`).join(", ");
+
+  const detail = [
+    `${order.customer_name} — ${typeLabel}`,
+    itemLines,
+    `Total: ${formatCurrency(order.total)}`,
+  ].join("\n");
+
+  const variables = {
+    "1": String(order.order_number),
+    "2": detail,
+  };
 
   const promises = phones.map((phone) =>
-    sendWhatsApp(formatPhone(phone), message)
+    sendWhatsAppTemplate(formatPhone(phone), ADMIN_NEW_ORDER_TEMPLATE, variables)
   );
 
   Promise.allSettled(promises).catch((err) => {
