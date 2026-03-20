@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { supabase } from "@/lib/supabase/client";
+import { getSupabase } from "@/lib/supabase/client";
 import type { Order, OrderStatus } from "@/types/order";
 
 const statusConfig: Record<OrderStatus, { label: string; color: string }> = {
@@ -68,14 +68,25 @@ export default function GerentePage() {
     if (!authed) return;
     fetchOrders();
 
-    const channel = supabase
+    // Poll every 10s as fallback when realtime drops
+    const poll = setInterval(fetchOrders, 10_000);
+
+    const sb = getSupabase();
+    const channel = sb
       .channel("gerente-realtime")
       .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => {
         fetchOrders();
       })
-      .subscribe();
+      .subscribe((status) => {
+        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+          console.warn("[gerente] Realtime error, relying on polling");
+        }
+      });
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      clearInterval(poll);
+      sb.removeChannel(channel);
+    };
   }, [authed, fetchOrders]);
 
   if (checking) {

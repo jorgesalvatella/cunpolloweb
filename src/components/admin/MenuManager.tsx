@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { supabase } from "@/lib/supabase/client";
+import { getSupabase } from "@/lib/supabase/client";
 import type { DbMenuItem, DbCategory } from "@/types/menu";
 
 type DiscountMode = "none" | "percent" | "fixed";
@@ -56,7 +56,8 @@ export default function MenuManager() {
 
   // Realtime subscription on menu_items
   useEffect(() => {
-    const channel = supabase
+    const sb = getSupabase();
+    const channel = sb
       .channel("menu-items-realtime")
       .on(
         "postgres_changes",
@@ -68,7 +69,7 @@ export default function MenuManager() {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      sb.removeChannel(channel);
     };
   }, [fetchMenu]);
 

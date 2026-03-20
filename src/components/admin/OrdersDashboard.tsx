@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/lib/supabase/client";
+import { getSupabase } from "@/lib/supabase/client";
 import OrderCard from "./OrderCard";
 import type { Order, OrderStatus } from "@/types/order";
 
@@ -33,9 +33,12 @@ export default function OrdersDashboard() {
     fetchOrders();
   }, [fetchOrders]);
 
-  // Realtime subscription
+  // Realtime subscription + polling fallback
   useEffect(() => {
-    const channel = supabase
+    const poll = setInterval(fetchOrders, 10_000);
+
+    const sb = getSupabase();
+    const channel = sb
       .channel("orders-realtime")
       .on(
         "postgres_changes",
@@ -44,10 +47,15 @@ export default function OrdersDashboard() {
           fetchOrders();
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+          console.warn("[orders] Realtime error, relying on polling");
+        }
+      });
 
     return () => {
-      supabase.removeChannel(channel);
+      clearInterval(poll);
+      sb.removeChannel(channel);
     };
   }, [fetchOrders]);
 

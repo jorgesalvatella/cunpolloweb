@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { supabase } from "@/lib/supabase/client";
+import { getSupabase } from "@/lib/supabase/client";
 import type { Order, OrderStatus } from "@/types/order";
 
 const statusColors: Record<string, string> = {
@@ -66,14 +66,25 @@ export default function CocinaPage() {
     if (!authed) return;
     fetchOrders();
 
-    const channel = supabase
+    // Poll every 10s as fallback when realtime drops
+    const poll = setInterval(fetchOrders, 10_000);
+
+    const sb = getSupabase();
+    const channel = sb
       .channel("cocina-realtime")
       .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => {
         fetchOrders();
       })
-      .subscribe();
+      .subscribe((status) => {
+        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+          console.warn("[cocina] Realtime error, relying on polling");
+        }
+      });
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      clearInterval(poll);
+      sb.removeChannel(channel);
+    };
   }, [authed, fetchOrders]);
 
   const updateStatus = async (id: string, status: OrderStatus) => {
