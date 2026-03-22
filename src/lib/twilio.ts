@@ -214,9 +214,10 @@ export function notifyCustomerStatusChange(order: Order): void {
   let variables: Record<string, string>;
 
   if (order.status === "paid") {
+    // Twilio ContentVariables rejects newlines in values (error 21656)
     const itemLines = order.items
-      .map((i) => `- ${i.quantity}x ${i.name} (${formatCurrency(i.lineTotal)})`)
-      .join("\n");
+      .map((i) => `${i.quantity}x ${i.name} (${formatCurrency(i.lineTotal)})`)
+      .join(" | ");
     const typeLabel = order.order_type === "dine_in" ? "Comer en restaurante" : "Para llevar";
     variables = {
       "1": order.customer_name,
@@ -247,9 +248,10 @@ export function notifyAdminNewOrder(order: Order): void {
   if (phones.length === 0) return;
 
   const typeLabel = order.order_type === "dine_in" ? "Comer aqui" : "Para llevar";
+  // Twilio ContentVariables rejects newlines in values (error 21656)
   const itemLines = order.items
-    .map((i) => `- ${i.quantity}x ${i.name} (${formatCurrency(i.lineTotal)})`)
-    .join("\n");
+    .map((i) => `${i.quantity}x ${i.name} (${formatCurrency(i.lineTotal)})`)
+    .join(" | ");
 
   // Uses order_confirmed template (5 vars) since new templates are blocked by Meta
   const variables = {
