@@ -185,16 +185,10 @@ export async function POST(request: Request) {
 
     // SPEI branch — generate bank reference and return early
     if (paymentMethod === "spei") {
-      const dueDate = new Date(Date.now() + 3 * 60 * 60 * 1000);
-      const dueDateStr = dueDate.toISOString().replace("T", " ").slice(0, 19);
-
       const speiResult = await createBankCharge({
         amount: total,
         description: `CUNPOLLO Pedido #${order.order_number}: ${itemNames}`.slice(0, 250),
         orderId: order.id,
-        customerName: name,
-        customerEmail: body.customerEmail,
-        dueDate: dueDateStr,
       });
 
       if (!speiResult.success) {
@@ -214,7 +208,7 @@ export async function POST(request: Request) {
         bank: speiResult.speiDetails?.bank || "",
         agreement: speiResult.speiDetails?.agreement || "",
         name: speiResult.speiDetails?.name || "",
-        due_date: dueDateStr,
+        due_date: new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString(),
       };
 
       await supabaseAdmin
