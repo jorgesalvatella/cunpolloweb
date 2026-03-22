@@ -21,17 +21,38 @@ Crea una orden.
   "customerPhone": "+529981234567",
   "tokenId": "tok_...",
   "deviceSessionId": "...",
+  "paymentMethod": "card",
+  "customerEmail": "juan@email.com",
   "orderType": "dine_in",
   "pickupTime": "14:00"
 }
 ```
 
-**Response 200:**
+- `paymentMethod`: `"card"` (default) o `"spei"`
+- `tokenId` / `deviceSessionId`: obligatorios solo si `paymentMethod === "card"`
+- `customerEmail`: opcional, usado para el cargo SPEI
+
+**Response 200 (tarjeta):**
 ```json
 {
   "orderId": "uuid-...",
   "orderNumber": 1042,
   "redirectUrl": "https://..." // solo si requiere 3D Secure
+}
+```
+
+**Response 200 (SPEI):**
+```json
+{
+  "orderId": "uuid-...",
+  "orderNumber": 1042,
+  "speiDetails": {
+    "clabe": "646180...",
+    "bank": "STP",
+    "agreement": "...",
+    "name": "CUNPOLLO",
+    "due_date": "2026-03-22 18:00:00"
+  }
 }
 ```
 
@@ -47,7 +68,7 @@ Crea una orden.
 - Origin validation: redirect URL validada contra whitelist
 - Batch fetch: items del menu se obtienen en una sola query (no N+1)
 
-**Flujo interno:**
+**Flujo interno (tarjeta):**
 1. Rate limit check por IP
 2. Si hay `idempotencyKey`, verifica que no exista orden duplicada
 3. Batch fetch de items del menu y validacion server-side de precios
@@ -55,6 +76,14 @@ Crea una orden.
 5. Cobra con Openpay (tarjeta tokenizada)
 6. Si requiere 3D Secure: responde con `redirectUrl`, orden queda en `pending_3ds`
 7. Si pago directo: actualiza a `paid`, envia WhatsApp y responde con orderId
+
+**Flujo interno (SPEI):**
+1-3. Igual que tarjeta
+4. INSERT en Supabase (status: pending, payment_status: pending_spei, payment_method: spei)
+5. Crea cargo SPEI en Openpay (`method: "bank_account"`, due_date: +3 horas)
+6. Guarda spei_details (CLABE, banco, referencia) en la orden
+7. Responde con orderId + speiDetails
+8. Cuando Openpay recibe la transferencia, envia webhook → orden pasa a `paid` → WhatsApp
 
 ---
 

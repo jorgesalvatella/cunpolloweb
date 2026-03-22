@@ -22,6 +22,7 @@ const statusLabels: Record<OrderStatus, string> = {
 
 function getLabel(order: Order): { label: string; color: string } {
   if (order.status === "pending") {
+    if (order.payment_status === "pending_spei") return { label: "Esperando SPEI", color: "bg-indigo-100 text-indigo-800" };
     if (order.payment_status === "pending_3ds") return { label: "Esperando pago 3DS", color: "bg-amber-100 text-amber-800" };
     if (order.payment_status === "failed") return { label: "Pago fallido", color: "bg-red-100 text-red-800" };
     if (order.payment_status === "processing") return { label: "Procesando pago", color: "bg-yellow-100 text-yellow-800" };
@@ -74,6 +75,11 @@ export default function OrderCard({
           }`}>
             {order.order_type === "dine_in" ? "Comer aqui" : "Para llevar"}
           </span>
+          {order.payment_method === "spei" && (
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800">
+              SPEI
+            </span>
+          )}
           {order.pickup_time && (
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
               Listo: {order.pickup_time}

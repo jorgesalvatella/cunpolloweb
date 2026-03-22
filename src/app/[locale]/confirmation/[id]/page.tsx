@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
@@ -16,6 +16,13 @@ export default function ConfirmationPage() {
   const { clearCart } = useCart();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  const copyToClipboard = useCallback((text: string, field: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  }, []);
 
   useEffect(() => {
     async function loadOrder() {
@@ -43,6 +50,26 @@ export default function ConfirmationPage() {
     loadOrder();
   }, [id, clearCart]);
 
+  // Poll for SPEI payment confirmation every 10 seconds
+  useEffect(() => {
+    if (!order || order.payment_status !== "pending_spei") return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/orders/${id}`);
+        const data = await res.json();
+        if (data && data.payment_status !== "pending_spei") {
+          setOrder(data);
+          if (["paid", "preparing", "ready", "picked_up"].includes(data.status)) {
+            clearCart();
+          }
+        }
+      } catch {}
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [id, order?.payment_status, clearCart]);
+
   if (loading) {
     return (
       <section className="pt-28 pb-16 min-h-screen bg-white flex items-center justify-center">
@@ -65,6 +92,7 @@ export default function ConfirmationPage() {
 
   const isPaid = order.status === "paid" || order.status === "preparing" || order.status === "ready" || order.status === "picked_up";
   const isFailed = order.status === "cancelled" || order.payment_status === "failed";
+  const isPendingSpei = order.payment_method === "spei" && order.payment_status === "pending_spei";
 
   const addressFull = `${RESTAURANT.address.street}, ${RESTAURANT.address.city}, ${RESTAURANT.address.state} ${RESTAURANT.address.zip}`;
   const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${RESTAURANT.coordinates.lat},${RESTAURANT.coordinates.lng}`;
@@ -211,6 +239,109 @@ export default function ConfirmationPage() {
                 <p className="text-lg text-red-700">{t("paymentFailedMessage")}</p>
               </motion.div>
             </>
+          ) : isPendingSpei ? (
+            <>
+              {/* SPEI pending icon — clock */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", damping: 15, stiffness: 200, delay: 0.1 }}
+                className="w-20 h-20 mx-auto mb-6 bg-blue-100 rounded-full flex items-center justify-center"
+              >
+                <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </motion.div>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-3xl font-bold text-blue-700 font-(family-name:--font-heading) mb-2"
+              >
+                {t("speiPendingTitle")}
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="text-dark/50 mb-2"
+              >
+                {t("orderNumber")} #{order.order_number}
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="bg-blue-50 rounded-2xl p-6 my-8 text-left"
+              >
+                <p className="text-sm text-blue-800 mb-4 text-center">{t("speiTransferDetails")}</p>
+
+                {order.spei_details && (
+                  <div className="space-y-3">
+                    {/* CLABE */}
+                    <div className="bg-white rounded-lg p-3">
+                      <div className="text-xs text-dark/50 mb-1">{t("speiClabe")}</div>
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-lg font-bold text-dark tracking-wide">{order.spei_details.clabe}</span>
+                        <button
+                          type="button"
+                          onClick={() => copyToClipboard(order.spei_details!.clabe, "clabe")}
+                          className="ml-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-semibold hover:bg-blue-200 transition-colors cursor-pointer"
+                        >
+                          {copiedField === "clabe" ? t("copied") : "Copiar"}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Bank */}
+                    <div className="flex justify-between text-sm">
+                      <span className="text-dark/60">{t("speiBank")}</span>
+                      <span className="font-semibold text-dark">{order.spei_details.bank}</span>
+                    </div>
+
+                    {/* Reference/Agreement */}
+                    {order.spei_details.agreement && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-dark/60">{t("speiReference")}</span>
+                        <span className="font-semibold text-dark">{order.spei_details.agreement}</span>
+                      </div>
+                    )}
+
+                    {/* Amount */}
+                    <div className="flex justify-between text-sm">
+                      <span className="text-dark/60">{t("speiAmount")}</span>
+                      <span className="font-bold text-red-700">${order.total} MXN</span>
+                    </div>
+
+                    {/* Due date */}
+                    {order.spei_details.due_date && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-dark/60">{t("speiDueDate")}</span>
+                        <span className="font-semibold text-dark">
+                          {new Date(order.spei_details.due_date).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className="mt-4 pt-4 border-t border-blue-200 text-center">
+                  <p className="text-sm text-blue-700">{t("speiInstructionsConfirmation")}</p>
+                </div>
+
+                {/* Polling indicator */}
+                <div className="mt-4 flex items-center justify-center gap-2 text-sm text-blue-600">
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  {t("speiWaiting")}
+                </div>
+              </motion.div>
+            </>
           ) : (
             <>
               {/* Animated checkmark */}
@@ -244,7 +375,7 @@ export default function ConfirmationPage() {
                 transition={{ delay: 0.4 }}
                 className="text-3xl font-bold text-red-700 font-(family-name:--font-heading) mb-2"
               >
-                {t("title")}
+                {order.payment_method === "spei" ? t("speiConfirmed") : t("title")}
               </motion.h1>
 
               <motion.p

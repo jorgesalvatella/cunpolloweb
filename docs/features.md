@@ -41,6 +41,15 @@
 - Sin delivery, sin cuentas de usuario
 - Notificaciones WhatsApp via Twilio (ver seccion abajo)
 
+### Pago por Transferencia SPEI
+- **Estado**: Produccion
+- **Metodo**: Openpay `method: "bank_account"` — genera CLABE para transferencia bancaria
+- **Flujo**: Cliente elige "Transferencia SPEI" en checkout → se genera referencia con CLABE, banco y vencimiento (3 horas) → cliente transfiere desde su app bancaria → Openpay envia webhook al recibir pago → orden pasa a `paid` → WhatsApp notifications
+- **UI Checkout**: Tabs "Tarjeta" / "Transferencia SPEI" en seccion de pago. Si SPEI: oculta inputs de tarjeta, muestra campo email opcional + instrucciones
+- **UI Confirmacion**: Vista pendiente SPEI con CLABE (boton copiar), banco, referencia, monto, vencimiento. Polling cada 10s para detectar pago automaticamente
+- **Admin**: Badge "SPEI" junto al tipo de pedido + label "Esperando SPEI" para ordenes pendientes
+- **DB**: Columnas `payment_method` (card/spei) y `spei_details` (JSONB) en tabla `orders`
+
 ### Dashboard Admin
 - **Estado**: Desplegado en produccion (Supabase configurado)
 - Login con usuario + contraseña, autenticacion por roles (cookie HTTP-only)

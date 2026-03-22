@@ -99,7 +99,14 @@
     "errorGuests": "Please select the number of guests.",
     "paymentNotReady": "Payment system is not ready. Please try again.",
     "invalidCard": "Invalid card number",
-    "invalidExpiry": "Invalid expiration date"
+    "invalidExpiry": "Invalid expiration date",
+    "paymentMethod": "Payment method",
+    "payCard": "Card",
+    "paySpei": "SPEI Transfer",
+    "speiInstructions": "A CLABE number will be generated so you can transfer from your banking app. Payment confirms in minutes.",
+    "email": "Email",
+    "emailPlaceholder": "you@email.com",
+    "generateSpeiReference": "Generate SPEI reference"
   },
   "confirmation": {
     "title": "Order Confirmed!",
@@ -116,7 +123,18 @@
     "readyBy": "Ready by",
     "guests": "guests",
     "paymentFailed": "Payment Failed",
-    "paymentFailedMessage": "Your payment could not be processed. No charge was made to your card. Please try again."
+    "paymentFailedMessage": "Your payment could not be processed. No charge was made to your card. Please try again.",
+    "speiPendingTitle": "SPEI Reference Generated",
+    "speiTransferDetails": "Transfer from your banking app with these details:",
+    "speiClabe": "CLABE",
+    "speiBank": "Bank",
+    "speiReference": "Reference",
+    "speiAmount": "Amount",
+    "speiDueDate": "Due by",
+    "speiInstructionsConfirmation": "Once you complete the transfer, your order will be confirmed automatically.",
+    "speiWaiting": "Waiting for your transfer...",
+    "speiConfirmed": "Transfer received",
+    "copied": "Copied"
   },
   "location": {
     "title": "Find Us",

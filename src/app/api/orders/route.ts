@@ -6,7 +6,7 @@ import {
   calculateOrderDiscount,
   dbToMenuItem,
 } from "@/lib/menu-data";
-import { createCharge } from "@/lib/openpay";
+import { createCharge, createBankCharge } from "@/lib/openpay";
 import { checkRateLimit } from "@/lib/rate-limit";
 import type { CreateOrderRequest, OrderItem } from "@/types/order";
 import type { DbMenuItem } from "@/types/menu";
@@ -31,17 +31,27 @@ export async function POST(request: Request) {
 
     const body: CreateOrderRequest = await request.json();
 
+    const paymentMethod = body.paymentMethod || "card";
+
     // Validate required fields
     if (
       !body.items?.length ||
       !body.customerName ||
       !body.customerPhone ||
-      !body.tokenId ||
-      !body.deviceSessionId ||
       !body.orderType ||
       !body.pickupTime
     ) {
       return NextResponse.json({ error: "Datos incompletos" }, { status: 400 });
+    }
+
+    // Card-specific validation
+    if (paymentMethod === "card" && (!body.tokenId || !body.deviceSessionId)) {
+      return NextResponse.json({ error: "Datos de tarjeta incompletos" }, { status: 400 });
+    }
+
+    // Validate payment method
+    if (!["card", "spei"].includes(paymentMethod)) {
+      return NextResponse.json({ error: "Metodo de pago invalido" }, { status: 400 });
     }
 
     // Validate order type
@@ -141,7 +151,8 @@ export async function POST(request: Request) {
       subtotal,
       total,
       status: "pending",
-      payment_status: "processing",
+      payment_status: paymentMethod === "spei" ? "pending_spei" : "processing",
+      payment_method: paymentMethod,
       order_type: body.orderType,
       pickup_time: body.pickupTime,
       guests: body.orderType === "dine_in" ? body.guests : null,
@@ -170,11 +181,61 @@ export async function POST(request: Request) {
     const locale = request.headers.get("accept-language")?.startsWith("en") ? "en" : "es";
     const confirmationUrl = `${origin}/${locale}/confirmation/${order.id}`;
 
-    // Process payment with Openpay
     const itemNames = orderItems.map((i) => `${i.name} x${i.quantity}`).join(", ");
+
+    // SPEI branch — generate bank reference and return early
+    if (paymentMethod === "spei") {
+      const dueDate = new Date(Date.now() + 3 * 60 * 60 * 1000);
+      const dueDateStr = dueDate.toISOString().replace("T", " ").slice(0, 19);
+
+      const speiResult = await createBankCharge({
+        amount: total,
+        description: `CUNPOLLO Pedido #${order.order_number}: ${itemNames}`.slice(0, 250),
+        orderId: order.id,
+        customerName: name,
+        customerEmail: body.customerEmail,
+        dueDate: dueDateStr,
+      });
+
+      if (!speiResult.success) {
+        await supabaseAdmin
+          .from("orders")
+          .update({ payment_status: "failed", status: "cancelled" })
+          .eq("id", order.id);
+
+        return NextResponse.json(
+          { error: speiResult.error || "Error al generar referencia SPEI" },
+          { status: 402 }
+        );
+      }
+
+      const speiDetails = {
+        clabe: speiResult.speiDetails?.clabe || "",
+        bank: speiResult.speiDetails?.bank || "",
+        agreement: speiResult.speiDetails?.agreement || "",
+        name: speiResult.speiDetails?.name || "",
+        due_date: dueDateStr,
+      };
+
+      await supabaseAdmin
+        .from("orders")
+        .update({
+          payment_reference: speiResult.chargeId,
+          spei_details: speiDetails,
+        })
+        .eq("id", order.id);
+
+      return NextResponse.json({
+        orderId: order.id,
+        orderNumber: order.order_number,
+        speiDetails,
+      });
+    }
+
+    // Process card payment with Openpay
     const chargeResult = await createCharge({
-      tokenId: body.tokenId,
-      deviceSessionId: body.deviceSessionId,
+      tokenId: body.tokenId!,
+      deviceSessionId: body.deviceSessionId!,
       amount: total,
       description: `CUNPOLLO Pedido #${order.order_number}: ${itemNames}`.slice(0, 250),
       orderId: order.id,
@@ -236,6 +297,8 @@ export async function POST(request: Request) {
         total,
         status: "paid" as const,
         payment_status: "success" as const,
+        payment_method: "card" as const,
+        spei_details: null,
         payment_reference: chargeResult.chargeId || null,
         order_type: body.orderType,
         pickup_time: body.pickupTime,

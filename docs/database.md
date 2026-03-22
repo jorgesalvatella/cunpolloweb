@@ -43,10 +43,18 @@ pending → paid → preparing → ready → picked_up
                                     ↘ cancelled (desde cualquier estado)
 ```
 
+### Columnas de metodo de pago
+
+| Columna | Tipo | Default | Descripcion |
+|---------|------|---------|-------------|
+| `payment_method` | TEXT | `'card'` | Metodo de pago: `card` o `spei` |
+| `spei_details` | JSONB | NULL | Datos SPEI: `{clabe, bank, agreement, name, due_date}` |
+
 ### Flujo de `payment_status`
 ```
-pending → processing → success
-                     → failed
+Tarjeta: pending → processing → pending_3ds → success / failed
+SPEI:    pending_spei → success (via webhook cuando se recibe la transferencia)
+                      → failed (si vence el plazo)
 ```
 
 ## Indices

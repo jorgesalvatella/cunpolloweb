@@ -56,6 +56,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true, message: "Already resolved" });
     }
 
+    console.log(`[Webhook] Processing order ${orderId}, payment_status: ${order.payment_status}, transaction status: ${transaction.status}`);
+
     // Verify the charge status directly with Openpay (don't trust webhook payload alone)
     const chargeId = order.payment_reference || transaction.id;
     if (!chargeId) {

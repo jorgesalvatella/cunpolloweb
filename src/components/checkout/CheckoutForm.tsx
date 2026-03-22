@@ -8,7 +8,7 @@ import { useCart } from "@/context/CartContext";
 import { useMenu } from "@/context/MenuContext";
 import CardInput from "./CardInput";
 import type { Locale } from "@/i18n/config";
-import type { OrderType } from "@/types/order";
+import type { OrderType, PaymentMethod } from "@/types/order";
 
 const ALL_TIME_SLOTS: string[] = (() => {
   const slots: string[] = [];
@@ -88,6 +88,8 @@ export default function CheckoutForm() {
   const [orderType, setOrderType] = useState<OrderType>("pickup");
   const [pickupTime, setPickupTime] = useState("");
   const [guests, setGuests] = useState<number | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
+  const [customerEmail, setCustomerEmail] = useState("");
   const [card, setCard] = useState({ number: "", expiry: "", cvv: "", holderName: "" });
   const [availableSlots, setAvailableSlots] = useState<string[]>(ALL_TIME_SLOTS);
 
@@ -220,15 +222,17 @@ export default function CheckoutForm() {
       return;
     }
 
-    const digits = card.number.replace(/\s/g, "");
-    if (!digits || !card.expiry || !card.cvv || !card.holderName) {
-      showError(t("errorCard"));
-      return;
-    }
+    if (paymentMethod === "card") {
+      const digits = card.number.replace(/\s/g, "");
+      if (!digits || !card.expiry || !card.cvv || !card.holderName) {
+        showError(t("errorCard"));
+        return;
+      }
 
-    if (!openpayReady) {
-      showError(t("paymentNotReady"));
-      return;
+      if (!openpayReady) {
+        showError(t("paymentNotReady"));
+        return;
+      }
     }
 
     setLoading(true);
@@ -236,7 +240,10 @@ export default function CheckoutForm() {
     payingRef.current = true;
 
     try {
-      const tokenId = await tokenizeCard();
+      let tokenId: string | undefined;
+      if (paymentMethod === "card") {
+        tokenId = await tokenizeCard();
+      }
 
       const idempotencyKey = crypto.randomUUID();
 
@@ -248,7 +255,9 @@ export default function CheckoutForm() {
           customerName,
           customerPhone,
           tokenId,
-          deviceSessionId,
+          deviceSessionId: paymentMethod === "card" ? deviceSessionId : undefined,
+          paymentMethod,
+          customerEmail: paymentMethod === "spei" ? customerEmail : undefined,
           orderType,
           pickupTime,
           guests: orderType === "dine_in" ? guests : null,
@@ -271,6 +280,14 @@ export default function CheckoutForm() {
         payingRef.current = false;
         setLoading(false);
         window.location.href = data.redirectUrl;
+        return;
+      }
+
+      // SPEI — don't clear cart yet, clear on confirmation when paid
+      if (paymentMethod === "spei") {
+        payingRef.current = false;
+        setLoading(false);
+        router.push(`/${locale}/confirmation/${data.orderId}`);
         return;
       }
 
@@ -432,10 +449,57 @@ export default function CheckoutForm() {
           )}
         </div>
 
+        {/* Payment Method */}
+        <div>
+          <h2 className="text-lg font-bold text-dark mb-3">{t("paymentMethod")}</h2>
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <button
+              type="button"
+              onClick={() => setPaymentMethod("card")}
+              className={`py-3 rounded-lg font-semibold text-sm transition-colors cursor-pointer border-2 ${
+                paymentMethod === "card"
+                  ? "border-red-600 bg-red-50 text-red-700"
+                  : "border-gray-200 bg-white text-dark/70 hover:border-gray-300"
+              }`}
+            >
+              {t("payCard")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setPaymentMethod("spei")}
+              className={`py-3 rounded-lg font-semibold text-sm transition-colors cursor-pointer border-2 ${
+                paymentMethod === "spei"
+                  ? "border-red-600 bg-red-50 text-red-700"
+                  : "border-gray-200 bg-white text-dark/70 hover:border-gray-300"
+              }`}
+            >
+              {t("paySpei")}
+            </button>
+          </div>
+        </div>
+
         {/* Payment Info */}
         <div>
           <h2 className="text-lg font-bold text-dark mb-3">{t("paymentInfo")}</h2>
-          <CardInput value={card} onChange={setCard} />
+          {paymentMethod === "card" ? (
+            <CardInput value={card} onChange={setCard} />
+          ) : (
+            <div className="space-y-4">
+              <div className="bg-blue-50 rounded-lg p-4 text-sm text-blue-800">
+                {t("speiInstructions")}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-dark/70 mb-1">{t("email")}</label>
+                <input
+                  type="email"
+                  value={customerEmail}
+                  onChange={(e) => setCustomerEmail(e.target.value)}
+                  placeholder={t("emailPlaceholder")}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {error && (
@@ -444,7 +508,7 @@ export default function CheckoutForm() {
 
         <button
           type="submit"
-          disabled={loading || !openpayReady}
+          disabled={loading || (paymentMethod === "card" && !openpayReady)}
           className="w-full bg-red-600 text-white py-4 rounded-full font-bold text-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-lg"
         >
           {loading ? (
@@ -454,6 +518,13 @@ export default function CheckoutForm() {
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
               {t("processing")}
+            </span>
+          ) : paymentMethod === "spei" ? (
+            <span className="flex items-center justify-center gap-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              </svg>
+              {`${t("generateSpeiReference")} $${orderDiscount.finalTotal} MXN`}
             </span>
           ) : (
             <span className="flex items-center justify-center gap-2">

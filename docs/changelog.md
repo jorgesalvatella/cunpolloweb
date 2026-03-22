@@ -1,5 +1,35 @@
 # Changelog
 
+## 2026-03-22 — Pago por transferencia SPEI (Openpay)
+
+### Resumen
+Agregado SPEI como segundo metodo de pago. Los clientes pueden elegir entre tarjeta o transferencia bancaria. Openpay genera una CLABE para que el cliente transfiera desde su app bancaria. El pago se confirma automaticamente via webhook.
+
+### Cambios
+- **DB**: Migracion `add_spei_payment_columns` — columnas `payment_method` (TEXT, default 'card') y `spei_details` (JSONB) en tabla `orders`
+- **Tipos**: `PaymentMethod`, `SpeiDetails`, `pending_spei` status en `src/types/order.ts`
+- **Openpay SDK**: Nueva funcion `createBankCharge()` en `src/lib/openpay.ts`
+- **API POST /api/orders**: Branch SPEI antes del flujo de tarjeta. Validacion condicional de tokenId/deviceSessionId
+- **API GET /api/orders/[id]**: Agrega `payment_method`, `spei_details` al select
+- **CheckoutForm**: Tabs "Tarjeta" / "Transferencia SPEI", campo email para SPEI, boton condicional
+- **Confirmacion**: Vista pendiente SPEI con CLABE (copiar), banco, referencia, vencimiento + polling cada 10s
+- **Admin OrderCard**: Badge "SPEI" + label "Esperando SPEI" para `pending_spei`
+- **Traducciones**: Nuevas keys en checkout + confirmation (ES/EN)
+- **Webhook**: Sin cambios funcionales — ya maneja `completed` → `paid` para cualquier tipo de cargo
+
+### Archivos modificados
+- `src/types/order.ts`
+- `src/lib/openpay.ts`
+- `src/app/api/orders/route.ts`
+- `src/app/api/orders/[id]/route.ts`
+- `src/app/api/webhooks/openpay/route.ts` (log adicional)
+- `src/components/checkout/CheckoutForm.tsx`
+- `src/app/[locale]/confirmation/[id]/page.tsx`
+- `src/components/admin/OrderCard.tsx`
+- `src/messages/es.json`, `src/messages/en.json`
+
+---
+
 ## 2026-03-20 — Realtime robusto en admin + WhatsApp template para notificacion de pedidos
 
 ### Problema

@@ -99,7 +99,14 @@
     "errorGuests": "Por favor selecciona el numero de personas.",
     "paymentNotReady": "El sistema de pago no esta listo. Intenta de nuevo.",
     "invalidCard": "Numero de tarjeta invalido",
-    "invalidExpiry": "Fecha de vencimiento invalida"
+    "invalidExpiry": "Fecha de vencimiento invalida",
+    "paymentMethod": "Metodo de pago",
+    "payCard": "Tarjeta",
+    "paySpei": "Transferencia SPEI",
+    "speiInstructions": "Se generara una CLABE para que transfieras desde tu app bancaria. El pago se confirma en minutos.",
+    "email": "Correo electronico",
+    "emailPlaceholder": "tu@email.com",
+    "generateSpeiReference": "Generar referencia SPEI"
   },
   "confirmation": {
     "title": "¡Pedido Confirmado!",
@@ -116,7 +123,18 @@
     "readyBy": "Listo a las",
     "guests": "personas",
     "paymentFailed": "Pago no procesado",
-    "paymentFailedMessage": "Tu pago no se pudo completar. No se realizo ningun cargo a tu tarjeta. Por favor intenta de nuevo."
+    "paymentFailedMessage": "Tu pago no se pudo completar. No se realizo ningun cargo a tu tarjeta. Por favor intenta de nuevo.",
+    "speiPendingTitle": "Referencia SPEI Generada",
+    "speiTransferDetails": "Transfiere desde tu app bancaria con estos datos:",
+    "speiClabe": "CLABE",
+    "speiBank": "Banco",
+    "speiReference": "Referencia",
+    "speiAmount": "Monto",
+    "speiDueDate": "Vence",
+    "speiInstructionsConfirmation": "Una vez que realices la transferencia, tu pedido se confirmara automaticamente.",
+    "speiWaiting": "Esperando tu transferencia...",
+    "speiConfirmed": "Transferencia recibida",
+    "copied": "Copiado"
   },
   "location": {
     "title": "Encuéntranos",

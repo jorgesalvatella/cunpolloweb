@@ -65,6 +65,99 @@ export async function getCharge(chargeId: string): Promise<{ status?: string; er
   });
 }
 
+type BankChargeResult = {
+  success: boolean;
+  chargeId?: string;
+  speiDetails?: {
+    clabe: string;
+    bank: string;
+    agreement: string;
+    name: string;
+  };
+  error?: string;
+};
+
+export async function createBankCharge({
+  amount,
+  description,
+  orderId,
+  customerName,
+  customerEmail,
+  dueDate,
+}: {
+  amount: number;
+  description: string;
+  orderId: string;
+  customerName: string;
+  customerEmail?: string;
+  dueDate: string;
+}): Promise<BankChargeResult> {
+  return new Promise((resolve) => {
+    const chargeRequest = {
+      method: "bank_account",
+      amount: parseFloat(amount.toFixed(2)),
+      currency: "MXN",
+      description,
+      order_id: orderId,
+      due_date: dueDate,
+      customer: {
+        name: customerName,
+        email: customerEmail || "cliente@cunpollo.com",
+      },
+    };
+
+    openpay.charges.create(
+      chargeRequest,
+      (
+        error: unknown,
+        charge: {
+          id?: string;
+          status?: string;
+          payment_method?: {
+            clabe?: string;
+            bank?: string;
+            agreement?: string;
+            name?: string;
+          };
+        }
+      ) => {
+        if (error) {
+          const err = error as {
+            description?: string;
+            error_code?: number;
+            http_code?: number;
+          };
+          console.error("Openpay SPEI charge error:", {
+            orderId,
+            error_code: err.error_code,
+            http_code: err.http_code,
+            description: err.description,
+          });
+          resolve({
+            success: false,
+            error: err.description || "Error al generar referencia SPEI",
+          });
+          return;
+        }
+
+        const pm = charge.payment_method;
+        resolve({
+          success: true,
+          chargeId: charge.id,
+          speiDetails: pm
+            ? {
+                clabe: pm.clabe || "",
+                bank: pm.bank || "",
+                agreement: pm.agreement || "",
+                name: pm.name || "",
+              }
+            : undefined,
+        });
+      }
+    );
+  });
+}
+
 export async function createCharge({
   tokenId,
   deviceSessionId,
