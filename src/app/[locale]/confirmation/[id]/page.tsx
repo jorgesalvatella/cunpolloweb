@@ -483,23 +483,25 @@ export default function ConfirmationPage() {
               href={REWARDS_URL}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.75 }}
-              className="flex items-center gap-4 bg-gold-500/10 border border-gold-500/20 rounded-2xl p-5 mb-6 hover:bg-gold-500/15 transition-colors group"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.75, type: "spring", stiffness: 200 }}
+              className="block bg-gold-500 rounded-2xl p-6 mb-6 hover:bg-gold-600 transition-colors shadow-lg shadow-gold-500/25 group"
             >
-              <div className="w-12 h-12 bg-gold-500 rounded-xl flex items-center justify-center shrink-0">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                </svg>
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center shrink-0">
+                  <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+                </div>
+                <div className="text-left flex-1">
+                  <p className="font-bold text-white text-base">{tRewards("confirmationBanner")}</p>
+                  <p className="text-white/70 text-sm">{tRewards("subtitle")}</p>
+                </div>
               </div>
-              <div className="text-left flex-1">
-                <p className="font-bold text-gold-600 text-sm">{tRewards("confirmationBanner")}</p>
-                <p className="text-dark/50 text-xs">{tRewards("subtitle")}</p>
-              </div>
-              <span className="px-4 py-2 bg-gold-500 text-white text-sm font-semibold rounded-full group-hover:bg-gold-600 transition-colors shrink-0">
+              <div className="mt-4 w-full py-3 bg-white text-gold-600 text-center font-bold rounded-full text-base group-hover:bg-white/90 transition-colors shadow-sm">
                 {tRewards("confirmationCta")}
-              </span>
+              </div>
             </motion.a>
           )}
 
