@@ -277,54 +277,71 @@ export default function ConfirmationPage() {
                 transition={{ delay: 0.6 }}
                 className="bg-blue-50 rounded-2xl p-6 my-8 text-left"
               >
-                <p className="text-sm text-blue-800 mb-4 text-center">{t("speiTransferDetails")}</p>
+                {/* Amount prominently */}
+                <div className="text-center mb-4">
+                  <div className="text-xs text-dark/50 mb-1">{t("speiAmount")}</div>
+                  <span className="text-2xl font-bold text-red-700">${order.total} MXN</span>
+                </div>
 
                 {order.spei_details && (
-                  <div className="space-y-3">
-                    {/* CLABE */}
-                    <div className="bg-white rounded-lg p-3">
-                      <div className="text-xs text-dark/50 mb-1">{t("speiClabe")}</div>
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono text-lg font-bold text-dark tracking-wide">{order.spei_details.clabe}</span>
-                        <button
-                          type="button"
-                          onClick={() => copyToClipboard(order.spei_details!.clabe, "clabe")}
-                          className="ml-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-semibold hover:bg-blue-200 transition-colors cursor-pointer"
-                        >
-                          {copiedField === "clabe" ? t("copied") : "Copiar"}
-                        </button>
+                  <div className="space-y-4">
+                    {/* Option 1: BBVA Bancomer — CIE */}
+                    <div className="bg-white rounded-lg p-4">
+                      <div className="font-bold text-dark text-sm mb-3">{t("speiBbvaTitle")}</div>
+                      <div className="space-y-2">
+                        <div>
+                          <div className="text-xs text-dark/50">{t("speiBbvaConvenio")}</div>
+                          <div className="flex items-center justify-between">
+                            <span className="font-mono font-bold text-dark">{order.spei_details.agreement}</span>
+                            <button
+                              type="button"
+                              onClick={() => copyToClipboard(order.spei_details!.agreement, "agreement")}
+                              className="ml-2 shrink-0 px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-semibold hover:bg-blue-200 transition-colors cursor-pointer"
+                            >
+                              {copiedField === "agreement" ? t("copied") : "Copiar"}
+                            </button>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-dark/50">{t("speiBbvaReferencia")}</div>
+                          <div className="flex items-center justify-between">
+                            <span className="font-mono font-bold text-dark text-sm break-all">{order.spei_details.name}</span>
+                            <button
+                              type="button"
+                              onClick={() => copyToClipboard(order.spei_details!.name, "name")}
+                              className="ml-2 shrink-0 px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-semibold hover:bg-blue-200 transition-colors cursor-pointer"
+                            >
+                              {copiedField === "name" ? t("copied") : "Copiar"}
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Bank */}
-                    <div className="flex justify-between text-sm">
-                      <span className="text-dark/60">{t("speiBank")}</span>
-                      <span className="font-semibold text-dark">{order.spei_details.bank}</span>
+                    {/* Divider */}
+                    <div className="flex items-center gap-3 px-2">
+                      <div className="flex-1 border-t border-blue-200" />
+                      <span className="text-xs text-blue-400 font-semibold">{t("speiOrOtherBank")}</span>
+                      <div className="flex-1 border-t border-blue-200" />
                     </div>
 
-                    {/* Reference/Agreement */}
-                    {order.spei_details.agreement && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-dark/60">{t("speiReference")}</span>
-                        <span className="font-semibold text-dark">{order.spei_details.agreement}</span>
+                    {/* Option 2: Other banks — SPEI CLABE */}
+                    <div className="bg-white rounded-lg p-4">
+                      <div className="font-bold text-dark text-sm mb-3">{t("speiOtherBankTitle")}</div>
+                      <div>
+                        <div className="text-xs text-dark/50 mb-1">{t("speiClabe")}</div>
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono font-bold text-dark text-sm break-all">{order.spei_details.clabe}</span>
+                          <button
+                            type="button"
+                            onClick={() => copyToClipboard(order.spei_details!.clabe, "clabe")}
+                            className="ml-2 shrink-0 px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-semibold hover:bg-blue-200 transition-colors cursor-pointer"
+                          >
+                            {copiedField === "clabe" ? t("copied") : "Copiar"}
+                          </button>
+                        </div>
                       </div>
-                    )}
-
-                    {/* Amount */}
-                    <div className="flex justify-between text-sm">
-                      <span className="text-dark/60">{t("speiAmount")}</span>
-                      <span className="font-bold text-red-700">${order.total} MXN</span>
                     </div>
-
-                    {/* Due date */}
-                    {order.spei_details.due_date && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-dark/60">{t("speiDueDate")}</span>
-                        <span className="font-semibold text-dark">
-                          {new Date(order.spei_details.due_date).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" })}
-                        </span>
-                      </div>
-                    )}
                   </div>
                 )}
 
