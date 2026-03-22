@@ -103,12 +103,14 @@ cunpolloweb/
     │   │   ├── MenuPreview.tsx        # Preview de items populares
     │   │   ├── LocationSection.tsx    # Mapa y dirección
     │   │   ├── VideoSection.tsx       # Video del restaurante
+    │   │   ├── RewardsSection.tsx      # Programa de lealtad CunPollo Rewards (Tagocard)
     │   │   └── CTASection.tsx         # Call to action
     │   ├── menu/
     │   │   ├── MenuContainer.tsx      # Contenedor del menú con filtros
     │   │   ├── MenuItemCard.tsx       # Tarjeta de item del menú
     │   │   ├── MenuItemModal.tsx      # Modal con detalle + agregar al carrito
-    │   │   └── CategoryTabs.tsx       # Tabs de categorías
+    │   │   ├── CategoryTabs.tsx       # Tabs de categorías
+    │   │   └── RewardsBanner.tsx     # Banner dismissible de Rewards en menu
     │   ├── cart/
     │   │   ├── CartFloatingButton.tsx # FAB flotante con badge
     │   │   └── CartItemRow.tsx        # Fila de item en el carrito

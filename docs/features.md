@@ -130,6 +130,21 @@
 - **Uso**: Configurar en Meta Commerce Manager como "Scheduled Feed" con URL `https://cunpollo.com/api/catalog/feed`
 - **Beneficio**: Catalogo de WhatsApp Business se sincroniza automaticamente con los productos del sitio
 
+### CunPollo Rewards (Programa de Lealtad)
+- **Estado**: Produccion
+- **Feature flag**: `FEATURES.REWARDS_ENABLED` en `src/lib/constants.ts` (actualmente `true`)
+- **Proveedor**: Tagocard (externo) — `https://app.tagocard.com/enroll/cunpollo`
+- **Constante**: `REWARDS_URL` en `src/lib/constants.ts`
+- **Ubicaciones del CTA**:
+  - **Homepage**: Seccion `RewardsSection` entre LocationSection y CTASection (3 beneficios + boton dorado)
+  - **Header**: Link dorado con estrella en desktop nav + mobile menu
+  - **Footer**: Boton outline dorado junto a "Hacer Pedido"
+  - **Menu page**: Banner dismissible arriba de las tabs de categorias (`RewardsBanner`)
+  - **Cart page**: Nota inline dorada arriba del boton de checkout
+  - **Confirmation page**: Banner dorado despues del resumen de orden (solo si pago exitoso)
+- **Traducciones**: Namespace `rewards` en ES/EN
+- **Diseno**: Botones/links dorados (`gold-500`) para diferenciarse de los CTAs rojos de pedido
+
 ## Pendientes / Por Configurar
 
 | Item | Descripcion | Bloqueado por |

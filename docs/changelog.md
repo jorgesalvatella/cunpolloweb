@@ -1,5 +1,36 @@
 # Changelog
 
+## 2026-03-22 — CunPollo Rewards (Programa de Lealtad)
+
+### Resumen
+Lanzamiento del programa de lealtad CunPollo Rewards via Tagocard. Botones y banners dorados en 6 ubicaciones estrategicas del sitio que redirigen al registro externo en Tagocard.
+
+### Cambios
+- **Feature flag**: `FEATURES.REWARDS_ENABLED` + constante `REWARDS_URL` en `src/lib/constants.ts`
+- **Homepage**: Nueva seccion `RewardsSection` entre Ubicacion y CTA final — 3 beneficios + boton dorado
+- **Header**: Link dorado con icono estrella en desktop nav y mobile menu
+- **Footer**: Boton outline dorado junto a "Hacer Pedido"
+- **Menu page**: Componente `RewardsBanner` — banner slim dismissible arriba de las tabs
+- **Cart page**: Nota inline dorada arriba del boton de checkout
+- **Confirmation page**: Banner dorado con CTA despues del resumen de orden (solo pago exitoso)
+- **Traducciones**: Namespace `rewards` completo en ES/EN
+
+### Archivos nuevos
+- `src/components/landing/RewardsSection.tsx`
+- `src/components/menu/RewardsBanner.tsx`
+
+### Archivos modificados
+- `src/lib/constants.ts`
+- `src/messages/es.json`, `src/messages/en.json`
+- `src/app/[locale]/page.tsx`
+- `src/app/[locale]/confirmation/[id]/page.tsx`
+- `src/app/[locale]/cart/page.tsx`
+- `src/components/layout/Header.tsx`
+- `src/components/layout/Footer.tsx`
+- `src/components/menu/MenuContainer.tsx`
+
+---
+
 ## 2026-03-22 — Pago por transferencia SPEI (Openpay)
 
 ### Resumen

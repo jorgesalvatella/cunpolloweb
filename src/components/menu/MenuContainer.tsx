@@ -6,6 +6,7 @@ import { AnimatePresence } from "framer-motion";
 import CategoryTabs from "./CategoryTabs";
 import MenuItemCard from "./MenuItemCard";
 import MenuItemModal from "./MenuItemModal";
+import RewardsBanner from "./RewardsBanner";
 import { useMenu } from "@/context/MenuContext";
 import { useLocale } from "next-intl";
 import type { MenuItem } from "@/types/menu";
@@ -38,6 +39,8 @@ export default function MenuContainer() {
 
   return (
     <div>
+      <RewardsBanner />
+
       {/* Promotion banners */}
       {promotions.length > 0 && (
         <div className="space-y-2 mb-4">

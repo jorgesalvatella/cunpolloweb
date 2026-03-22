@@ -4,6 +4,7 @@ import HeroSection from "@/components/landing/HeroSection";
 import VideoSection from "@/components/landing/VideoSection";
 import MenuPreview from "@/components/landing/MenuPreview";
 import LocationSection from "@/components/landing/LocationSection";
+import RewardsSection from "@/components/landing/RewardsSection";
 import CTASection from "@/components/landing/CTASection";
 
 export default async function HomePage({
@@ -21,6 +22,7 @@ export default async function HomePage({
       <VideoSection />
       <MenuPreview />
       <LocationSection />
+      <RewardsSection />
       <CTASection />
     </>
   );

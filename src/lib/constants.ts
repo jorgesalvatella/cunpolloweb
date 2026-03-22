@@ -3,7 +3,10 @@ export const FEATURES = {
   DELIVERY_ENABLED: false,
   PWA_ENABLED: true,
   WHATSAPP_NOTIFICATIONS: true,
+  REWARDS_ENABLED: true,
 } as const;
+
+export const REWARDS_URL = "https://app.tagocard.com/enroll/cunpollo";
 
 export const RESTAURANT = {
   name: "CUNPOLLO",
