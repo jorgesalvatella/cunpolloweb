@@ -88,7 +88,10 @@ export default function CheckoutForm() {
   const [orderType, setOrderType] = useState<OrderType>("pickup");
   const [pickupTime, setPickupTime] = useState("");
   const [guests, setGuests] = useState<number | null>(null);
+  // SPEI disabled until bank transfer flow is validated with real payments
+  // To re-enable: remove the override and show the payment method tabs below
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
+  const speiEnabled = false;
   const [customerEmail, setCustomerEmail] = useState("");
   const [card, setCard] = useState({ number: "", expiry: "", cvv: "", holderName: "" });
   const [availableSlots, setAvailableSlots] = useState<string[]>(ALL_TIME_SLOTS);
@@ -449,34 +452,36 @@ export default function CheckoutForm() {
           )}
         </div>
 
-        {/* Payment Method */}
-        <div>
-          <h2 className="text-lg font-bold text-dark mb-3">{t("paymentMethod")}</h2>
-          <div className="grid grid-cols-2 gap-3 mb-4">
-            <button
-              type="button"
-              onClick={() => setPaymentMethod("card")}
-              className={`py-3 rounded-lg font-semibold text-sm transition-colors cursor-pointer border-2 ${
-                paymentMethod === "card"
-                  ? "border-red-600 bg-red-50 text-red-700"
-                  : "border-gray-200 bg-white text-dark/70 hover:border-gray-300"
-              }`}
-            >
-              {t("payCard")}
-            </button>
-            <button
-              type="button"
-              onClick={() => setPaymentMethod("spei")}
-              className={`py-3 rounded-lg font-semibold text-sm transition-colors cursor-pointer border-2 ${
-                paymentMethod === "spei"
-                  ? "border-red-600 bg-red-50 text-red-700"
-                  : "border-gray-200 bg-white text-dark/70 hover:border-gray-300"
-              }`}
-            >
-              {t("paySpei")}
-            </button>
+        {/* Payment Method — hidden while SPEI is disabled */}
+        {speiEnabled && (
+          <div>
+            <h2 className="text-lg font-bold text-dark mb-3">{t("paymentMethod")}</h2>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("card")}
+                className={`py-3 rounded-lg font-semibold text-sm transition-colors cursor-pointer border-2 ${
+                  paymentMethod === "card"
+                    ? "border-red-600 bg-red-50 text-red-700"
+                    : "border-gray-200 bg-white text-dark/70 hover:border-gray-300"
+                }`}
+              >
+                {t("payCard")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("spei")}
+                className={`py-3 rounded-lg font-semibold text-sm transition-colors cursor-pointer border-2 ${
+                  paymentMethod === "spei"
+                    ? "border-red-600 bg-red-50 text-red-700"
+                    : "border-gray-200 bg-white text-dark/70 hover:border-gray-300"
+                }`}
+              >
+                {t("paySpei")}
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Payment Info */}
         <div>
