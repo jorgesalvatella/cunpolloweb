@@ -189,6 +189,9 @@ export async function POST(request: Request) {
         amount: total,
         description: `CUNPOLLO Pedido #${order.order_number}: ${itemNames}`.slice(0, 250),
         orderId: order.id,
+        customerName: name,
+        customerEmail: body.customerEmail,
+        customerPhone: phone,
       });
 
       if (!speiResult.success) {

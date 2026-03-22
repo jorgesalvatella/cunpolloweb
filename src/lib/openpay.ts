@@ -81,17 +81,33 @@ export async function createBankCharge({
   amount,
   description,
   orderId,
+  customerName,
+  customerEmail,
+  customerPhone,
 }: {
   amount: number;
   description: string;
   orderId: string;
+  customerName: string;
+  customerEmail?: string;
+  customerPhone?: string;
 }): Promise<BankChargeResult> {
   return new Promise((resolve) => {
+    const nameParts = customerName.trim().split(/\s+/);
+    const firstName = nameParts[0] || "Cliente";
+    const lastName = nameParts.slice(1).join(" ") || "CUNPOLLO";
+
     const chargeRequest = {
       method: "bank_account",
       amount: parseFloat(amount.toFixed(2)),
       description,
       order_id: orderId,
+      customer: {
+        name: firstName,
+        last_name: lastName,
+        phone_number: customerPhone || "9981488987",
+        email: customerEmail || "cliente@cunpollo.com",
+      },
     };
 
     openpay.charges.create(
