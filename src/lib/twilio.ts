@@ -238,13 +238,33 @@ export function notifyCustomerStatusChange(order: Order): void {
   });
 }
 
-export function notifyAdminNewOrder(order: Order): void {
-  if (!isConfigured()) return;
+async function getAdminPhones(): Promise<string[]> {
+  // Try DB first
+  try {
+    const { getSupabaseAdmin } = await import("@/lib/supabase/server");
+    const supabase = getSupabaseAdmin();
+    const { data } = await supabase
+      .from("admin_phones")
+      .select("phone")
+      .eq("active", true);
 
-  const phones = ADMIN_WHATSAPP_PHONES.split(",")
+    if (data && data.length > 0) {
+      return data.map((row: { phone: string }) => row.phone);
+    }
+  } catch (err) {
+    console.error("[Twilio] Error fetching admin phones from DB:", err);
+  }
+
+  // Fallback to env var
+  return ADMIN_WHATSAPP_PHONES.split(",")
     .map((p) => p.trim())
     .filter(Boolean);
+}
 
+export async function notifyAdminNewOrder(order: Order): Promise<void> {
+  if (!isConfigured()) return;
+
+  const phones = await getAdminPhones();
   if (phones.length === 0) return;
 
   const typeLabel = order.order_type === "dine_in" ? "Comer aqui" : "Para llevar";

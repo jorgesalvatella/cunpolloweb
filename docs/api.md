@@ -507,6 +507,39 @@ Elimina una promocion por UUID (requiere cookie admin).
 
 ---
 
+## Telefonos Admin (Notificaciones)
+
+### `GET /api/admin/phones`
+Lista telefonos de notificacion admin (requiere cookie admin).
+
+**Response 200:** Array de `{ id, name, phone, active, created_at, updated_at }`
+
+---
+
+### `POST /api/admin/phones`
+Agrega un telefono admin (requiere cookie admin).
+
+**Request:** `{ "name": "Beto", "phone": "9981488987" }`
+**Response 201:** Telefono creado
+**Response 409:** Telefono duplicado
+
+---
+
+### `PUT /api/admin/phones`
+Actualiza nombre, telefono o estado activo (requiere cookie admin).
+
+**Request:** `{ "id": "uuid-...", "name": "Roberto", "active": false }`
+**Response 200:** Telefono actualizado
+
+---
+
+### `DELETE /api/admin/phones?id=uuid-...`
+Elimina un telefono admin (requiere cookie admin).
+
+**Response 200:** `{ "ok": true }`
+
+---
+
 ## Contactos (WhatsApp Promos)
 
 ### `GET /api/admin/contacts`

@@ -91,6 +91,8 @@ cunpolloweb/
     │           │   ├── route.ts       # GET/POST/PUT: listar/crear/actualizar promociones
     │           │   └── [id]/
     │           │       └── route.ts   # DELETE: eliminar promocion
+    │           ├── phones/
+    │           │   └── route.ts       # GET/POST/PUT/DELETE: CRUD telefonos admin notificaciones
     │           └── campaigns/
     │               └── route.ts       # GET/POST: historial/enviar campana
     ├── components/
@@ -125,7 +127,8 @@ cunpolloweb/
     │   │   ├── SendPromo.tsx          # Formulario para enviar promos via template
     │   │   ├── CampaignHistory.tsx    # Historial de campanas enviadas
     │   │   ├── MenuManager.tsx        # Gestion de menu: editar precio, disponibilidad, descuentos (Realtime)
-    │   │   └── PromotionsManager.tsx  # CRUD de promociones de orden (crear, editar, activar, eliminar)
+    │   │   ├── PromotionsManager.tsx  # CRUD de promociones de orden (crear, editar, activar, eliminar)
+    │   │   └── AdminPhonesManager.tsx # CRUD de telefonos admin para notificaciones WhatsApp
     │   ├── ui/
     │   │   ├── Button.tsx             # Botón reutilizable
     │   │   ├── Container.tsx          # Container con max-width

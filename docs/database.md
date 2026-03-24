@@ -197,6 +197,25 @@ Registro de campanas de WhatsApp enviadas.
 
 ---
 
+## Tabla: `admin_phones`
+
+Telefonos de administradores que reciben notificaciones WhatsApp de pedidos nuevos.
+
+| Columna | Tipo | Default | Descripcion |
+|---------|------|---------|-------------|
+| `id` | UUID | `gen_random_uuid()` | PK |
+| `name` | TEXT | NOT NULL | Nombre del admin (ej: "Beto") |
+| `phone` | TEXT | NOT NULL, UNIQUE | Telefono WhatsApp |
+| `active` | BOOLEAN | `true` | Si recibe notificaciones |
+| `created_at` | TIMESTAMPTZ | `now()` | Fecha de creacion |
+| `updated_at` | TIMESTAMPTZ | `now()` | Ultima actualizacion (trigger) |
+
+**Indices:** `idx_admin_phones_active` en columna `active`
+**RLS:** Solo `service_role`
+**Migracion:** `supabase/admin_phones.sql`
+
+---
+
 ## Como aplicar (referencia)
 Schema ya aplicado en producción. Para un proyecto nuevo:
 1. Ir al SQL Editor en el dashboard de Supabase

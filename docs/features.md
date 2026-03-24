@@ -74,7 +74,7 @@
 - **Archivo**: `src/lib/twilio.ts` — wrapper sin SDK, fetch directo al REST API de Twilio
 - **Cliente**: recibe WhatsApp en cada cambio de status via templates aprobados (paid, preparing, ready, picked_up, cancelled)
 - **Admin/Cocina**: recibe WhatsApp cuando entra un pedido nuevo via template aprobado (`cunpollo_new_order_admin_v2`, SID: `HXc3551bb7c64df102453ff7c7bc61522e`). Mensaje incluye numero de pedido, cliente, tipo, items y total.
-- **Equipo notificado**: Jorge Salvatella, Alex (Chef), Jose Luis Olmos (Gerente), Adrian Rivera (Jefe de Piso) — configurados en `ADMIN_WHATSAPP_PHONES`
+- **Equipo notificado**: Gestionable desde Admin > WhatsApp > Notificaciones. Telefonos almacenados en tabla `admin_phones` (Supabase). Fallback a env var `ADMIN_WHATSAPP_PHONES` si la tabla esta vacia.
 - **Boton flotante**: `src/components/WhatsAppButton.tsx` — abre chat con el numero de WhatsApp Business
 - Fire-and-forget: errores se loguean pero nunca bloquean el flujo del pedido
 - Todos los mensajes usan templates de Twilio Content API (no texto libre), garantizando entrega sin ventana de 24h
@@ -117,6 +117,19 @@
   - Seleccionar contactos especificos o enviar a todos
   - Historial de campanas con stats (enviados/fallidos)
 - **API**: `/api/admin/contacts` (GET, POST, DELETE), `/api/admin/campaigns` (GET, POST)
+
+### Gestion de Telefonos Admin (Notificaciones)
+- **Estado**: Implementado
+- **Ruta**: `/admin` > Tab "WhatsApp" > Sub-tab "Notificaciones"
+- **Componente**: `AdminPhonesManager`
+- **Tabla**: `admin_phones` (Supabase)
+- **Funcionalidad**:
+  - Agregar telefonos admin con nombre y numero
+  - Activar/desactivar con toggle (sin eliminar)
+  - Editar nombre y numero inline
+  - Eliminar con confirmacion de 2 pasos
+  - `notifyAdminNewOrder()` lee de DB con fallback a env var `ADMIN_WHATSAPP_PHONES`
+- **API**: `/api/admin/phones` (GET, POST, PUT, DELETE)
 - **Twilio**: `sendWhatsAppTemplate()` en `src/lib/twilio.ts` para templates con ContentSid
 
 ### Feed de Catalogo para WhatsApp (Meta Commerce Manager)
