@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-03-24 — Template Selector para SendPromo
+
+### Resumen
+Reemplazo de los inputs manuales (Content SID, nombre, preview, JSON de variables) por un dropdown de templates con inputs dinamicos. Elimina la friccion y errores 63028 al enviar promos WhatsApp desde admin.
+
+### Cambios
+- **Template Registry**: `src/lib/whatsapp-templates.ts` — registro hardcodeado con metadata por template (label, SID, variableCount, variableLabels, autoNameVariable, bodyPreview, broken flag)
+- **SendPromo rewrite**: Dropdown selector, inputs dinamicos por variable, vista previa en vivo con valores reemplazados, variable {{1}} (nombre) auto-inyectada
+- **Templates registrados**: `cunpollo_pickup_dinein_v4` (default), `cunpollo_carrousel_1`, `cunpollo_renovado_launch`
+- **Template roto excluido**: `cunpollo_pickup_dinein_card_v1` (card type, falla con Meta)
+
+### Archivos nuevos
+- `src/lib/whatsapp-templates.ts`
+
+### Archivos modificados
+- `src/components/admin/SendPromo.tsx` (reescrito)
+- `docs/features.md`, `docs/architecture.md`
+
+---
+
 ## 2026-03-24 — Gestion de Telefonos Admin (Notificaciones WhatsApp)
 
 ### Resumen

@@ -110,12 +110,15 @@
 - **Ruta**: `/admin` > Tab "WhatsApp"
 - **Componentes**: `WhatsAppHub`, `ContactList`, `SendPromo`, `CampaignHistory`
 - **Tablas**: `contacts` (contactos WhatsApp), `campaigns` (historial de envios)
+- **Template Registry**: `src/lib/whatsapp-templates.ts` — registro hardcodeado de templates con metadata (label, SID, variables, preview, broken flag)
 - **Funcionalidad**:
   - Agregar contactos manualmente o importar de pedidos existentes
-  - Enviar promociones usando templates aprobados de Meta via Twilio (ContentSid)
-  - Vista previa del mensaje antes de enviar
+  - **Selector de template**: Dropdown con templates marketing disponibles (reemplaza inputs manuales de SID/nombre/JSON)
+  - **Variables dinamicas**: Inputs auto-generados segun el template seleccionado. Variable {{1}} (nombre) se llena automaticamente por contacto
+  - **Vista previa en vivo**: Body del template con variables reemplazadas en tiempo real
   - Seleccionar contactos especificos o enviar a todos
   - Historial de campanas con stats (enviados/fallidos)
+  - Templates rotos marcados como `broken` en el registry (no aparecen en selector)
 - **API**: `/api/admin/contacts` (GET, POST, DELETE), `/api/admin/campaigns` (GET, POST)
 
 ### Gestion de Telefonos Admin (Notificaciones)

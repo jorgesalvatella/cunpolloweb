@@ -161,6 +161,7 @@ cunpolloweb/
     │   ├── fonts.ts                   # Font config
     │   ├── openpay.ts                  # Openpay API wrapper (tokenize + charge)
     │   ├── twilio.ts                  # Twilio WhatsApp notifications (server-only)
+    │   ├── whatsapp-templates.ts      # Registry de templates WhatsApp con metadata (SID, variables, broken flag)
     │   ├── admin-auth.ts              # Auth admin por cookie
     │   ├── menu-data.ts               # Server-side menu data from Supabase (DB fetchers + helpers)
     │   ├── rate-limit.ts              # In-memory rate limiter (sliding window)
