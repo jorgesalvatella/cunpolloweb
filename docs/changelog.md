@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-03-24 — Gestion de Telefonos Admin (Notificaciones WhatsApp)
+
+### Resumen
+Interfaz completa en el panel admin para gestionar los telefonos que reciben notificaciones WhatsApp cuando entra un pedido nuevo. Antes solo se podia cambiar via env var `ADMIN_WHATSAPP_PHONES`; ahora se gestiona desde la UI con persistencia en Supabase.
+
+### Cambios
+- **Tabla Supabase**: `admin_phones` (id, name, phone, active, timestamps) con RLS y trigger `updated_at`
+- **API route**: `/api/admin/phones` — GET, POST, PUT, DELETE con validacion, normalizacion de telefono y deteccion de duplicados
+- **Componente**: `AdminPhonesManager` — formulario para agregar, lista con toggle activo/inactivo, edicion inline, eliminacion con confirmacion de 2 pasos
+- **WhatsApp Hub**: Nuevo sub-tab "Notificaciones" como primera opcion (antes: Contactos, Enviar Promo, Historial)
+- **Twilio**: `notifyAdminNewOrder()` ahora es `async` y lee telefonos de la tabla `admin_phones` (activos), con fallback a env var si la tabla esta vacia o falla
+- **Datos migrados**: 4 telefonos del equipo insertados en la tabla desde el env var existente
+
+### Archivos nuevos
+- `src/app/api/admin/phones/route.ts`
+- `src/components/admin/AdminPhonesManager.tsx`
+- `supabase/admin_phones.sql`
+
+### Archivos modificados
+- `src/components/admin/WhatsAppHub.tsx` — import + tab "Notificaciones"
+- `src/lib/twilio.ts` — `getAdminPhones()` helper + `notifyAdminNewOrder()` async con lectura de DB
+- `docs/api.md` — referencia de endpoints `/api/admin/phones`
+- `docs/architecture.md` — mapa de archivos actualizado
+- `docs/database.md` — documentacion tabla `admin_phones`
+- `docs/features.md` — seccion de gestion de telefonos admin
+
+---
+
 ## 2026-03-22 — CunPollo Rewards (Programa de Lealtad)
 
 ### Resumen
