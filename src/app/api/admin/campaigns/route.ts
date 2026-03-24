@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifyAdmin } from "@/lib/admin-auth";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
-import { sendWhatsAppTemplate } from "@/lib/twilio";
+import { sendWhatsAppTemplate, getTemplateVariables } from "@/lib/twilio";
 
 export async function GET() {
   if (!(await verifyAdmin())) {
@@ -34,6 +34,15 @@ export async function POST(request: Request) {
       { error: "templateName, contentSid y messagePreview son requeridos" },
       { status: 400 }
     );
+  }
+
+  // Fetch template to know exactly which variables it expects
+  const expectedKeys = await getTemplateVariables(contentSid);
+  if (expectedKeys && expectedKeys.length === 0) {
+    // Template has no variables — don't send any
+    console.log(`[Campaign] Template ${contentSid} expects 0 variables`);
+  } else if (expectedKeys) {
+    console.log(`[Campaign] Template ${contentSid} expects variables: ${expectedKeys.join(", ")}`);
   }
 
   const supabase = getSupabaseAdmin();
@@ -81,8 +90,25 @@ export async function POST(request: Request) {
   const errors: string[] = [];
 
   for (const contact of contacts) {
-    // Auto-set {{1}} to contact name, merge with any extra variables
-    const vars = { "1": contact.name, ...contentVariables };
+    // Build variables: merge user-provided with auto-injected contact name for {{1}}
+    const allVars: Record<string, string> = { "1": contact.name, ...contentVariables };
+
+    // Only send variables the template actually expects (prevents error 63028)
+    let vars: Record<string, string> | undefined;
+    if (expectedKeys && expectedKeys.length > 0) {
+      vars = {};
+      for (const key of expectedKeys) {
+        if (allVars[key] !== undefined) {
+          vars[key] = allVars[key];
+        }
+      }
+    } else if (expectedKeys && expectedKeys.length === 0) {
+      vars = undefined; // Template expects no variables
+    } else {
+      // Couldn't fetch template info — send what we have (best effort)
+      vars = allVars;
+    }
+
     const result = await sendWhatsAppTemplate(
       contact.phone,
       contentSid,
@@ -93,7 +119,6 @@ export async function POST(request: Request) {
       sentCount++;
     } else {
       failedCount++;
-      // Log full details server-side, but don't expose phone numbers in response
       console.error(`[Campaign ${campaign.id}] ${contact.phone}: ${result.error}`);
       errors.push(result.error || "Error de envio");
     }

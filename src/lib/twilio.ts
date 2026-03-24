@@ -149,6 +149,28 @@ function getAdminMessage(order: Order): string {
   ].filter(Boolean).join("\n");
 }
 
+/**
+ * Fetch template variable definitions from Twilio Content API.
+ * Returns the expected variable keys (e.g. ["1", "2", "3"]) or null on error.
+ */
+export async function getTemplateVariables(contentSid: string): Promise<string[] | null> {
+  if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) return null;
+
+  const url = `https://content.twilio.com/v1/Content/${contentSid}`;
+  const auth = Buffer.from(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`).toString("base64");
+
+  try {
+    const res = await fetch(url, {
+      headers: { Authorization: `Basic ${auth}` },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.variables ? Object.keys(data.variables) : [];
+  } catch {
+    return null;
+  }
+}
+
 export async function sendWhatsAppTemplate(
   to: string,
   contentSid: string,
