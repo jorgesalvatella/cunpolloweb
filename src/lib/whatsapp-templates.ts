@@ -64,18 +64,19 @@ export const WHATSAPP_TEMPLATES: WhatsAppTemplate[] = [
     category: "marketing",
   },
 
-  // --- Broken templates (excluded from selector) ---
+  // --- Pending approval (will become selectable once Meta approves) ---
   {
-    label: "Promo Card v1 (ROTO)",
-    name: "cunpollo_pickup_dinein_card_v1",
-    contentSid: "HX1d93c050c5f0db83b99e0adebc073fd3",
+    label: "Promo Card v2 (con imagen)",
+    name: "cunpollo_pickup_dinein_card_v2",
+    contentSid: "HX43df547ca31ad2d0f6b9b060da9bbf83",
     variableCount: 1,
     variableLabels: ["Nombre del contacto"],
     autoNameVariable: true,
-    bodyPreview: "",
+    bodyPreview:
+      "Hola {{1}}! Como vas a disfrutar tu CUNPOLLO hoy?\n\nPara llevar: Ordena en cunpollo.com y recoge en 20 min\nComer aqui: Ven con familia y amigos a nuestro restaurante",
     category: "marketing",
     broken: true,
-    brokenReason: "Card template (twilio/card) falla con Meta error 63028",
+    brokenReason: "Pendiente aprobacion de Meta (enviado 2026-03-25)",
   },
 
   // --- Utility templates (not for marketing, excluded from selector) ---
