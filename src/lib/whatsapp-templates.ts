@@ -64,7 +64,6 @@ export const WHATSAPP_TEMPLATES: WhatsAppTemplate[] = [
     category: "marketing",
   },
 
-  // --- Pending approval (will become selectable once Meta approves) ---
   {
     label: "Promo Card v2 (con imagen)",
     name: "cunpollo_pickup_dinein_card_v2",
@@ -75,8 +74,6 @@ export const WHATSAPP_TEMPLATES: WhatsAppTemplate[] = [
     bodyPreview:
       "Hola {{1}}! Como vas a disfrutar tu CUNPOLLO hoy?\n\nPara llevar: Ordena en cunpollo.com y recoge en 20 min\nComer aqui: Ven con familia y amigos a nuestro restaurante",
     category: "marketing",
-    broken: true,
-    brokenReason: "Pendiente aprobacion de Meta (enviado 2026-03-25)",
   },
 
   // --- Utility templates (not for marketing, excluded from selector) ---
