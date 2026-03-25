@@ -23,6 +23,7 @@ export default function SendPromo() {
   const [variableValues, setVariableValues] = useState<Record<string, string>>(
     {}
   );
+  const [contactSearch, setContactSearch] = useState("");
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState<{
     sent: number;
@@ -45,6 +46,14 @@ export default function SendPromo() {
     setResult(null);
     setError("");
   }, [selectedTemplate?.contentSid]);
+
+  const filteredContacts = useMemo(() => {
+    if (!contactSearch.trim()) return contacts;
+    const q = contactSearch.toLowerCase().trim();
+    return contacts.filter(
+      (c) => c.name.toLowerCase().includes(q) || c.phone.includes(q)
+    );
+  }, [contacts, contactSearch]);
 
   const toggleContact = (id: string) => {
     setSelectedIds((prev) => {
@@ -205,23 +214,114 @@ export default function SendPromo() {
         </label>
 
         {!sendAll && (
-          <div className="border rounded p-3 max-h-48 overflow-y-auto space-y-1">
-            {contacts.map((c) => (
-              <label
-                key={c.id}
-                className="flex items-center gap-2 text-sm cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedIds.has(c.id)}
-                  onChange={() => toggleContact(c.id)}
-                />
-                <span>{c.name}</span>
-                <span className="text-dark/40 font-mono text-xs">
-                  {c.phone}
+          <div className="border rounded-lg overflow-hidden">
+            {/* Selected chips */}
+            {selectedIds.size > 0 && (
+              <div className="flex flex-wrap gap-1.5 p-2 bg-gray-50 border-b">
+                {contacts
+                  .filter((c) => selectedIds.has(c.id))
+                  .map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => toggleContact(c.id)}
+                      className="flex items-center gap-1 bg-green-100 text-green-800 pl-1 pr-2 py-0.5 rounded-full text-xs font-medium hover:bg-green-200 transition-colors cursor-pointer"
+                    >
+                      <span className="w-5 h-5 rounded-full bg-green-600 text-white flex items-center justify-center text-[10px] font-bold">
+                        {c.name.charAt(0).toUpperCase()}
+                      </span>
+                      {c.name}
+                      <svg className="w-3 h-3 ml-0.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  ))}
+                <span className="text-xs text-dark/40 self-center ml-1">
+                  {selectedIds.size} seleccionado{selectedIds.size !== 1 ? "s" : ""}
                 </span>
-              </label>
-            ))}
+              </div>
+            )}
+
+            {/* Search input */}
+            <div className="relative border-b">
+              <svg
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-dark/30"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <input
+                type="text"
+                placeholder="Buscar contacto..."
+                value={contactSearch}
+                onChange={(e) => setContactSearch(e.target.value)}
+                className="w-full px-3 py-2 pl-9 text-sm outline-none"
+              />
+              {contactSearch && (
+                <button
+                  type="button"
+                  onClick={() => setContactSearch("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-dark/30 hover:text-dark/60 cursor-pointer"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+
+            {/* Contact list */}
+            <div className="max-h-56 overflow-y-auto divide-y">
+              {filteredContacts.length === 0 ? (
+                <div className="text-center py-4 text-dark/30 text-sm">
+                  Sin resultados para &quot;{contactSearch}&quot;
+                </div>
+              ) : (
+                filteredContacts.map((c) => {
+                  const isSelected = selectedIds.has(c.id);
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => toggleContact(c.id)}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-gray-50 transition-colors cursor-pointer ${
+                        isSelected ? "bg-green-50/50" : ""
+                      }`}
+                    >
+                      {/* Avatar */}
+                      <div className="relative shrink-0">
+                        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold ${
+                          isSelected
+                            ? "bg-green-600 text-white"
+                            : "bg-gray-200 text-dark/50"
+                        }`}>
+                          {c.name.charAt(0).toUpperCase()}
+                        </div>
+                        {isSelected && (
+                          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-600 rounded-full flex items-center justify-center">
+                            <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{c.name}</p>
+                        <p className="text-xs text-dark/40 font-mono">{c.phone}</p>
+                      </div>
+                    </button>
+                  );
+                })
+              )}
+            </div>
           </div>
         )}
       </div>
