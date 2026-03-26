@@ -76,9 +76,9 @@ export const WHATSAPP_TEMPLATES: WhatsAppTemplate[] = [
     category: "marketing",
   },
   {
-    label: "Jueves Ninos Gratis (card)",
-    name: "cunpollo_jueves_ninos_gratis_card",
-    contentSid: "HX4519a41120d993f8c5c6c285d7b2b255",
+    label: "Jueves Ninos Gratis (card v2)",
+    name: "cunpollo_jueves_ninos_gratis_card_v2",
+    contentSid: "HX1806b48986d1c8ca6c7fabc2081096ab",
     variableCount: 1,
     variableLabels: ["Nombre del contacto"],
     autoNameVariable: true,
