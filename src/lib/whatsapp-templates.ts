@@ -75,6 +75,17 @@ export const WHATSAPP_TEMPLATES: WhatsAppTemplate[] = [
       "Hola {{1}}! Como vas a disfrutar tu CUNPOLLO hoy?\n\nPara llevar: Ordena en cunpollo.com y recoge en 20 min\nComer aqui: Ven con familia y amigos a nuestro restaurante",
     category: "marketing",
   },
+  {
+    label: "Jueves Ninos Gratis (card)",
+    name: "cunpollo_jueves_ninos_gratis_card",
+    contentSid: "HX4519a41120d993f8c5c6c285d7b2b255",
+    variableCount: 1,
+    variableLabels: ["Nombre del contacto"],
+    autoNameVariable: true,
+    bodyPreview:
+      "Hola {{1}}! Los jueves en CunPollo son para consentir a los mas peques.\n\nNinos comen GRATIS! Solo necesitas:\n- 1 platillo especial o del dia\n- + 1 bebida por adulto\n\nTe esperamos desde las 2 pm.\n\nNino gratis por adulto con consumo. Solo jueves. No acumulable.",
+    category: "marketing",
+  },
 
   // --- Utility templates (not for marketing, excluded from selector) ---
   // order_confirmed, order_preparing, order_ready, order_cancelled,
