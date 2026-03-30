@@ -1,5 +1,5 @@
 import { google } from "@ai-sdk/google";
-import { streamText, stepCountIs } from "ai";
+import { streamText, stepCountIs, convertToModelMessages } from "ai";
 import { getSystemPrompt } from "@/lib/chat/system-prompt";
 import { getChatTools } from "@/lib/chat/tools";
 import { saveSession } from "@/lib/chat/session";
@@ -45,18 +45,21 @@ export async function POST(req: Request) {
 
   const validLocale = locale === "en" ? "en" : "es";
 
+  // Convert UIMessages (from useChat) to ModelMessages (for streamText)
+  const modelMessages = await convertToModelMessages(messages);
+
   const result = streamText({
     model: google("gemini-2.0-flash"),
     system: getSystemPrompt(validLocale),
-    messages,
+    messages: modelMessages,
     tools: getChatTools(validLocale),
     stopWhen: stepCountIs(5),
     onFinish: async ({ text }) => {
       if (sessionId && text) {
         const chatMessages = [
-          ...messages.map((m: { role: string; content: string }) => ({
+          ...messages.map((m: { role: string; parts?: Array<{ type: string; text?: string }> }) => ({
             role: m.role as "user" | "assistant",
-            content: m.content,
+            content: m.parts?.find((p) => p.type === "text")?.text || "",
             timestamp: new Date().toISOString(),
           })),
           {
