@@ -118,12 +118,12 @@ export default function ChatWidget() {
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 1, type: "spring", stiffness: 200 }}
-        className="fixed bottom-4 left-4 z-40 flex items-end gap-1"
+        className="fixed bottom-2 left-2 z-40 flex items-end gap-0"
       >
         <button
           onClick={() => setOpen(!open)}
           aria-label={open ? t("close") : t("open")}
-          className="relative w-20 h-20 transition-transform hover:scale-105 flex items-center justify-center"
+          className="relative w-28 h-28 transition-transform hover:scale-105 flex items-center justify-center"
         >
           {open ? (
             <div className="w-12 h-12 bg-red-600 rounded-full shadow-lg flex items-center justify-center">
@@ -135,7 +135,7 @@ export default function ChatWidget() {
             <img
               src={BOT_AVATAR}
               alt="CunPollo Bot"
-              className="w-20 h-20 object-contain drop-shadow-lg"
+              className="w-28 h-28 object-contain drop-shadow-lg"
             />
           )}
         </button>
@@ -144,7 +144,7 @@ export default function ChatWidget() {
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1.5 }}
-            className="bg-white rounded-xl shadow-md border border-gray-200 px-3 py-1.5 mb-2 max-w-[160px]"
+            className="bg-white rounded-xl shadow-md border border-gray-200 px-3 py-1.5 mb-6 -ml-2 max-w-[150px]"
           >
             <p className="text-xs font-medium text-gray-800">{t("tagline")}</p>
           </motion.div>
@@ -159,7 +159,7 @@ export default function ChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-24 left-4 z-40 w-[calc(100vw-2rem)] max-w-[400px] h-[min(500px,calc(100vh-8rem))] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden"
+            className="fixed bottom-32 left-2 z-40 w-[calc(100vw-1rem)] max-w-[400px] h-[min(500px,calc(100vh-9rem))] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="bg-red-600 text-white px-4 py-3 flex items-center gap-3 flex-shrink-0">
