@@ -63,6 +63,8 @@ cunpolloweb/
     │       ├── catalog/
     │       │   └── feed/
     │       │       └── route.ts           # GET: XML feed para Meta Commerce Manager
+    │       ├── chat/
+    │       │   └── route.ts               # POST: streaming chatbot IA (Gemini 2.0 Flash)
     │       ├── menu/
     │       │   └── route.ts               # GET: public menu data (categories, items, promotions)
     │       ├── webhooks/
@@ -93,8 +95,10 @@ cunpolloweb/
     │           │       └── route.ts   # DELETE: eliminar promocion
     │           ├── phones/
     │           │   └── route.ts       # GET/POST/PUT/DELETE: CRUD telefonos admin notificaciones
-    │           └── campaigns/
-    │               └── route.ts       # GET/POST: historial/enviar campana
+    │           ├── campaigns/
+    │           │   └── route.ts       # GET/POST: historial/enviar campana
+    │           └── knowledge/
+    │               └── route.ts       # GET/POST/PUT/DELETE: CRUD base de conocimiento bot IA
     ├── components/
     │   ├── layout/
     │   │   ├── Header.tsx             # Navbar (logo, nav, cart icon, lang switcher)
@@ -128,7 +132,8 @@ cunpolloweb/
     │   │   ├── CampaignHistory.tsx    # Historial de campanas enviadas
     │   │   ├── MenuManager.tsx        # Gestion de menu: editar precio, disponibilidad, descuentos (Realtime)
     │   │   ├── PromotionsManager.tsx  # CRUD de promociones de orden (crear, editar, activar, eliminar)
-    │   │   └── AdminPhonesManager.tsx # CRUD de telefonos admin para notificaciones WhatsApp
+    │   │   ├── AdminPhonesManager.tsx # CRUD de telefonos admin para notificaciones WhatsApp
+    │   │   └── KnowledgeManager.tsx  # CRUD base de conocimiento del bot IA
     │   ├── ui/
     │   │   ├── Button.tsx             # Botón reutilizable
     │   │   ├── Container.tsx          # Container con max-width
@@ -136,7 +141,11 @@ cunpolloweb/
     │   ├── seo/
     │   │   └── JsonLd.tsx             # Structured data
     │   ├── PWARegister.tsx          # Registro del service worker (client-side)
-    │   ├── WhatsAppButton.tsx       # Boton flotante WhatsApp Business (+529983871387)
+    │   ├── chat/
+    │   │   ├── ChatWidget.tsx       # Widget principal del chatbot IA (boton + panel)
+    │   │   ├── ChatMessage.tsx      # Componente de mensaje (texto + productos + acciones)
+    │   │   ├── ChatProductCard.tsx  # Card de producto inline en chat
+    │   │   └── ChatInput.tsx        # Input de mensaje con auto-resize
     │   └── three/
     │       ├── SceneWrapper.tsx       # Canvas wrapper para 3D
     │       ├── FlameParticles.tsx     # Partículas de fuego/confetti
@@ -163,6 +172,10 @@ cunpolloweb/
     │   ├── twilio.ts                  # Twilio WhatsApp notifications (server-only)
     │   ├── whatsapp-templates.ts      # Registry de templates WhatsApp con metadata (SID, variables, broken flag)
     │   ├── admin-auth.ts              # Auth admin por cookie
+    │   ├── chat/
+    │   │   ├── system-prompt.ts     # System prompt del chatbot (personalidad + info negocio)
+    │   │   ├── tools.ts             # AI tools (function calling): search_menu, add_to_cart, etc.
+    │   │   └── session.ts           # Persistencia de sesiones de chat en Supabase
     │   ├── menu-data.ts               # Server-side menu data from Supabase (DB fetchers + helpers)
     │   ├── rate-limit.ts              # In-memory rate limiter (sliding window)
     │   ├── audit-log.ts               # Audit log utility para acciones admin

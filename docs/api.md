@@ -267,6 +267,40 @@ Verifica ordenes en `processing` o `pending_3ds` por mas de 30 minutos. Para cad
 
 ---
 
+## Chat (Chatbot IA)
+
+### `POST /api/chat`
+Streaming de respuestas del chatbot IA via Vercel AI SDK + Google Gemini 2.0 Flash.
+
+**Request body:**
+```json
+{
+  "messages": [{ "role": "user", "content": "que tienen de menu?" }],
+  "locale": "es",
+  "sessionId": "uuid-..."
+}
+```
+
+- `messages`: Array de mensajes en formato UIMessage del AI SDK
+- `locale`: `"es"` o `"en"` (default: `"es"`)
+- `sessionId`: ID de sesion del navegador (para persistencia)
+
+**Response:** Streaming (UIMessageStream format)
+
+**Tools disponibles:**
+- `search_menu` — Busca items del menu por nombre/categoria
+- `get_categories` — Lista categorias activas
+- `get_promotions` — Promociones vigentes
+- `add_to_cart` / `remove_from_cart` — Retorna acciones que el frontend ejecuta
+
+**Rate limit:** 20 requests por minuto por IP
+
+**Errores:**
+- `400` — `messages` array requerido
+- `429` — Rate limit excedido
+
+---
+
 ## Menu (Datos publicos desde Supabase)
 
 ### `GET /api/menu`

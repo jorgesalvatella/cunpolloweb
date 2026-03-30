@@ -262,5 +262,21 @@
       "consentTitle": "10. Consentimiento",
       "consentText": "Al proporcionar sus datos personales a través de nuestro Sitio y utilizar nuestros servicios de pedido en línea, usted otorga su consentimiento para el tratamiento de sus datos conforme a lo establecido en el presente Aviso de Privacidad."
     }
+  },
+  "chat": {
+    "title": "Asistente CunPollo",
+    "subtitle": "Pollo que salva tu dia",
+    "open": "Abrir chat",
+    "close": "Cerrar chat",
+    "placeholder": "Preguntame sobre el menu...",
+    "send": "Enviar",
+    "welcome": "Hola! Soy el asistente de CunPollo. Puedo ayudarte con el menu, precios, promociones, o agregar productos a tu carrito. Que se te antoja?",
+    "newChat": "Nueva conversacion",
+    "addToCart": "Agregar",
+    "inStoreOnly": "Solo en tienda",
+    "suggestMenu": "Ver el menu",
+    "suggestPromos": "Hay promociones?",
+    "suggestHours": "Horario y ubicacion",
+    "tagline": "Te ayudo a pedir!"
   }
 }

@@ -38,6 +38,12 @@ Archivo de referencia: `.env.example`
 | `OPENPAY_WEBHOOK_TOKEN` | Secret | Token para verificar webhooks de Openpay | Generar: `openssl rand -hex 32` |
 | `CRON_SECRET` | Secret | Token para autenticar cron jobs de Vercel | Generar: `openssl rand -hex 32` |
 
+## Chatbot IA (Gemini)
+
+| Variable | Tipo | Descripcion | Donde obtener |
+|----------|------|-------------|---------------|
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Secret | API key de Google Gemini | Google AI Studio > API Keys |
+
 ## Vercel Blob Storage
 
 | Variable | Tipo | Descripcion | Donde obtener |

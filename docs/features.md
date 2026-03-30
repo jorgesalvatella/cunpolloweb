@@ -75,7 +75,7 @@
 - **Cliente**: recibe WhatsApp en cada cambio de status via templates aprobados (paid, preparing, ready, picked_up, cancelled)
 - **Admin/Cocina**: recibe WhatsApp cuando entra un pedido nuevo via template aprobado (`cunpollo_new_order_admin_v2`, SID: `HXc3551bb7c64df102453ff7c7bc61522e`). Mensaje incluye numero de pedido, cliente, tipo, items y total.
 - **Equipo notificado**: Gestionable desde Admin > WhatsApp > Notificaciones. Telefonos almacenados en tabla `admin_phones` (Supabase). Fallback a env var `ADMIN_WHATSAPP_PHONES` si la tabla esta vacia.
-- **Boton flotante**: `src/components/WhatsAppButton.tsx` — abre chat con el numero de WhatsApp Business
+- **Boton flotante**: Reemplazado por ChatWidget IA (ver seccion Chatbot IA)
 - Fire-and-forget: errores se loguean pero nunca bloquean el flujo del pedido
 - Todos los mensajes usan templates de Twilio Content API (no texto libre), garantizando entrega sin ventana de 24h
 - Sin dependencias nuevas (0 paquetes agregados)
@@ -160,6 +160,31 @@
   - **Confirmation page**: Banner dorado despues del resumen de orden (solo si pago exitoso)
 - **Traducciones**: Namespace `rewards` en ES/EN
 - **Diseno**: Botones/links dorados (`gold-500`) para diferenciarse de los CTAs rojos de pedido
+
+### Chatbot IA (Asistente de Compra)
+- **Estado**: Produccion
+- **Feature flag**: `FEATURES.CHAT_ENABLED` en `src/lib/constants.ts` (actualmente `true`)
+- **AI Provider**: Google Gemini 2.0 Flash via Vercel AI SDK (`ai` + `@ai-sdk/google`)
+- **Streaming**: Respuestas en tiempo real via `streamText()` + `toUIMessageStreamResponse()`
+- **Widget**: `src/components/chat/ChatWidget.tsx` — boton flotante bottom-left (reemplaza WhatsApp)
+- **Componentes**: `ChatMessage.tsx`, `ChatProductCard.tsx`, `ChatInput.tsx`
+- **API**: `POST /api/chat` — streaming con rate limit (20 req/min por IP)
+- **RAG via Function Calling** (no vector DB):
+  - `search_menu` — busca items del menu en Supabase
+  - `get_categories` — lista categorias activas
+  - `get_promotions` — promociones vigentes
+  - `add_to_cart` / `remove_from_cart` — acciones que el frontend intercepta y aplica al CartContext
+- **System prompt**: Info del negocio (horario, ubicacion, telefono) + personalidad de marca
+- **Bilingue**: Detecta idioma del usuario y responde en el mismo idioma
+- **Persistencia**: Sesiones guardadas en Supabase (`chat_sessions`) para analytics
+- **Quick replies**: Chips sugeridos ("Ver el menu", "Hay promociones?", "Horario y ubicacion")
+- **Integracion con carrito**: Bot puede agregar/remover items del carrito via tool calling
+- **Base de conocimiento**: Tabla `bot_knowledge` en Supabase, gestionable desde Admin > Tab "Bot IA"
+  - Agregar/editar/eliminar entradas de texto (titulo + contenido + categoria)
+  - Categorias: general, fiestas, eventos, mundial, temporada, servicios
+  - El bot consulta esta tabla via tool `search_knowledge` cuando le preguntan sobre temas fuera del menu
+  - Casos de uso: paquetes de fiestas, calendario del mundial, eventos especiales, info de temporada
+- **Nota**: WhatsApp Twilio sigue activo para notificaciones de pedidos (no reemplazado)
 
 ## Pendientes / Por Configurar
 

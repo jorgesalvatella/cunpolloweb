@@ -1,5 +1,38 @@
 # Changelog
 
+## 2026-03-30 — Chatbot IA (Asistente de Compra)
+
+### Resumen
+Chatbot IA integrado en la web que reemplaza el boton flotante de WhatsApp. Usa Google Gemini 2.0 Flash con function calling para buscar el menu, mostrar promociones y agregar productos al carrito. Streaming en tiempo real via Vercel AI SDK.
+
+### Archivos nuevos
+- `src/lib/chat/system-prompt.ts` — System prompt con personalidad CunPollo + info del negocio
+- `src/lib/chat/tools.ts` — AI tools: search_menu, get_categories, get_promotions, add_to_cart, remove_from_cart
+- `src/lib/chat/session.ts` — Persistencia de sesiones en Supabase
+- `src/app/api/chat/route.ts` — API route con streaming + rate limiting
+- `src/components/chat/ChatWidget.tsx` — Widget principal (boton + panel con animacion)
+- `src/components/chat/ChatMessage.tsx` — Mensajes con soporte para texto, productos y acciones
+- `src/components/chat/ChatProductCard.tsx` — Card de producto inline en chat
+- `src/components/chat/ChatInput.tsx` — Input con auto-resize y Enter para enviar
+
+### Archivos modificados
+- `src/lib/constants.ts` — Agregado `CHAT_ENABLED: true`
+- `src/app/[locale]/layout.tsx` — Reemplazado `WhatsAppButton` por `ChatWidget`
+- `src/messages/es.json` / `en.json` — Namespace `chat` con strings del widget
+- `package.json` — Dependencias: `ai`, `@ai-sdk/google`, `@ai-sdk/react`, `zod`
+
+### Archivos eliminados
+- `src/components/WhatsAppButton.tsx` — Reemplazado por ChatWidget
+
+### Migracion Supabase
+- `create_chat_sessions` — Tabla `chat_sessions` con indices y RLS
+- `add_chat_sessions_unique_constraint` — Constraint UNIQUE en `session_id`
+
+### Env var nueva
+- `GOOGLE_GENERATIVE_AI_API_KEY` — API key de Google Gemini
+
+---
+
 ## 2026-03-24 — Template Selector para SendPromo
 
 ### Resumen

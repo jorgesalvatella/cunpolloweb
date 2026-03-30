@@ -216,6 +216,27 @@ Telefonos de administradores que reciben notificaciones WhatsApp de pedidos nuev
 
 ---
 
+## Tabla: `chat_sessions`
+
+Sesiones de chat del chatbot IA, para analytics y persistencia.
+
+| Columna | Tipo | Default | Descripcion |
+|---------|------|---------|-------------|
+| `id` | UUID | `gen_random_uuid()` | PK |
+| `session_id` | TEXT | NOT NULL, UNIQUE | ID del navegador (crypto.randomUUID) |
+| `messages` | JSONB | `'[]'` | Array de {role, content, timestamp} |
+| `locale` | TEXT | `'es'` | Idioma de la sesion |
+| `customer_phone` | TEXT | NULL | Opcional, si el usuario tiene pedido |
+| `metadata` | JSONB | `'{}'` | Datos adicionales (acciones de carrito, etc.) |
+| `created_at` | TIMESTAMPTZ | `now()` | Fecha de creacion |
+| `updated_at` | TIMESTAMPTZ | `now()` | Ultima actualizacion (trigger) |
+
+**Indices:** `idx_chat_sessions_session_id`, `idx_chat_sessions_created_at`
+**RLS:** Insert/update publico, select solo `service_role`
+**Uso:** Se guarda al final de cada respuesta del AI (no por cada mensaje)
+
+---
+
 ## Como aplicar (referencia)
 Schema ya aplicado en producción. Para un proyecto nuevo:
 1. Ir al SQL Editor en el dashboard de Supabase

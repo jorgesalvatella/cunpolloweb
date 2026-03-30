@@ -7,12 +7,14 @@ import OrdersDashboard from "@/components/admin/OrdersDashboard";
 import WhatsAppHub from "@/components/admin/WhatsAppHub";
 import MenuManager from "@/components/admin/MenuManager";
 import PromotionsManager from "@/components/admin/PromotionsManager";
+import KnowledgeManager from "@/components/admin/KnowledgeManager";
 
 const mainTabs = [
   { label: "Pedidos", id: "orders" },
   { label: "Menu", id: "menu" },
   { label: "Promos", id: "promos" },
   { label: "WhatsApp", id: "whatsapp" },
+  { label: "Bot IA", id: "knowledge" },
 ];
 
 export default function AdminPage() {
@@ -87,6 +89,7 @@ export default function AdminPage() {
       {activeTab === "menu" && <MenuManager />}
       {activeTab === "promos" && <PromotionsManager />}
       {activeTab === "whatsapp" && <WhatsAppHub />}
+      {activeTab === "knowledge" && <KnowledgeManager />}
     </div>
   );
 }

@@ -262,5 +262,21 @@
       "consentTitle": "10. Consent",
       "consentText": "By providing your personal data through our Site and using our online ordering services, you grant your consent for the processing of your data as established in this Privacy Policy."
     }
+  },
+  "chat": {
+    "title": "CunPollo Assistant",
+    "subtitle": "Chicken that saves your day",
+    "open": "Open chat",
+    "close": "Close chat",
+    "placeholder": "Ask me about the menu...",
+    "send": "Send",
+    "welcome": "Hi! I'm CunPollo's assistant. I can help you with the menu, prices, promotions, or add products to your cart. What are you craving?",
+    "newChat": "New conversation",
+    "addToCart": "Add",
+    "inStoreOnly": "In-store only",
+    "suggestMenu": "See the menu",
+    "suggestPromos": "Any promotions?",
+    "suggestHours": "Hours & location",
+    "tagline": "I'll help you order!"
   }
 }
