@@ -22,6 +22,7 @@ cunpolloweb/
     ├── middleware.ts                   # next-intl middleware (excluye /api, /admin)
     ├── app/
     │   ├── layout.tsx                 # Root layout (HTML, fonts, body)
+    │   ├── not-found.tsx              # 404 root (fallback sin i18n, mascota + CTAs)
     │   ├── error.tsx                  # Error boundary (branded, con WhatsApp link)
     │   ├── global-error.tsx           # Global error boundary (fallback minimal)
     │   ├── page.tsx                   # Redirect root → /es

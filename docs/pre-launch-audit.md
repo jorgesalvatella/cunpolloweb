@@ -421,10 +421,11 @@ Se revisaron 17 API routes, el flujo completo de checkout/pago, el panel admin, 
 - [x] **MEDIO #23:** Campañas WhatsApp sin check de opt-in — CORREGIDO: filtro `opted_in_marketing` en contacts
 - [x] **BAJO #25:** Sin CSRF tokens en admin routes — CORREGIDO: Origin header validation + sameSite: lax
 - [x] **BAJO #30:** Errores de campañas exponen teléfonos — CORREGIDO: solo conteo en response
-- [ ] **RECORDAR:** Configurar `ADMIN_COOKIE_SECRET` en Vercel (string aleatorio largo)
-- [ ] **RECORDAR:** Configurar `OPENPAY_WEBHOOK_TOKEN` en Vercel y en dashboard de Openpay
-- [ ] **RECORDAR:** Configurar `CRON_SECRET` en Vercel para el cron job de timeout
-- [ ] **RECORDAR:** Registrar URL del webhook en Openpay: `https://cunpollo.com/api/webhooks/openpay`
+- [x] **RECORDAR:** Configurar `ADMIN_COOKIE_SECRET` en Vercel — HECHO
+- [x] **RECORDAR:** Configurar `OPENPAY_WEBHOOK_TOKEN` en Vercel y en dashboard de Openpay — HECHO
+- [x] **RECORDAR:** Configurar `CRON_SECRET` en Vercel para el cron job de timeout — HECHO
+- [x] **RECORDAR:** Registrar URL del webhook en Openpay — HECHO y verificado
+- [x] **RECORDAR:** Regla WAF en Cloudflare: Skip Bot Fight Mode para `/api/webhooks` — HECHO
 - [ ] **RECORDAR:** Eliminar producto de prueba "Prueba" ($2) desde admin
 - [ ] **RECORDAR:** Verificar que env vars en Vercel son las de producción
 - [ ] **RECORDAR:** Hacer un pedido de prueba completo con tarjeta real

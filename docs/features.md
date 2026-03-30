@@ -164,9 +164,9 @@
 ### Chatbot IA (Asistente de Compra)
 - **Estado**: Produccion
 - **Feature flag**: `FEATURES.CHAT_ENABLED` en `src/lib/constants.ts` (actualmente `true`)
-- **AI Provider**: Google Gemini 2.0 Flash via Vercel AI SDK (`ai` + `@ai-sdk/google`)
+- **AI Provider**: Google Gemini 2.5 Flash via Vercel AI SDK (`ai` + `@ai-sdk/google`)
 - **Streaming**: Respuestas en tiempo real via `streamText()` + `toUIMessageStreamResponse()`
-- **Widget**: `src/components/chat/ChatWidget.tsx` — boton flotante bottom-left (reemplaza WhatsApp)
+- **Widget**: `src/components/chat/ChatWidget.tsx` — mascota animada bottom-left con tagline "Te ayudo a pedir!" (reemplaza WhatsApp)
 - **Componentes**: `ChatMessage.tsx`, `ChatProductCard.tsx`, `ChatInput.tsx`
 - **API**: `POST /api/chat` — streaming con rate limit (20 req/min por IP)
 - **RAG via Function Calling** (no vector DB):
@@ -184,7 +184,22 @@
   - Categorias: general, fiestas, eventos, mundial, temporada, servicios
   - El bot consulta esta tabla via tool `search_knowledge` cuando le preguntan sobre temas fuera del menu
   - Casos de uso: paquetes de fiestas, calendario del mundial, eventos especiales, info de temporada
+- **Mascota**: Pollito CunPollo (224px) con animacion bounce, tagline rojo "Te ayudo a pedir!" debajo
+- **Avatar**: `https://igwu4bqzucdjjkup.public.blob.vercel-storage.com/Public/botsitocunpollo.png`
 - **Nota**: WhatsApp Twilio sigue activo para notificaciones de pedidos (no reemplazado)
+
+### Pagina 404
+- **Estado**: Produccion
+- **Archivos**: `src/app/[locale]/not-found.tsx` (con i18n), `src/app/not-found.tsx` (root fallback)
+- **Diseno**: Mascota CunPollo con animacion spring + wiggle, titulo "Este pollo se perdio...", subtitulo, CTAs "Ver el Menu" y "Ir al Inicio"
+- **Bilingue**: Namespace `notFound` en ES/EN
+
+### Wildcard Subdomain Redirect
+- **Estado**: Produccion (Cloudflare)
+- **Mecanismo**: Registro DNS wildcard `* → 192.0.2.1` (proxy ON) + Cloudflare Redirect Rule
+- **Regla**: Subdominios no asignados redirigen a `https://cunpollo.com` (301)
+- **Excluidos**: `cunpollo.com`, `www.cunpollo.com`, `finanzas.cunpollo.com`
+- **Nota**: Para agregar nuevos subdominios, crear registro DNS especifico y agregar excepcion en la Redirect Rule
 
 ## Pendientes / Por Configurar
 

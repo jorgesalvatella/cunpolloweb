@@ -1,35 +1,60 @@
 # Changelog
 
-## 2026-03-30 — Chatbot IA (Asistente de Compra)
+## 2026-03-30 — Chatbot IA, Pagina 404, Wildcard Subdomains
 
-### Resumen
-Chatbot IA integrado en la web que reemplaza el boton flotante de WhatsApp. Usa Google Gemini 2.0 Flash con function calling para buscar el menu, mostrar promociones y agregar productos al carrito. Streaming en tiempo real via Vercel AI SDK.
+### Chatbot IA (Asistente de Compra)
+Chatbot IA integrado en la web que reemplaza el boton flotante de WhatsApp. Usa Google Gemini 2.5 Flash con function calling para buscar el menu, mostrar promociones y agregar productos al carrito. Streaming en tiempo real via Vercel AI SDK v6.
 
-### Archivos nuevos
-- `src/lib/chat/system-prompt.ts` — System prompt con personalidad CunPollo + info del negocio
-- `src/lib/chat/tools.ts` — AI tools: search_menu, get_categories, get_promotions, add_to_cart, remove_from_cart
+**Archivos nuevos:**
+- `src/lib/chat/system-prompt.ts` — System prompt con personalidad CunPollo + info del negocio + FAQs
+- `src/lib/chat/tools.ts` — AI tools: search_menu, get_categories, get_promotions, add_to_cart, remove_from_cart, search_knowledge
 - `src/lib/chat/session.ts` — Persistencia de sesiones en Supabase
-- `src/app/api/chat/route.ts` — API route con streaming + rate limiting
-- `src/components/chat/ChatWidget.tsx` — Widget principal (boton + panel con animacion)
+- `src/app/api/chat/route.ts` — API route con streaming + rate limiting + convertToModelMessages
+- `src/components/chat/ChatWidget.tsx` — Mascota animada (224px, bounce) + panel de chat + tagline
 - `src/components/chat/ChatMessage.tsx` — Mensajes con soporte para texto, productos y acciones
 - `src/components/chat/ChatProductCard.tsx` — Card de producto inline en chat
 - `src/components/chat/ChatInput.tsx` — Input con auto-resize y Enter para enviar
+- `src/app/api/admin/knowledge/route.ts` — CRUD base de conocimiento del bot
+- `src/components/admin/KnowledgeManager.tsx` — Admin UI para gestionar conocimiento del bot
 
-### Archivos modificados
+**Archivos modificados:**
 - `src/lib/constants.ts` — Agregado `CHAT_ENABLED: true`
 - `src/app/[locale]/layout.tsx` — Reemplazado `WhatsAppButton` por `ChatWidget`
-- `src/messages/es.json` / `en.json` — Namespace `chat` con strings del widget
+- `src/app/admin/page.tsx` — Nueva tab "Bot IA" con KnowledgeManager
+- `src/messages/es.json` / `en.json` — Namespaces `chat` y `notFound`
 - `package.json` — Dependencias: `ai`, `@ai-sdk/google`, `@ai-sdk/react`, `zod`
 
-### Archivos eliminados
+**Archivos eliminados:**
 - `src/components/WhatsAppButton.tsx` — Reemplazado por ChatWidget
 
-### Migracion Supabase
+**Migracion Supabase:**
 - `create_chat_sessions` — Tabla `chat_sessions` con indices y RLS
 - `add_chat_sessions_unique_constraint` — Constraint UNIQUE en `session_id`
+- `create_bot_knowledge` — Tabla `bot_knowledge` para base de conocimiento del bot
 
-### Env var nueva
-- `GOOGLE_GENERATIVE_AI_API_KEY` — API key de Google Gemini
+**Env var nueva:**
+- `GOOGLE_GENERATIVE_AI_API_KEY` — API key de Google Gemini (Vercel production)
+
+**Fixes aplicados durante implementacion:**
+- AI SDK v6: `inputSchema` en vez de `parameters`, `zodSchema()` wrapper para Zod v4, `sendMessage` en vez de `append`, `DefaultChatTransport`, `toUIMessageStreamResponse()`, `stopWhen: stepCountIs(N)`
+- `convertToModelMessages()` para convertir UIMessages a ModelMessages
+- Modelo cambiado de `gemini-2.0-flash` a `gemini-2.5-flash` (2.0 bloqueado para nuevas API keys)
+- Chat panel z-index subido a z-60 (header es z-50)
+
+### Pagina 404
+Pagina 404 con mascota CunPollo, animaciones y CTAs bilingues.
+
+**Archivos:**
+- `src/app/[locale]/not-found.tsx` — 404 con i18n (Framer Motion animations)
+- `src/app/not-found.tsx` — 404 root fallback (sin i18n)
+
+### Wildcard Subdomain Redirect
+Subdominios no asignados redirigen a cunpollo.com via Cloudflare.
+
+**Configuracion:**
+- DNS: Registro wildcard `* → 192.0.2.1` (proxy ON)
+- Cloudflare Redirect Rule: subdominios no asignados → `https://cunpollo.com` (301)
+- Excluidos: `cunpollo.com`, `www.cunpollo.com`, `finanzas.cunpollo.com`
 
 ---
 
