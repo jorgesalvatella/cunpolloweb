@@ -123,10 +123,10 @@ export default function ChatWidget() {
         <button
           onClick={() => setOpen(!open)}
           aria-label={open ? t("close") : t("open")}
-          className="relative w-16 h-16 rounded-full shadow-lg transition-transform hover:scale-105 flex items-center justify-center overflow-hidden bg-white border-2 border-red-500"
+          className="relative w-20 h-20 transition-transform hover:scale-105 flex items-center justify-center"
         >
           {open ? (
-            <div className="absolute inset-0 bg-red-600 flex items-center justify-center">
+            <div className="w-12 h-12 bg-red-600 rounded-full shadow-lg flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -135,7 +135,7 @@ export default function ChatWidget() {
             <img
               src={BOT_AVATAR}
               alt="CunPollo Bot"
-              className="w-14 h-14 object-contain"
+              className="w-20 h-20 object-contain drop-shadow-lg"
             />
           )}
         </button>
@@ -166,7 +166,7 @@ export default function ChatWidget() {
               <img
                 src={BOT_AVATAR}
                 alt="CunPollo Bot"
-                className="w-10 h-10 rounded-full object-contain bg-white border-2 border-white/30"
+                className="w-10 h-10 object-contain"
               />
               <div className="flex-1">
                 <p className="font-semibold text-sm">{t("title")}</p>
