@@ -278,5 +278,11 @@
     "suggestPromos": "Any promotions?",
     "suggestHours": "Hours & location",
     "tagline": "I'll help you order!"
+  },
+  "notFound": {
+    "title": "This chicken got lost...",
+    "subtitle": "The page you're looking for doesn't exist, but our menu does.",
+    "ctaMenu": "See the Menu",
+    "ctaHome": "Go to Home"
   }
 }

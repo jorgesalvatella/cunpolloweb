@@ -278,5 +278,11 @@
     "suggestPromos": "Hay promociones?",
     "suggestHours": "Horario y ubicacion",
     "tagline": "Te ayudo a pedir!"
+  },
+  "notFound": {
+    "title": "Este pollo se perdio...",
+    "subtitle": "La pagina que buscas no existe, pero nuestro menu si.",
+    "ctaMenu": "Ver el Menu",
+    "ctaHome": "Ir al Inicio"
   }
 }
