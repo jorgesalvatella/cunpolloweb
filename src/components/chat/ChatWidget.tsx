@@ -132,21 +132,30 @@ export default function ChatWidget() {
               </svg>
             </div>
           ) : (
-            <img
+            <motion.img
               src={BOT_AVATAR}
               alt="CunPollo Bot"
               className="w-56 h-56 object-contain drop-shadow-lg"
+              animate={{ y: [0, -6, 0] }}
+              transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
             />
           )}
         </button>
         {!open && (
           <motion.div
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5 }}
-            className="bg-white rounded-full shadow-md border border-gray-200 px-4 py-1 -mt-4 mb-1"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: [0.8, 1.1, 1] }}
+            transition={{ delay: 1.5, duration: 0.4 }}
+            className="bg-red-600 rounded-full shadow-lg px-4 py-1.5 -mt-10 mb-1 cursor-pointer"
+            onClick={() => setOpen(true)}
           >
-            <p className="text-xs font-semibold text-red-600">{t("tagline")}</p>
+            <motion.p
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+              className="text-xs font-bold text-white whitespace-nowrap"
+            >
+              {t("tagline")}
+            </motion.p>
           </motion.div>
         )}
       </motion.div>
