@@ -113,25 +113,19 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* Floating button + label */}
-      <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 1, type: "spring", stiffness: 200 }}
-        className="fixed bottom-0 left-0 z-40 flex flex-col items-center"
-      >
-        <button
-          onClick={() => setOpen(!open)}
-          aria-label={open ? t("close") : t("open")}
-          className="relative w-56 h-56 transition-transform hover:scale-105 flex items-center justify-center"
+      {/* Floating mascot (hidden when chat is open) */}
+      {!open && (
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 1, type: "spring", stiffness: 200 }}
+          className="fixed bottom-0 left-0 z-40 flex flex-col items-center"
         >
-          {open ? (
-            <div className="w-14 h-14 bg-red-600 rounded-full shadow-lg flex items-center justify-center">
-              <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </div>
-          ) : (
+          <button
+            onClick={() => setOpen(true)}
+            aria-label={t("open")}
+            className="relative w-56 h-56 transition-transform hover:scale-105 flex items-center justify-center"
+          >
             <motion.img
               src={BOT_AVATAR}
               alt="CunPollo Bot"
@@ -139,9 +133,7 @@ export default function ChatWidget() {
               animate={{ y: [0, -6, 0] }}
               transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
             />
-          )}
-        </button>
-        {!open && (
+          </button>
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: [0.8, 1.1, 1] }}
@@ -157,8 +149,8 @@ export default function ChatWidget() {
               {t("tagline")}
             </motion.p>
           </motion.div>
-        )}
-      </motion.div>
+        </motion.div>
+      )}
 
       {/* Chat panel */}
       <AnimatePresence>
@@ -192,6 +184,16 @@ export default function ChatWidget() {
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setOpen(false)}
+                aria-label={t("close")}
+                className="text-red-200 hover:text-white transition-colors ml-1"
+                title={t("close")}
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
