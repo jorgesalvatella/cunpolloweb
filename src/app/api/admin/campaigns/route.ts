@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { verifyAdmin } from "@/lib/admin-auth";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { sendWhatsAppTemplate, getTemplateVariables } from "@/lib/twilio";
+import { getTemplateBySid } from "@/lib/whatsapp-templates";
 
 export async function GET() {
   if (!(await verifyAdmin())) {
@@ -36,10 +37,17 @@ export async function POST(request: Request) {
     );
   }
 
+  // Use local registry as source of truth for variable count
+  // (Twilio Content API may report variables that the template body doesn't use)
+  const templateInfo = getTemplateBySid(contentSid);
+  const localVarCount = templateInfo?.variableCount ?? null;
+
   // Fetch template to know exactly which variables it expects
-  const expectedKeys = await getTemplateVariables(contentSid);
+  const expectedKeys = localVarCount === 0
+    ? []
+    : await getTemplateVariables(contentSid);
+
   if (expectedKeys && expectedKeys.length === 0) {
-    // Template has no variables — don't send any
     console.log(`[Campaign] Template ${contentSid} expects 0 variables`);
   } else if (expectedKeys) {
     console.log(`[Campaign] Template ${contentSid} expects variables: ${expectedKeys.join(", ")}`);

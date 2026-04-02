@@ -97,6 +97,17 @@ export const WHATSAPP_TEMPLATES: WhatsAppTemplate[] = [
       "Hola {{1}}! Celebra tu fiesta en CunPollo!\n\nTenemos el area de juegos infantiles mas grande de Cancun. El lugar perfecto para cumples, reuniones y eventos familiares.\n\nComida rica, diversion para los peques y cero estres para ti.\n\nReserva tu fiesta hoy!",
     category: "marketing",
   },
+  {
+    label: "Cuaresma Carousel v1",
+    name: "cunpollo_cuaresma_carousel_v1",
+    contentSid: "HX8aa7218381063d2ca1842e2e713d09a3",
+    variableCount: 0,
+    variableLabels: [],
+    autoNameVariable: false,
+    bodyPreview:
+      "Camarones bufalo, tacos estilo Baja y aguachile\nMenu de Cuaresma disponible\nSolo por pocos dias - Pasa hoy",
+    category: "marketing",
+  },
 
   // --- Utility templates (not for marketing, excluded from selector) ---
   // order_confirmed, order_preparing, order_ready, order_cancelled,
