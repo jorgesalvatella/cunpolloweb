@@ -5,7 +5,7 @@ import { checkRateLimit } from "@/lib/rate-limit";
 export async function POST(request: Request) {
   // Rate limit: 5 attempts per 15 minutes per IP
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  const rl = checkRateLimit(`admin-login:${ip}`, 5, 15 * 60_000);
+  const rl = checkRateLimit(`admin-login:${ip}`, 20, 15 * 60_000);
   if (!rl.allowed) {
     return NextResponse.json(
       { error: "Demasiados intentos. Espera 15 minutos." },
