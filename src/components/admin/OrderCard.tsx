@@ -45,7 +45,12 @@ export default function OrderCard({
   onUpdateStatus: (id: string, status: OrderStatus) => void;
 }) {
   const next = nextStatus[order.status];
-  const time = new Date(order.created_at).toLocaleTimeString("es-MX", {
+  const dt = new Date(order.created_at);
+  const date = dt.toLocaleDateString("es-MX", {
+    day: "2-digit",
+    month: "short",
+  });
+  const time = dt.toLocaleTimeString("es-MX", {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -55,11 +60,30 @@ export default function OrderCard({
       <div className="flex items-center justify-between mb-3">
         <div>
           <span className="text-lg font-bold text-dark">#{order.order_number}</span>
-          <span className="text-sm text-dark/50 ml-2">{time}</span>
+          <span className="text-sm text-dark/50 ml-2">{date} · {time}</span>
         </div>
-        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getLabel(order).color}`}>
-          {getLabel(order).label}
-        </span>
+        <div className="flex flex-col items-end gap-1">
+          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getLabel(order).color}`}>
+            {getLabel(order).label}
+          </span>
+          <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+            order.payment_status === "success"
+              ? "bg-green-100 text-green-800"
+              : order.payment_status === "failed"
+              ? "bg-red-100 text-red-800"
+              : order.payment_status === "refunded"
+              ? "bg-purple-100 text-purple-800"
+              : "bg-yellow-100 text-yellow-800"
+          }`}>
+            {order.payment_status === "success" ? "Pago aceptado" :
+             order.payment_status === "failed" ? "Pago rechazado" :
+             order.payment_status === "refunded" ? "Reembolsado" :
+             order.payment_status === "pending_3ds" ? "Esperando 3DS" :
+             order.payment_status === "pending_spei" ? "Esperando SPEI" :
+             order.payment_status === "processing" ? "Procesando pago" :
+             "Pago pendiente"}
+          </span>
+        </div>
       </div>
 
       <div className="mb-3">
