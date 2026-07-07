@@ -62,6 +62,21 @@ export async function POST(
         const { notifyAdminNewOrder, notifyCustomerStatusChange } = await import("@/lib/twilio");
         notifyAdminNewOrder(fullOrder.data);
         notifyCustomerStatusChange(fullOrder.data);
+
+        // Upsert contact from successful order
+        supabaseAdmin
+          .from("contacts")
+          .upsert(
+            {
+              phone: fullOrder.data.customer_phone,
+              name: fullOrder.data.customer_name,
+              source: "order",
+              active: true,
+              opted_in_marketing: true,
+            },
+            { onConflict: "phone" }
+          )
+          .then();
       }
     } catch {}
 

@@ -281,6 +281,15 @@ export async function POST(request: Request) {
       })
       .eq("id", order.id);
 
+    // Upsert contact from successful order (fire-and-forget)
+    supabaseAdmin
+      .from("contacts")
+      .upsert(
+        { phone, name, source: "order", active: true, opted_in_marketing: true },
+        { onConflict: "phone" }
+      )
+      .then();
+
     // Fire-and-forget WhatsApp notifications
     try {
       const { notifyAdminNewOrder, notifyCustomerStatusChange } = await import("@/lib/twilio");
