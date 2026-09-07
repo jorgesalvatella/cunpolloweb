@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-09-06 — Rediseño Frontend: Tema Oscuro (solo sitio publico)
+
+Rediseño visual completo del sitio publico a tema oscuro permanente y moderno. **Solo classNames y tokens CSS — cero cambios de funcionalidad.** El admin (`/admin`) conserva su tema claro intacto.
+
+**Tokens nuevos** (`src/styles/globals.css`, los existentes no cambian porque el admin los usa):
+- `--color-surface: #0B0A0A` (fondo de pagina), `--color-surface-2: #171412` (superficies elevadas), `--color-surface-3: #221E1B` (inputs), `--color-ink: #F7F5F0` (texto principal)
+- Body → `bg-surface` + `text-ink`; headings con `letter-spacing: -0.02em`
+
+**Direccion estetica:**
+- Canvas near-black; secciones separadas por whitespace + hairlines `border-t border-white/5` (sin bandas de color, excepto CTASection que queda roja)
+- Imagenes de producto flotantes: sin tarjeta/fondo/borde, solo `rounded-xl` + sombra profunda + glow dorado en hover (MenuItemCard, MenuPreview, MenuItemModal, CartItemRow, ChatProductCard)
+- Sticky headers `bg-surface/85 backdrop-blur-xl border-b border-white/10`
+- Botones rojos con glow `shadow-red-600/25`; botones dorados con label `text-dark`
+- Texto rojo sobre oscuro usa `red-300` (contraste WCAG); precios en `gold-400`
+- Inputs `bg-surface-3` + `[color-scheme:dark]` (oscurece select/time nativos)
+
+**Archivos modificados** (solo classNames): globals.css, app/layout.tsx (themeColor #0B0A0A), manifest.json, admin/layout.tsx (blindaje `text-gray-900`, 1 linea), Badge, Button, Header, LanguageSwitcher, Footer, Hero/Video/MenuPreview/Location/Rewards/CTA sections, MenuContainer, CategoryTabs, MenuItemCard, MenuItemModal, menu page/loading, cart page, CartItemRow, CartFloatingButton, checkout page, CheckoutForm, CardInput, confirmation page, not-found, terminos, privacidad, [locale]/loading, error.tsx, PWARegister, ChatWidget, ChatMessage, ChatProductCard, ChatInput.
+
+**Nota:** Las fotos WebP actuales no tienen transparencia; el look flotante mejorara cuando se suban PNGs recortados desde el admin (el optimizador preserva alpha).
+
 ## 2026-03-30 — Chatbot IA, Pagina 404, Wildcard Subdomains
 
 ### Chatbot IA (Asistente de Compra)

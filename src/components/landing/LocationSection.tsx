@@ -13,8 +13,8 @@ function OpenIndicator() {
   const isOpen = hour >= 13 && hour < 21;
 
   return (
-    <span className={`inline-flex items-center gap-1.5 text-sm font-medium ${isOpen ? "text-green-600" : "text-red-500"}`}>
-      <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-green-500" : "bg-red-500"}`} />
+    <span className={`inline-flex items-center gap-1.5 text-sm font-medium ${isOpen ? "text-green-400" : "text-red-300"}`}>
+      <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-green-400" : "bg-red-400"}`} />
       {isOpen ? t("open") : t("closed")}
     </span>
   );
@@ -26,14 +26,14 @@ export default function LocationSection() {
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${RESTAURANT.coordinates.lat},${RESTAURANT.coordinates.lng}`;
 
   return (
-    <section id="location" className="py-14 sm:py-20 bg-white">
+    <section id="location" className="py-14 sm:py-20 border-t border-white/5">
       <Container>
         <div className="text-center mb-8 sm:mb-12">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-red-600 mb-3 sm:mb-4 font-(family-name:--font-heading)"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-ink mb-3 sm:mb-4 font-(family-name:--font-heading)"
           >
             {t("title")}
           </motion.h2>
@@ -42,7 +42,7 @@ export default function LocationSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-base sm:text-lg text-dark/60"
+            className="text-base sm:text-lg text-white/60"
           >
             {t("subtitle")}
           </motion.p>
@@ -54,7 +54,7 @@ export default function LocationSection() {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="rounded-xl sm:rounded-2xl overflow-hidden h-64 sm:h-80 lg:h-auto bg-red-500/5"
+            className="rounded-xl sm:rounded-2xl overflow-hidden h-64 sm:h-80 lg:h-auto bg-surface-2 border border-white/10"
           >
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3721.428738509904!2d-86.8311241!3d21.135329499999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8f4c2bcfcd79ad67%3A0xf9abba9ca2b09c95!2sPollo%20Rostizado%20Cunpollo!5e0!3m2!1ses-419!2smx!4v1771843435009!5m2!1ses-419!2smx"
@@ -76,10 +76,10 @@ export default function LocationSection() {
             className="flex flex-col justify-center gap-6 sm:gap-8"
           >
             <div>
-              <h3 className="text-xs sm:text-sm font-semibold text-gold-500 uppercase tracking-wider mb-1.5 sm:mb-2">
+              <h3 className="text-xs sm:text-sm font-semibold text-gold-400 uppercase tracking-wider mb-1.5 sm:mb-2">
                 {t("address")}
               </h3>
-              <p className="text-dark text-base sm:text-lg leading-relaxed">
+              <p className="text-ink text-base sm:text-lg leading-relaxed">
                 {RESTAURANT.address.street}
                 <br />
                 {RESTAURANT.address.city}, {RESTAURANT.address.state}{" "}
@@ -89,30 +89,30 @@ export default function LocationSection() {
 
             <div>
               <div className="flex items-center gap-3 mb-1.5 sm:mb-2">
-                <h3 className="text-xs sm:text-sm font-semibold text-gold-500 uppercase tracking-wider">
+                <h3 className="text-xs sm:text-sm font-semibold text-gold-400 uppercase tracking-wider">
                   {t("hours")}
                 </h3>
                 <OpenIndicator />
               </div>
-              <div className="space-y-1 text-dark text-base sm:text-lg">
+              <div className="space-y-1 text-ink text-base sm:text-lg">
                 <p>
-                  <span className="text-dark/60">{t("weekdays")}:</span>{" "}
+                  <span className="text-white/60">{t("weekdays")}:</span>{" "}
                   {RESTAURANT.hours.weekdays}
                 </p>
                 <p>
-                  <span className="text-dark/60">{t("weekends")}:</span>{" "}
+                  <span className="text-white/60">{t("weekends")}:</span>{" "}
                   {RESTAURANT.hours.weekends}
                 </p>
               </div>
             </div>
 
             <div>
-              <h3 className="text-xs sm:text-sm font-semibold text-gold-500 uppercase tracking-wider mb-1.5 sm:mb-2">
+              <h3 className="text-xs sm:text-sm font-semibold text-gold-400 uppercase tracking-wider mb-1.5 sm:mb-2">
                 {t("phone")}
               </h3>
               <a
                 href={`tel:${RESTAURANT.phone}`}
-                className="text-dark text-base sm:text-lg hover:text-gold-500 transition-colors"
+                className="text-ink text-base sm:text-lg hover:text-gold-400 transition-colors"
               >
                 {RESTAURANT.phone}
               </a>
@@ -123,7 +123,7 @@ export default function LocationSection() {
                 href={mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 transition-all shadow-md hover:shadow-lg flex-1 text-base sm:text-lg"
+                className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-red-600 text-white font-semibold rounded-full hover:bg-red-500 transition-all shadow-lg shadow-red-600/25 hover:shadow-red-600/40 flex-1 text-base sm:text-lg"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -134,7 +134,7 @@ export default function LocationSection() {
               {FEATURES.ORDERING_ENABLED && (
                 <Link
                   href="/menu"
-                  className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-gold-500 text-white font-semibold rounded-full hover:bg-gold-600 transition-all shadow-md hover:shadow-lg flex-1 text-base sm:text-lg"
+                  className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-gold-500 text-dark font-semibold rounded-full hover:bg-gold-400 transition-all shadow-md hover:shadow-lg flex-1 text-base sm:text-lg"
                 >
                   {t("orderPickup")}
                 </Link>

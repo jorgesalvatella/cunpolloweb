@@ -14,14 +14,14 @@ export default function LanguageSwitcher() {
   };
 
   return (
-    <div className="flex items-center rounded-full border border-dark/10 overflow-hidden text-sm">
+    <div className="flex items-center rounded-full border border-white/15 overflow-hidden text-sm">
       <button
         onClick={() => switchLocale("es")}
         className={cn(
           "px-3 py-1 transition-colors cursor-pointer",
           locale === "es"
-            ? "bg-gold-500 text-white"
-            : "text-dark/60 hover:text-dark"
+            ? "bg-gold-500 text-dark"
+            : "text-white/60 hover:text-white"
         )}
       >
         ES
@@ -31,8 +31,8 @@ export default function LanguageSwitcher() {
         className={cn(
           "px-3 py-1 transition-colors cursor-pointer",
           locale === "en"
-            ? "bg-gold-500 text-white"
-            : "text-dark/60 hover:text-dark"
+            ? "bg-gold-500 text-dark"
+            : "text-white/60 hover:text-white"
         )}
       >
         EN

@@ -50,15 +50,15 @@ export default function MenuItemCard({
       whileHover={{ y: -2 }}
       whileTap={{ scale: 0.98 }}
       onClick={() => onSelect(item)}
-      className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow text-left cursor-pointer w-full border border-gold-400/20"
+      className="group rounded-xl sm:rounded-2xl text-left cursor-pointer w-full"
     >
-      <div className={`flex items-center justify-center p-3 ${index % 2 === 0 ? "bg-gold-500" : "bg-red-600"}`}>
+      <div className="relative flex items-center justify-center">
         <Image
           src={item.image}
           alt={item.name[locale]}
           width={500}
           height={500}
-          className="w-full h-auto rounded-lg"
+          className="w-full h-auto rounded-xl shadow-[0_16px_40px_-12px_rgba(0,0,0,0.8)] group-hover:shadow-[0_16px_50px_-10px_rgba(232,163,23,0.25)] transition-shadow duration-300"
           sizes="(max-width: 640px) 50vw, 25vw"
         />
         {FEATURES.ORDERING_ENABLED && !item.promo && (
@@ -94,14 +94,14 @@ export default function MenuItemCard({
       </div>
       <div className="p-2.5 sm:p-4">
         <div className="flex items-start justify-between gap-1 sm:gap-2 mb-0.5 sm:mb-1">
-          <h3 className="font-semibold text-dark text-xs sm:text-sm leading-tight">
+          <h3 className="font-semibold text-ink text-xs sm:text-sm leading-tight">
             {item.name[locale]}
           </h3>
           {!item.promo && (
-            <span className="text-gold-500 font-bold text-xs sm:text-sm whitespace-nowrap">
+            <span className="text-gold-400 font-bold text-xs sm:text-sm whitespace-nowrap">
               {hasDiscount ? (
                 <>
-                  <span className="line-through text-dark/30 font-normal mr-0.5">${item.price}</span>
+                  <span className="line-through text-white/30 font-normal mr-0.5">${item.price}</span>
                   ${effectivePrice}
                 </>
               ) : (
@@ -111,11 +111,11 @@ export default function MenuItemCard({
           )}
         </div>
         {item.promo ? (
-          <p className="text-[10px] sm:text-xs text-red-600 font-semibold mb-2 sm:mb-3">
+          <p className="text-[10px] sm:text-xs text-red-300 font-semibold mb-2 sm:mb-3">
             {t("dineInOnly")}
           </p>
         ) : (
-          <p className="text-[10px] sm:text-xs text-dark/50 mb-2 sm:mb-3 line-clamp-1 sm:line-clamp-2">
+          <p className="text-[10px] sm:text-xs text-white/50 mb-2 sm:mb-3 line-clamp-1 sm:line-clamp-2">
             {item.description[locale]}
           </p>
         )}

@@ -5,10 +5,10 @@ type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
 type ButtonSize = "sm" | "md" | "lg";
 
 const variants: Record<ButtonVariant, string> = {
-  primary: "bg-gold-500 text-white hover:bg-gold-600 shadow-md hover:shadow-lg",
+  primary: "bg-gold-500 text-dark hover:bg-gold-600 shadow-md hover:shadow-lg",
   secondary: "bg-red-600 text-white hover:bg-red-700 shadow-md hover:shadow-lg",
-  outline: "border-2 border-gold-500 text-gold-500 hover:bg-gold-500 hover:text-white",
-  ghost: "text-dark hover:bg-dark/5",
+  outline: "border-2 border-gold-500 text-gold-500 hover:bg-gold-500 hover:text-dark",
+  ghost: "text-ink hover:bg-white/10",
 };
 
 const sizes: Record<ButtonSize, string> = {

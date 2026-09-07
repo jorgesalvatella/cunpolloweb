@@ -27,12 +27,12 @@ export default async function PrivacidadPage({
   return (
     <div className="pt-22 sm:pt-24 md:pt-28 pb-12 sm:pb-16">
       <Container className="max-w-4xl">
-        <h1 className="text-3xl font-bold text-dark mb-2">{t("privacyTitle")}</h1>
-        <p className="text-sm text-dark/50 mb-8">{t("lastUpdated")}: 4 de marzo de 2026</p>
+        <h1 className="text-3xl font-bold text-ink mb-2">{t("privacyTitle")}</h1>
+        <p className="text-sm text-white/50 mb-8">{t("lastUpdated")}: 4 de marzo de 2026</p>
 
-        <div className="prose prose-sm max-w-none text-dark/80 space-y-6">
+        <div className="prose prose-sm max-w-none text-white/80 space-y-6">
           <section>
-            <h2 className="text-xl font-bold text-dark">{t("privacy.responsibleTitle")}</h2>
+            <h2 className="text-xl font-bold text-ink">{t("privacy.responsibleTitle")}</h2>
             <p>{t("privacy.responsibleText")}</p>
             <p>
               {RESTAURANT.name}<br />
@@ -43,7 +43,7 @@ export default async function PrivacidadPage({
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-dark">{t("privacy.dataCollectedTitle")}</h2>
+            <h2 className="text-xl font-bold text-ink">{t("privacy.dataCollectedTitle")}</h2>
             <p>{t("privacy.dataCollectedText")}</p>
             <ul className="list-disc pl-6 space-y-1">
               <li>{t("privacy.data1")}</li>
@@ -55,7 +55,7 @@ export default async function PrivacidadPage({
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-dark">{t("privacy.purposeTitle")}</h2>
+            <h2 className="text-xl font-bold text-ink">{t("privacy.purposeTitle")}</h2>
             <p>{t("privacy.purposeText")}</p>
             <ul className="list-disc pl-6 space-y-1">
               <li>{t("privacy.purpose1")}</li>
@@ -66,7 +66,7 @@ export default async function PrivacidadPage({
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-dark">{t("privacy.transferTitle")}</h2>
+            <h2 className="text-xl font-bold text-ink">{t("privacy.transferTitle")}</h2>
             <p>{t("privacy.transferText")}</p>
             <ul className="list-disc pl-6 space-y-1">
               <li>{t("privacy.transfer1")}</li>
@@ -75,32 +75,32 @@ export default async function PrivacidadPage({
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-dark">{t("privacy.arcoTitle")}</h2>
+            <h2 className="text-xl font-bold text-ink">{t("privacy.arcoTitle")}</h2>
             <p>{t("privacy.arcoText")}</p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-dark">{t("privacy.cookiesTitle")}</h2>
+            <h2 className="text-xl font-bold text-ink">{t("privacy.cookiesTitle")}</h2>
             <p>{t("privacy.cookiesText")}</p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-dark">{t("privacy.securityTitle")}</h2>
+            <h2 className="text-xl font-bold text-ink">{t("privacy.securityTitle")}</h2>
             <p>{t("privacy.securityText")}</p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-dark">{t("privacy.changesTitle")}</h2>
+            <h2 className="text-xl font-bold text-ink">{t("privacy.changesTitle")}</h2>
             <p>{t("privacy.changesText")}</p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-dark">{t("privacy.authorityTitle")}</h2>
+            <h2 className="text-xl font-bold text-ink">{t("privacy.authorityTitle")}</h2>
             <p>{t("privacy.authorityText")}</p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-dark">{t("privacy.consentTitle")}</h2>
+            <h2 className="text-xl font-bold text-ink">{t("privacy.consentTitle")}</h2>
             <p>{t("privacy.consentText")}</p>
           </section>
         </div>

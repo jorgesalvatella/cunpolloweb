@@ -26,26 +26,26 @@ export default function MenuPreview() {
   if (loading || featured.length === 0) return null;
 
   return (
-    <section className="py-14 sm:py-20 bg-red-50">
+    <section className="py-14 sm:py-20 border-t border-white/5">
       <Container>
         <div className="text-center mb-8 sm:mb-12">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-red-600 mb-3 sm:mb-4 font-(family-name:--font-heading)"
-          >
-            {t("title")}
-          </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-base sm:text-lg text-dark/60"
+            className="text-gold-400 text-xs sm:text-sm font-semibold uppercase tracking-widest mb-3"
           >
             {t("subtitle")}
           </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-ink font-(family-name:--font-heading)"
+          >
+            {t("title")}
+          </motion.h2>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
@@ -57,28 +57,28 @@ export default function MenuPreview() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
               whileHover={{ y: -4 }}
-              className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow"
+              className="group rounded-xl sm:rounded-2xl"
             >
-              <div className={`flex items-center justify-center p-3 ${i % 2 === 0 ? "bg-gold-500" : "bg-red-600"}`}>
+              <div className="flex items-center justify-center">
                 <Image
                   src={item.image}
                   alt={item.name[locale]}
                   width={500}
                   height={500}
-                  className="w-full h-auto rounded-lg"
+                  className="w-full h-auto rounded-xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.8)] group-hover:shadow-[0_20px_60px_-10px_rgba(232,163,23,0.25)] transition-shadow duration-300"
                   sizes="(max-width: 640px) 50vw, 25vw"
                   unoptimized
                 />
               </div>
               <div className="p-3 sm:p-5">
                 <div className="flex items-start justify-between gap-1 sm:gap-2 mb-1 sm:mb-2">
-                  <h3 className="font-semibold text-dark text-xs sm:text-base leading-tight">
+                  <h3 className="font-semibold text-ink text-xs sm:text-base leading-tight">
                     {item.name[locale]}
                   </h3>
-                  <span className="text-gold-500 font-bold whitespace-nowrap text-xs sm:text-base">
+                  <span className="text-gold-400 font-bold whitespace-nowrap text-xs sm:text-base">
                     {getEffectivePrice(item) < item.price ? (
                       <>
-                        <span className="line-through text-dark/30 font-normal mr-1">${item.price}</span>
+                        <span className="line-through text-white/30 font-normal mr-1">${item.price}</span>
                         ${getEffectivePrice(item)}
                       </>
                     ) : (
@@ -86,7 +86,7 @@ export default function MenuPreview() {
                     )}
                   </span>
                 </div>
-                <p className="text-xs sm:text-sm text-dark/50 mb-2 sm:mb-3 line-clamp-2 hidden sm:block">
+                <p className="text-xs sm:text-sm text-white/50 mb-2 sm:mb-3 line-clamp-2 hidden sm:block">
                   {item.description[locale]}
                 </p>
                 {item.tags.length > 0 && (
@@ -109,7 +109,7 @@ export default function MenuPreview() {
         >
           <Link
             href="/menu"
-            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 transition-all shadow-md hover:shadow-lg text-base sm:text-lg"
+            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-red-600 text-white font-semibold rounded-full hover:bg-red-500 transition-all shadow-lg shadow-red-600/25 hover:shadow-red-600/40 text-base sm:text-lg"
           >
             {t("viewAll")}
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

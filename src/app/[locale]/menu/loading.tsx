@@ -2,7 +2,7 @@ import Container from "@/components/ui/Container";
 
 function Skeleton({ className }: { className?: string }) {
   return (
-    <div className={`animate-pulse bg-red-500/8 rounded-lg ${className ?? ""}`} />
+    <div className={`animate-pulse bg-white/8 rounded-lg ${className ?? ""}`} />
   );
 }
 

@@ -22,8 +22,8 @@ No dejar documentación desactualizada. Si no sabes qué archivo actualizar, act
 - Deploy: Vercel
 
 ## Convenciones
-- Colores: rojo dominante + dorado + blanco. NO fondos oscuros/negros
-- NO gradientes — colores solidos
+- Colores (sitio publico): tema oscuro permanente — fondo near-black (`--color-surface` #0B0A0A), texto off-white (`--color-ink`), acentos rojo + dorado. Texto rojo sobre oscuro usa `red-300`. El admin (`/admin`) conserva tema claro (bg-gray-50)
+- NO gradientes — colores solidos (sombras/glows OK)
 - NO emojis en código a menos que el usuario lo pida
 - Traducciones en `src/messages/{es,en}.json` con namespaces
 - Feature flags en `src/lib/constants.ts` (FEATURES object)

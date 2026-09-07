@@ -324,8 +324,8 @@ export default function CheckoutForm() {
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Order Summary */}
         <div>
-          <h2 className="text-lg font-bold text-dark mb-3">{t("orderSummary")}</h2>
-          <div className="bg-gray-50 rounded-xl p-4 space-y-2">
+          <h2 className="text-lg font-bold text-ink mb-3">{t("orderSummary")}</h2>
+          <div className="bg-surface-2 border border-white/10 rounded-xl p-4 space-y-2">
             {items.map((item) => {
               const menuItem = getItemById(item.menuItemId);
               if (!menuItem) return null;
@@ -339,8 +339,8 @@ export default function CheckoutForm() {
                   <span className="font-medium">
                     {hasDiscount ? (
                       <>
-                        <span className="line-through text-dark/30 mr-1">${menuItem.price * item.quantity}</span>
-                        <span className="text-red-600">${effective * item.quantity}</span>
+                        <span className="line-through text-white/30 mr-1">${menuItem.price * item.quantity}</span>
+                        <span className="text-red-300">${effective * item.quantity}</span>
                       </>
                     ) : (
                       `$${menuItem.price * item.quantity}`
@@ -351,45 +351,45 @@ export default function CheckoutForm() {
             })}
             {orderDiscount.promo && (
               <>
-                <div className="border-t border-gray-200 pt-2 flex justify-between text-sm">
+                <div className="border-t border-white/10 pt-2 flex justify-between text-sm">
                   <span>Subtotal</span>
                   <span>${total}</span>
                 </div>
-                <div className="flex justify-between text-sm text-green-700 bg-green-50 -mx-1 px-1 py-1 rounded">
+                <div className="flex justify-between text-sm text-green-300 bg-green-500/10 -mx-1 px-1 py-1 rounded">
                   <span>{locale === "es" ? orderDiscount.promo.descriptionEs : orderDiscount.promo.descriptionEn}</span>
                   <span className="font-medium">-${orderDiscount.amount}</span>
                 </div>
               </>
             )}
-            <div className={`flex justify-between font-bold ${orderDiscount.promo ? "pt-1" : "border-t border-gray-200 pt-2"}`}>
+            <div className={`flex justify-between font-bold ${orderDiscount.promo ? "pt-1" : "border-t border-white/10 pt-2"}`}>
               <span>Total</span>
-              <span className="text-red-700">${orderDiscount.finalTotal} MXN</span>
+              <span className="text-gold-400">${orderDiscount.finalTotal} MXN</span>
             </div>
           </div>
         </div>
 
         {/* Customer Info */}
         <div>
-          <h2 className="text-lg font-bold text-dark mb-3">{t("customerInfo")}</h2>
+          <h2 className="text-lg font-bold text-ink mb-3">{t("customerInfo")}</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-dark/70 mb-1">{t("name")}</label>
+              <label className="block text-sm font-medium text-white/70 mb-1">{t("name")}</label>
               <input
                 type="text"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
                 placeholder={t("namePlaceholder")}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
+                className="w-full px-4 py-3 bg-surface-3 border border-white/10 rounded-lg text-ink placeholder:text-white/30 focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none [color-scheme:dark]"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-dark/70 mb-1">{t("phone")}</label>
+              <label className="block text-sm font-medium text-white/70 mb-1">{t("phone")}</label>
               <input
                 type="tel"
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
                 placeholder={t("phonePlaceholder")}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
+                className="w-full px-4 py-3 bg-surface-3 border border-white/10 rounded-lg text-ink placeholder:text-white/30 focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none [color-scheme:dark]"
               />
             </div>
           </div>
@@ -397,15 +397,15 @@ export default function CheckoutForm() {
 
         {/* Order Type */}
         <div>
-          <h2 className="text-lg font-bold text-dark mb-3">{t("orderType")}</h2>
+          <h2 className="text-lg font-bold text-ink mb-3">{t("orderType")}</h2>
           <div className="grid grid-cols-2 gap-3 mb-4">
             <button
               type="button"
               onClick={() => setOrderType("dine_in")}
               className={`py-3 rounded-lg font-semibold text-sm transition-colors cursor-pointer border-2 ${
                 orderType === "dine_in"
-                  ? "border-red-600 bg-red-50 text-red-700"
-                  : "border-gray-200 bg-white text-dark/70 hover:border-gray-300"
+                  ? "border-red-400 bg-red-500/15 text-red-200"
+                  : "border-white/10 bg-surface-2 text-white/70 hover:border-white/25"
               }`}
             >
               {t("dineIn")}
@@ -415,19 +415,19 @@ export default function CheckoutForm() {
               onClick={() => setOrderType("pickup")}
               className={`py-3 rounded-lg font-semibold text-sm transition-colors cursor-pointer border-2 ${
                 orderType === "pickup"
-                  ? "border-red-600 bg-red-50 text-red-700"
-                  : "border-gray-200 bg-white text-dark/70 hover:border-gray-300"
+                  ? "border-red-400 bg-red-500/15 text-red-200"
+                  : "border-white/10 bg-surface-2 text-white/70 hover:border-white/25"
               }`}
             >
               {t("pickup")}
             </button>
           </div>
           <div>
-            <label className="block text-sm font-medium text-dark/70 mb-1">{t("pickupTime")}</label>
+            <label className="block text-sm font-medium text-white/70 mb-1">{t("pickupTime")}</label>
             <select
               value={pickupTime}
               onChange={(e) => setPickupTime(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none bg-white text-dark"
+              className="w-full px-4 py-3 bg-surface-3 border border-white/10 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none text-ink [color-scheme:dark]"
             >
               <option value="">{t("selectTime")}</option>
               {availableSlots.map((slot) => (
@@ -437,11 +437,11 @@ export default function CheckoutForm() {
           </div>
           {orderType === "dine_in" && (
             <div className="mt-4">
-              <label className="block text-sm font-medium text-dark/70 mb-1">{t("guests")}</label>
+              <label className="block text-sm font-medium text-white/70 mb-1">{t("guests")}</label>
               <select
                 value={guests ?? ""}
                 onChange={(e) => setGuests(e.target.value ? Number(e.target.value) : null)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none bg-white text-dark"
+                className="w-full px-4 py-3 bg-surface-3 border border-white/10 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none text-ink [color-scheme:dark]"
               >
                 <option value="">{t("selectGuests")}</option>
                 {Array.from({ length: 20 }, (_, i) => i + 1).map((n) => (
@@ -455,15 +455,15 @@ export default function CheckoutForm() {
         {/* Payment Method — hidden while SPEI is disabled */}
         {speiEnabled && (
           <div>
-            <h2 className="text-lg font-bold text-dark mb-3">{t("paymentMethod")}</h2>
+            <h2 className="text-lg font-bold text-ink mb-3">{t("paymentMethod")}</h2>
             <div className="grid grid-cols-2 gap-3 mb-4">
               <button
                 type="button"
                 onClick={() => setPaymentMethod("card")}
                 className={`py-3 rounded-lg font-semibold text-sm transition-colors cursor-pointer border-2 ${
                   paymentMethod === "card"
-                    ? "border-red-600 bg-red-50 text-red-700"
-                    : "border-gray-200 bg-white text-dark/70 hover:border-gray-300"
+                    ? "border-red-400 bg-red-500/15 text-red-200"
+                    : "border-white/10 bg-surface-2 text-white/70 hover:border-white/25"
                 }`}
               >
                 {t("payCard")}
@@ -473,8 +473,8 @@ export default function CheckoutForm() {
                 onClick={() => setPaymentMethod("spei")}
                 className={`py-3 rounded-lg font-semibold text-sm transition-colors cursor-pointer border-2 ${
                   paymentMethod === "spei"
-                    ? "border-red-600 bg-red-50 text-red-700"
-                    : "border-gray-200 bg-white text-dark/70 hover:border-gray-300"
+                    ? "border-red-400 bg-red-500/15 text-red-200"
+                    : "border-white/10 bg-surface-2 text-white/70 hover:border-white/25"
                 }`}
               >
                 {t("paySpei")}
@@ -485,22 +485,22 @@ export default function CheckoutForm() {
 
         {/* Payment Info */}
         <div>
-          <h2 className="text-lg font-bold text-dark mb-3">{t("paymentInfo")}</h2>
+          <h2 className="text-lg font-bold text-ink mb-3">{t("paymentInfo")}</h2>
           {paymentMethod === "card" ? (
             <CardInput value={card} onChange={setCard} />
           ) : (
             <div className="space-y-4">
-              <div className="bg-blue-50 rounded-lg p-4 text-sm text-blue-800">
+              <div className="bg-blue-500/10 rounded-lg p-4 text-sm text-blue-200">
                 {t("speiInstructions")}
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark/70 mb-1">{t("email")}</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">{t("email")}</label>
                 <input
                   type="email"
                   value={customerEmail}
                   onChange={(e) => setCustomerEmail(e.target.value)}
                   placeholder={t("emailPlaceholder")}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
+                  className="w-full px-4 py-3 bg-surface-3 border border-white/10 rounded-lg text-ink placeholder:text-white/30 focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none [color-scheme:dark]"
                 />
               </div>
             </div>
@@ -508,13 +508,13 @@ export default function CheckoutForm() {
         </div>
 
         {error && (
-          <div ref={errorRef} className="bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm font-medium">{error}</div>
+          <div ref={errorRef} className="bg-red-500/15 text-red-300 px-4 py-3 rounded-lg text-sm font-medium">{error}</div>
         )}
 
         <button
           type="submit"
           disabled={loading || (paymentMethod === "card" && !openpayReady)}
-          className="w-full bg-red-600 text-white py-4 rounded-full font-bold text-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-lg"
+          className="w-full bg-red-600 text-white py-4 rounded-full font-bold text-lg hover:bg-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-lg shadow-red-600/25"
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">
@@ -542,9 +542,9 @@ export default function CheckoutForm() {
         </button>
 
         {/* Security Trust Section */}
-        <div className="border border-gray-200 rounded-xl p-4 space-y-3">
-          <div className="flex items-center justify-center gap-2 text-sm font-medium text-dark/70">
-            <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+        <div className="border border-white/10 rounded-xl p-4 space-y-3">
+          <div className="flex items-center justify-center gap-2 text-sm font-medium text-white/70">
+            <svg className="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
             {t("securePayment")}
@@ -572,7 +572,7 @@ export default function CheckoutForm() {
             </svg>
           </div>
 
-          <div className="flex items-center justify-center gap-4 text-xs text-dark/40">
+          <div className="flex items-center justify-center gap-4 text-xs text-white/40">
             <span className="flex items-center gap-1">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />

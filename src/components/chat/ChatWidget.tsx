@@ -160,7 +160,7 @@ export default function ChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-16 left-2 z-[60] w-[calc(100vw-1rem)] max-w-[400px] h-[min(500px,calc(100vh-5rem))] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden"
+            className="fixed bottom-16 left-2 z-[60] w-[calc(100vw-1rem)] max-w-[400px] h-[min(500px,calc(100vh-5rem))] bg-surface-2 rounded-2xl shadow-2xl border border-white/10 flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="bg-red-600 text-white px-4 py-3 flex items-center gap-3 flex-shrink-0">
@@ -202,7 +202,7 @@ export default function ChatWidget() {
             <div className="flex-1 overflow-y-auto px-3 py-3">
               {messages.length === 0 && (
                 <div className="flex justify-start mb-3">
-                  <div className="max-w-[85%] bg-gray-100 text-gray-900 rounded-2xl rounded-bl-md px-4 py-2">
+                  <div className="max-w-[85%] bg-white/8 text-ink rounded-2xl rounded-bl-md px-4 py-2">
                     <p className="text-sm leading-relaxed">{t("welcome")}</p>
                   </div>
                 </div>
@@ -218,11 +218,11 @@ export default function ChatWidget() {
 
               {isLoading && (
                 <div className="flex justify-start mb-3">
-                  <div className="bg-gray-100 rounded-2xl rounded-bl-md px-4 py-2">
+                  <div className="bg-white/8 rounded-2xl rounded-bl-md px-4 py-2">
                     <div className="flex gap-1">
-                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0ms]" />
-                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:150ms]" />
-                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:300ms]" />
+                      <span className="w-2 h-2 bg-white/40 rounded-full animate-bounce [animation-delay:0ms]" />
+                      <span className="w-2 h-2 bg-white/40 rounded-full animate-bounce [animation-delay:150ms]" />
+                      <span className="w-2 h-2 bg-white/40 rounded-full animate-bounce [animation-delay:300ms]" />
                     </div>
                   </div>
                 </div>
@@ -238,7 +238,7 @@ export default function ChatWidget() {
                     <button
                       key={text}
                       onClick={() => handleQuickReply(text)}
-                      className="text-xs bg-red-50 text-red-700 border border-red-200 rounded-full px-3 py-1.5 hover:bg-red-100 transition-colors"
+                      className="text-xs bg-red-500/10 text-red-300 border border-red-500/25 rounded-full px-3 py-1.5 hover:bg-red-500/20 transition-colors"
                     >
                       {text}
                     </button>

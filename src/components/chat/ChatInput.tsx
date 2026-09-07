@@ -38,7 +38,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
   }
 
   return (
-    <div className="flex items-end gap-2 p-3 border-t border-gray-200 bg-white">
+    <div className="flex items-end gap-2 p-3 border-t border-white/10 bg-surface-2">
       <textarea
         ref={textareaRef}
         value={value}
@@ -48,13 +48,13 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
         placeholder={t("placeholder")}
         disabled={disabled}
         rows={1}
-        className="flex-1 resize-none rounded-2xl border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-red-400 disabled:opacity-50 max-h-[120px]"
+        className="flex-1 resize-none rounded-2xl bg-white/5 border border-white/10 text-ink placeholder:text-white/30 px-4 py-2 text-sm focus:outline-none focus:border-red-400 disabled:opacity-50 max-h-[120px]"
       />
       <button
         onClick={handleSend}
         disabled={disabled || !value.trim()}
         aria-label={t("send")}
-        className="flex-shrink-0 w-9 h-9 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        className="flex-shrink-0 w-9 h-9 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />

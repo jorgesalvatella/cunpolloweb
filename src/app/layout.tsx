@@ -47,7 +47,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#BC2026",
+  themeColor: "#0B0A0A",
   width: "device-width",
   initialScale: 1,
 };
@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <head>
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className="min-h-screen flex flex-col bg-white text-dark antialiased">
+      <body className="min-h-screen flex flex-col bg-surface text-ink antialiased">
         {children}
         <PWARegister />
       </body>

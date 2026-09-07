@@ -20,7 +20,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative min-h-[100svh] flex items-center bg-red-600 overflow-hidden">
+    <section className="relative min-h-[100svh] flex items-center bg-surface overflow-hidden">
       {/* Content */}
       <Container className="relative z-10 pt-28 pb-20 sm:py-32">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
@@ -32,10 +32,10 @@ export default function HeroSection() {
               transition={{ duration: 0.6, type: "spring", stiffness: 200 }}
               className="mb-5 sm:mb-7"
             >
-              <div className="inline-flex items-center gap-3 sm:gap-4 bg-white/15 backdrop-blur-sm border border-white/25 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 shadow-[0_0_30px_rgba(255,215,0,0.25)]">
+              <div className="inline-flex items-center gap-3 sm:gap-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 shadow-[0_0_30px_rgba(255,215,0,0.15)]">
                 {/* Playground icon */}
                 <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-gold-500 rounded-xl flex items-center justify-center shadow-md">
-                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-dark" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m-7-7H4m16 0h1M7.05 7.05l-.7-.7m12.02 12.02l-.7-.7M7.05 16.95l-.7.7M18.36 5.64l-.7.7" />
                     <circle cx="12" cy="12" r="4" />
                   </svg>
@@ -75,13 +75,13 @@ export default function HeroSection() {
             >
               <Link
                 href="/menu"
-                className="inline-flex items-center justify-center px-6 sm:px-8 py-4 bg-white text-red-600 font-bold rounded-full text-lg hover:bg-gold-300 hover:text-red-700 transition-all shadow-lg hover:shadow-xl"
+                className="inline-flex items-center justify-center px-6 sm:px-8 py-4 bg-red-600 text-white font-bold rounded-full text-lg hover:bg-red-500 transition-all shadow-lg shadow-red-600/30 hover:shadow-xl hover:shadow-red-600/40"
               >
                 {FEATURES.ORDERING_ENABLED ? t("ctaOrder") : t("cta")}
               </Link>
               <a
                 href="#location"
-                className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 border-2 border-white text-white font-semibold rounded-full text-base sm:text-lg hover:bg-white hover:text-red-600 transition-all"
+                className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 border-2 border-white/25 text-ink font-semibold rounded-full text-base sm:text-lg hover:bg-white/10 transition-all"
               >
                 {t("ctaSecondary")}
               </a>
@@ -114,7 +114,7 @@ export default function HeroSection() {
               playsInline
               webkit-playsinline=""
               preload="auto"
-              className="w-48 sm:w-64 md:w-72 lg:w-96 h-auto drop-shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
+              className="w-48 sm:w-64 md:w-72 lg:w-96 h-auto [filter:drop-shadow(0_20px_40px_rgba(0,0,0,0.6))_drop-shadow(0_0_50px_rgba(232,163,23,0.25))]"
             >
               <source src="/images/mascot-animation.mp4" type="video/mp4" />
             </video>
@@ -132,7 +132,7 @@ export default function HeroSection() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="w-6 h-10 border-2 border-white/40 rounded-full flex justify-center pt-2"
+          className="w-6 h-10 border-2 border-white/25 rounded-full flex justify-center pt-2"
         >
           <div className="w-1.5 h-1.5 bg-white rounded-full" />
         </motion.div>

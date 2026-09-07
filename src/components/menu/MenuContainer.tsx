@@ -55,15 +55,15 @@ export default function MenuContainer() {
             return (
               <div
                 key={promo.id}
-                className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 flex items-center justify-between"
+                className="bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3 flex items-center justify-between"
               >
                 <div>
-                  <p className="font-bold text-green-800 text-sm sm:text-base">{desc || promo.name}</p>
+                  <p className="font-bold text-green-300 text-sm sm:text-base">{desc || promo.name}</p>
                   {typeLabel && (
-                    <p className="text-green-600 text-xs">{typeLabel}</p>
+                    <p className="text-green-400 text-xs">{typeLabel}</p>
                   )}
                 </div>
-                <span className="text-green-700 font-black text-lg sm:text-xl">
+                <span className="text-green-300 font-black text-lg sm:text-xl">
                   -{promo.discountType === "percent" ? `${promo.discountValue}%` : `$${promo.discountValue}`}
                 </span>
               </div>
@@ -72,7 +72,7 @@ export default function MenuContainer() {
         </div>
       )}
 
-      <div className="sticky top-[4.5rem] sm:top-20 md:top-24 z-30 bg-white/95 backdrop-blur-sm py-2 sm:py-3 border-b border-red-500/10">
+      <div className="sticky top-[4.5rem] sm:top-20 md:top-24 z-30 bg-surface/85 backdrop-blur-xl py-2 sm:py-3 border-b border-white/10">
         <CategoryTabs
           categories={categories}
           activeId={activeCategoryId}

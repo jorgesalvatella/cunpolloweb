@@ -86,7 +86,7 @@ export default function ChatMessage({ message, onAddToCart }: ChatMessageProps) 
         className={`max-w-[85%] ${
           isUser
             ? "bg-red-600 text-white rounded-2xl rounded-br-md px-4 py-2"
-            : "bg-gray-100 text-gray-900 rounded-2xl rounded-bl-md px-4 py-2"
+            : "bg-white/8 text-ink rounded-2xl rounded-bl-md px-4 py-2"
         }`}
       >
         {text && (
@@ -110,7 +110,7 @@ export default function ChatMessage({ message, onAddToCart }: ChatMessageProps) 
         {actions.map((action, i) => (
           <div
             key={i}
-            className="mt-2 text-xs bg-green-50 text-green-700 rounded-lg px-3 py-1.5 border border-green-200"
+            className="mt-2 text-xs bg-green-500/10 text-green-300 rounded-lg px-3 py-1.5 border border-green-500/25"
           >
             {action.action === "addToCart"
               ? `+ ${action.quantity || 1}x ${action.itemName}`

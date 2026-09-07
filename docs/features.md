@@ -2,6 +2,14 @@
 
 ## Implementadas
 
+### Tema Oscuro (Rediseño 2026-09-06)
+- **Estado**: Produccion
+- Sitio publico completo en tema oscuro permanente (sin toggle): fondo near-black `#0B0A0A`, texto off-white, acentos rojo + dorado
+- Tokens nuevos en `globals.css`: `surface`, `surface-2`, `surface-3`, `ink` (los tokens existentes no cambiaron)
+- Imagenes de producto "flotantes": sin tarjeta/fondo/borde, redondeadas con sombra profunda + glow dorado en hover
+- Admin (`/admin`) conserva tema claro intacto (blindado con `text-gray-900` en su layout)
+- Solo classNames/tokens — cero cambios de funcionalidad
+
 ### Landing Page
 - **Estado**: Produccion
 - Hero section con CTA "Pedir Ahora" + trust line "Listo en ~20 min"

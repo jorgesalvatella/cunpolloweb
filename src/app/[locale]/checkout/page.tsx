@@ -23,14 +23,14 @@ function ProgressSteps({ current }: { current: number }) {
               className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
                 step.num <= current
                   ? "bg-red-600 text-white"
-                  : "bg-gray-200 text-dark/40"
+                  : "bg-white/10 text-white/40"
               }`}
             >
               {step.num}
             </span>
             <span
               className={`text-sm font-medium ${
-                step.num <= current ? "text-dark" : "text-dark/40"
+                step.num <= current ? "text-ink" : "text-white/40"
               }`}
             >
               {step.label}
@@ -39,7 +39,7 @@ function ProgressSteps({ current }: { current: number }) {
           {i < steps.length - 1 && (
             <div
               className={`w-8 h-0.5 ${
-                step.num < current ? "bg-red-600" : "bg-gray-200"
+                step.num < current ? "bg-red-600" : "bg-white/10"
               }`}
             />
           )}
@@ -54,21 +54,21 @@ export default function CheckoutPage() {
   const { items } = useCart();
 
   return (
-    <section className="pt-28 pb-16 min-h-screen bg-white">
+    <section className="pt-28 pb-16 min-h-screen">
       <Container>
         <div className="max-w-lg mx-auto">
           <ProgressSteps current={3} />
 
-          <h1 className="text-3xl font-bold text-red-700 font-(family-name:--font-heading) mb-8">
+          <h1 className="text-3xl font-bold text-ink font-(family-name:--font-heading) mb-8">
             {t("title")}
           </h1>
 
           {items.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-dark/50 text-lg mb-6">{t("emptyCart")}</p>
+              <p className="text-white/50 text-lg mb-6">{t("emptyCart")}</p>
               <Link
                 href="/cart"
-                className="inline-block bg-red-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-red-700 transition-colors"
+                className="inline-block bg-red-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-red-500 transition-colors shadow-lg shadow-red-600/25"
               >
                 {t("backToCart")}
               </Link>

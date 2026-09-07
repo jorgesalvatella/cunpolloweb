@@ -10,7 +10,7 @@ export default function NotFound() {
   const t = useTranslations("notFound");
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 text-center bg-white">
+    <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 text-center">
       {/* Mascot */}
       <motion.img
         src={BOT_AVATAR}
@@ -33,7 +33,7 @@ export default function NotFound() {
 
       {/* Message */}
       <motion.p
-        className="text-lg sm:text-xl text-gray-700 font-medium mb-2 max-w-md"
+        className="text-lg sm:text-xl text-white/80 font-medium mb-2 max-w-md"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
@@ -41,7 +41,7 @@ export default function NotFound() {
         {t("title")}
       </motion.p>
       <motion.p
-        className="text-sm text-gray-400 mb-8 max-w-sm"
+        className="text-sm text-white/50 mb-8 max-w-sm"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
@@ -58,13 +58,13 @@ export default function NotFound() {
       >
         <Link
           href="/menu"
-          className="bg-red-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-red-700 transition-colors shadow-lg"
+          className="bg-red-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-red-500 transition-colors shadow-lg shadow-red-600/25"
         >
           {t("ctaMenu")}
         </Link>
         <Link
           href="/"
-          className="bg-white text-red-600 px-8 py-3 rounded-full font-semibold border-2 border-red-600 hover:bg-red-50 transition-colors"
+          className="bg-transparent text-red-300 px-8 py-3 rounded-full font-semibold border-2 border-red-400 hover:bg-red-500/10 transition-colors"
         >
           {t("ctaHome")}
         </Link>

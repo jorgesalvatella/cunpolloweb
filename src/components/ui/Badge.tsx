@@ -2,9 +2,9 @@ import { cn } from "@/lib/utils";
 import type { MenuItemTag } from "@/types/menu";
 
 const tagStyles: Record<MenuItemTag, string> = {
-  popular: "bg-gold-500/10 text-gold-600 border-gold-500/20",
-  spicy: "bg-red-500/10 text-red-600 border-red-500/20",
-  new: "bg-red-500/10 text-red-600 border-red-500/20",
+  popular: "bg-gold-500/15 text-gold-300 border-gold-500/25",
+  spicy: "bg-red-500/15 text-red-300 border-red-500/25",
+  new: "bg-red-500/15 text-red-300 border-red-500/25",
 };
 
 export default function Badge({

@@ -64,56 +64,56 @@ export default function CardInput({
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-dark/70 mb-1">{t("cardHolder")}</label>
+        <label className="block text-sm font-medium text-white/70 mb-1">{t("cardHolder")}</label>
         <input
           type="text"
           value={value.holderName}
           onChange={(e) => onChange({ ...value, holderName: e.target.value })}
           placeholder={t("cardHolderPlaceholder")}
-          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
+          className="w-full px-4 py-3 bg-surface-3 border border-white/10 rounded-lg text-ink placeholder:text-white/30 focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none [color-scheme:dark]"
           autoComplete="cc-name"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-dark/70 mb-1">{t("cardNumber")}</label>
+        <label className="block text-sm font-medium text-white/70 mb-1">{t("cardNumber")}</label>
         <input
           type="text"
           inputMode="numeric"
           value={value.number}
           onChange={(e) => onChange({ ...value, number: formatCardNumber(e.target.value) })}
           placeholder={t("cardNumberPlaceholder")}
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none font-mono ${showCardError ? "border-red-400" : "border-gray-200"}`}
+          className={`w-full px-4 py-3 bg-surface-3 border rounded-lg text-ink placeholder:text-white/30 focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none font-mono [color-scheme:dark] ${showCardError ? "border-red-400" : "border-white/10"}`}
           autoComplete="cc-number"
         />
         {showCardError && (
-          <p className="text-red-500 text-xs mt-1">{t("invalidCard")}</p>
+          <p className="text-red-300 text-xs mt-1">{t("invalidCard")}</p>
         )}
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-dark/70 mb-1">{t("expiry")}</label>
+          <label className="block text-sm font-medium text-white/70 mb-1">{t("expiry")}</label>
           <input
             type="text"
             inputMode="numeric"
             value={value.expiry}
             onChange={(e) => onChange({ ...value, expiry: formatExpiry(e.target.value) })}
             placeholder={t("expiryPlaceholder")}
-            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none font-mono ${showExpiryError ? "border-red-400" : "border-gray-200"}`}
+            className={`w-full px-4 py-3 bg-surface-3 border rounded-lg text-ink placeholder:text-white/30 focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none font-mono [color-scheme:dark] ${showExpiryError ? "border-red-400" : "border-white/10"}`}
             autoComplete="cc-exp"
           />
           {showExpiryError && (
-            <p className="text-red-500 text-xs mt-1">{t("invalidExpiry")}</p>
+            <p className="text-red-300 text-xs mt-1">{t("invalidExpiry")}</p>
           )}
         </div>
         <div>
-          <label className="block text-sm font-medium text-dark/70 mb-1">{t("cvv")}</label>
+          <label className="block text-sm font-medium text-white/70 mb-1">{t("cvv")}</label>
           <input
             type="text"
             inputMode="numeric"
             value={value.cvv}
             onChange={(e) => onChange({ ...value, cvv: e.target.value.replace(/\D/g, "").slice(0, 4) })}
             placeholder={t("cvvPlaceholder")}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none font-mono"
+            className="w-full px-4 py-3 bg-surface-3 border border-white/10 rounded-lg text-ink placeholder:text-white/30 focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none font-mono [color-scheme:dark]"
             autoComplete="cc-csc"
           />
         </div>

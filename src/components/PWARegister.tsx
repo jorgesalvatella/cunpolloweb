@@ -124,17 +124,17 @@ export default function PWARegister() {
   if (showAndroid) {
     return (
       <div className="fixed bottom-20 left-4 right-4 z-50 sm:left-auto sm:right-4 sm:w-80">
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 flex items-center gap-3">
+        <div className="bg-surface-2 rounded-2xl shadow-lg border border-white/10 p-4 flex items-center gap-3">
           <img src="/icon-96x96.png" alt="" className="w-12 h-12 rounded-xl" />
           <div className="flex-1 min-w-0">
-            <p className="font-bold text-dark text-sm">Instalar CUNPOLLO</p>
-            <p className="text-dark/50 text-xs">Acceso rapido al menu</p>
+            <p className="font-bold text-ink text-sm">Instalar CUNPOLLO</p>
+            <p className="text-white/50 text-xs">Acceso rapido al menu</p>
           </div>
           <div className="flex gap-2 shrink-0">
-            <button onClick={dismiss} className="text-dark/40 text-xs hover:text-dark cursor-pointer">
+            <button onClick={dismiss} className="text-white/40 text-xs hover:text-white cursor-pointer">
               No
             </button>
-            <button onClick={handleInstall} className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-700 cursor-pointer">
+            <button onClick={handleInstall} className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-500 shadow-lg shadow-red-600/25 cursor-pointer">
               Instalar
             </button>
           </div>
@@ -147,8 +147,8 @@ export default function PWARegister() {
   if (showIosSafari) {
     return (
       <div className="fixed bottom-4 left-4 right-4 z-50 sm:left-auto sm:right-4 sm:w-96">
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-5 relative">
-          <button onClick={dismiss} className="absolute top-3 right-3 text-dark/30 hover:text-dark cursor-pointer" aria-label="Cerrar">
+        <div className="bg-surface-2 rounded-2xl shadow-lg border border-white/10 p-5 relative">
+          <button onClick={dismiss} className="absolute top-3 right-3 text-white/30 hover:text-white cursor-pointer" aria-label="Cerrar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
@@ -158,34 +158,34 @@ export default function PWARegister() {
           <div className="flex items-center gap-3 mb-4">
             <img src="/icon-96x96.png" alt="" className="w-12 h-12 rounded-xl" />
             <div>
-              <p className="font-bold text-dark">Instalar CUNPOLLO</p>
-              <p className="text-dark/50 text-xs">Agrega la app a tu pantalla de inicio</p>
+              <p className="font-bold text-ink">Instalar CUNPOLLO</p>
+              <p className="text-white/50 text-xs">Agrega la app a tu pantalla de inicio</p>
             </div>
           </div>
 
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <span className="w-7 h-7 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-sm font-bold shrink-0">1</span>
-              <p className="text-sm text-dark">
+              <span className="w-7 h-7 rounded-full bg-red-500/15 text-red-300 flex items-center justify-center text-sm font-bold shrink-0">1</span>
+              <p className="text-sm text-ink">
                 Toca el boton <ShareIcon /> de abajo
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <span className="w-7 h-7 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-sm font-bold shrink-0">2</span>
-              <p className="text-sm text-dark">
+              <span className="w-7 h-7 rounded-full bg-red-500/15 text-red-300 flex items-center justify-center text-sm font-bold shrink-0">2</span>
+              <p className="text-sm text-ink">
                 Busca <span className="font-semibold">&quot;Agregar a inicio&quot;</span> <PlusIcon />
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <span className="w-7 h-7 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-sm font-bold shrink-0">3</span>
-              <p className="text-sm text-dark">
+              <span className="w-7 h-7 rounded-full bg-red-500/15 text-red-300 flex items-center justify-center text-sm font-bold shrink-0">3</span>
+              <p className="text-sm text-ink">
                 Toca <span className="font-semibold">&quot;Agregar&quot;</span> y listo
               </p>
             </div>
           </div>
 
           <div className="flex justify-center mt-3">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-dark/30 animate-bounce">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-white/30 animate-bounce">
               <line x1="12" y1="5" x2="12" y2="19" />
               <polyline points="19 12 12 19 5 12" />
             </svg>
@@ -199,8 +199,8 @@ export default function PWARegister() {
   if (showIosOther) {
     return (
       <div className="fixed bottom-4 left-4 right-4 z-50 sm:left-auto sm:right-4 sm:w-96">
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-5 relative">
-          <button onClick={dismiss} className="absolute top-3 right-3 text-dark/30 hover:text-dark cursor-pointer" aria-label="Cerrar">
+        <div className="bg-surface-2 rounded-2xl shadow-lg border border-white/10 p-5 relative">
+          <button onClick={dismiss} className="absolute top-3 right-3 text-white/30 hover:text-white cursor-pointer" aria-label="Cerrar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
@@ -210,13 +210,13 @@ export default function PWARegister() {
           <div className="flex items-center gap-3 mb-3">
             <img src="/icon-96x96.png" alt="" className="w-12 h-12 rounded-xl" />
             <div>
-              <p className="font-bold text-dark">Instalar CUNPOLLO</p>
-              <p className="text-dark/50 text-xs">Acceso rapido desde tu pantalla de inicio</p>
+              <p className="font-bold text-ink">Instalar CUNPOLLO</p>
+              <p className="text-white/50 text-xs">Acceso rapido desde tu pantalla de inicio</p>
             </div>
           </div>
 
-          <p className="text-sm text-dark">
-            Abre <span className="font-bold text-blue-600">cunpollo.com</span> en <span className="font-bold">Safari</span> para poder instalar la app.
+          <p className="text-sm text-ink">
+            Abre <span className="font-bold text-blue-300">cunpollo.com</span> en <span className="font-bold">Safari</span> para poder instalar la app.
           </p>
         </div>
       </div>

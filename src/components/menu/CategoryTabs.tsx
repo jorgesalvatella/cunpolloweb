@@ -55,8 +55,8 @@ export default function CategoryTabs({
             className={cn(
               "relative flex items-center gap-2 px-5 py-3 rounded-full whitespace-nowrap text-sm font-medium transition-colors cursor-pointer shrink-0",
               isActive
-                ? "text-white"
-                : "text-dark/60 hover:text-dark bg-dark/5 hover:bg-dark/10"
+                ? "text-dark"
+                : "text-white/60 hover:text-white bg-white/5 hover:bg-white/10"
             )}
           >
             {isActive && (

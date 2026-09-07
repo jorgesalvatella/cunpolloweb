@@ -18,6 +18,12 @@
   --color-dark-800: #2A2A2A;
   --color-dark-700: #3A3A3A;
 
+  /* Dark theme (public site) */
+  --color-surface: #0B0A0A;
+  --color-surface-2: #171412;
+  --color-surface-3: #221E1B;
+  --color-ink: #F7F5F0;
+
   /* Fonts */
   --font-heading: "Montserrat", sans-serif;
   --font-body: "Inter", sans-serif;
@@ -73,8 +79,8 @@
 /* Base styles */
 body {
   font-family: var(--font-body);
-  color: var(--color-dark);
-  background-color: var(--color-warm-white);
+  color: var(--color-ink);
+  background-color: var(--color-surface);
 }
 
 h1,
@@ -84,4 +90,5 @@ h4,
 h5,
 h6 {
   font-family: var(--font-heading);
+  letter-spacing: -0.02em;
 }

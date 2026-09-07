@@ -20,7 +20,7 @@ export default function CartFloatingButton() {
       >
         <Link
           href="/cart"
-          className="flex items-center gap-2.5 bg-red-600 text-white px-5 py-3.5 rounded-full shadow-lg hover:bg-red-700 transition-colors font-semibold"
+          className="flex items-center gap-2.5 bg-red-600 text-white px-5 py-3.5 rounded-full shadow-lg shadow-red-600/30 hover:bg-red-500 transition-colors font-semibold"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path

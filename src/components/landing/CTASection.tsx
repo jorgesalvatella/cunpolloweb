@@ -10,10 +10,10 @@ export default function CTASection() {
   const t = useTranslations("cta");
 
   return (
-    <section className="py-14 sm:py-20 bg-red-500 relative overflow-hidden">
+    <section className="py-14 sm:py-20 bg-red-600 relative overflow-hidden">
       {/* Decorative circles */}
-      <div className="absolute -top-20 -right-20 w-40 sm:w-80 h-40 sm:h-80 bg-white/10 rounded-full" />
-      <div className="absolute -bottom-10 -left-10 w-32 sm:w-60 h-32 sm:h-60 bg-white/10 rounded-full" />
+      <div className="absolute -top-20 -right-20 w-40 sm:w-80 h-40 sm:h-80 bg-white/5 rounded-full" />
+      <div className="absolute -bottom-10 -left-10 w-32 sm:w-60 h-32 sm:h-60 bg-white/5 rounded-full" />
 
       <Container className="relative z-10">
         <div className="text-center max-w-2xl mx-auto px-2">

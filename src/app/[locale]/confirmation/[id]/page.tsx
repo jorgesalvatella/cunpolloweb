@@ -73,18 +73,18 @@ export default function ConfirmationPage() {
 
   if (loading) {
     return (
-      <section className="pt-28 pb-16 min-h-screen bg-white flex items-center justify-center">
-        <div className="animate-pulse text-dark/30 text-lg">...</div>
+      <section className="pt-28 pb-16 min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-white/30 text-lg">...</div>
       </section>
     );
   }
 
   if (!order) {
     return (
-      <section className="pt-28 pb-16 min-h-screen bg-white">
+      <section className="pt-28 pb-16 min-h-screen">
         <Container>
           <div className="text-center py-20">
-            <p className="text-dark/50 text-lg">Pedido no encontrado</p>
+            <p className="text-white/50 text-lg">Pedido no encontrado</p>
           </div>
         </Container>
       </section>
@@ -196,7 +196,7 @@ export default function ConfirmationPage() {
   }
 
   return (
-    <section className="pt-28 pb-16 min-h-screen bg-white">
+    <section className="pt-28 pb-16 min-h-screen">
       <Container>
         <div className="max-w-lg mx-auto text-center">
           {isFailed ? (
@@ -206,9 +206,9 @@ export default function ConfirmationPage() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", damping: 15, stiffness: 200, delay: 0.1 }}
-                className="w-20 h-20 mx-auto mb-6 bg-red-100 rounded-full flex items-center justify-center"
+                className="w-20 h-20 mx-auto mb-6 bg-red-500/15 rounded-full flex items-center justify-center"
               >
-                <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-10 h-10 text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </motion.div>
@@ -217,7 +217,7 @@ export default function ConfirmationPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="text-3xl font-bold text-red-700 font-(family-name:--font-heading) mb-2"
+                className="text-3xl font-bold text-ink font-(family-name:--font-heading) mb-2"
               >
                 {t("paymentFailed")}
               </motion.h1>
@@ -226,7 +226,7 @@ export default function ConfirmationPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="text-dark/50 mb-2"
+                className="text-white/50 mb-2"
               >
                 {t("orderNumber")} #{order.order_number}
               </motion.p>
@@ -235,9 +235,9 @@ export default function ConfirmationPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="bg-red-50 rounded-2xl p-6 my-8"
+                className="bg-red-500/10 rounded-2xl p-6 my-8"
               >
-                <p className="text-lg text-red-700">{t("paymentFailedMessage")}</p>
+                <p className="text-lg text-red-300">{t("paymentFailedMessage")}</p>
               </motion.div>
             </>
           ) : isPendingSpei ? (
@@ -247,9 +247,9 @@ export default function ConfirmationPage() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", damping: 15, stiffness: 200, delay: 0.1 }}
-                className="w-20 h-20 mx-auto mb-6 bg-blue-100 rounded-full flex items-center justify-center"
+                className="w-20 h-20 mx-auto mb-6 bg-blue-500/15 rounded-full flex items-center justify-center"
               >
-                <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-10 h-10 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </motion.div>
@@ -258,7 +258,7 @@ export default function ConfirmationPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="text-3xl font-bold text-blue-700 font-(family-name:--font-heading) mb-2"
+                className="text-3xl font-bold text-ink font-(family-name:--font-heading) mb-2"
               >
                 {t("speiPendingTitle")}
               </motion.h1>
@@ -267,7 +267,7 @@ export default function ConfirmationPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="text-dark/50 mb-2"
+                className="text-white/50 mb-2"
               >
                 {t("orderNumber")} #{order.order_number}
               </motion.p>
@@ -276,39 +276,39 @@ export default function ConfirmationPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="bg-blue-50 rounded-2xl p-6 my-8 text-left"
+                className="bg-blue-500/10 rounded-2xl p-6 my-8 text-left"
               >
                 {/* Amount */}
                 <div className="text-center mb-5">
-                  <div className="text-sm text-blue-700 mb-1">{t("speiAmount")}</div>
-                  <span className="text-3xl font-bold text-red-700">${order.total} MXN</span>
+                  <div className="text-sm text-blue-300 mb-1">{t("speiAmount")}</div>
+                  <span className="text-3xl font-bold text-gold-400">${order.total} MXN</span>
                 </div>
 
                 {order.spei_details && (
                   <div className="space-y-4">
                     {/* BBVA Section */}
-                    <div className="bg-white rounded-xl p-4">
-                      <div className="font-bold text-dark mb-3">{t("speiBbvaTitle")}</div>
-                      <p className="text-sm text-dark/60 mb-3">{t("speiBbvaStep1")}</p>
+                    <div className="bg-surface-2 rounded-xl p-4">
+                      <div className="font-bold text-ink mb-3">{t("speiBbvaTitle")}</div>
+                      <p className="text-sm text-white/60 mb-3">{t("speiBbvaStep1")}</p>
 
                       <div className="space-y-3">
                         <div>
-                          <div className="text-xs text-dark/40">{t("speiBbvaConvenio")}</div>
+                          <div className="text-xs text-white/40">{t("speiBbvaConvenio")}</div>
                           <div className="flex items-center justify-between mt-0.5">
-                            <span className="font-mono font-bold text-dark text-lg">{order.spei_details.agreement}</span>
-                            <button type="button" onClick={() => copyToClipboard(order.spei_details!.agreement, "agreement")} className="shrink-0 px-2.5 py-1 bg-blue-100 text-blue-700 rounded text-xs font-semibold hover:bg-blue-200 transition-colors cursor-pointer">
+                            <span className="font-mono font-bold text-ink text-lg">{order.spei_details.agreement}</span>
+                            <button type="button" onClick={() => copyToClipboard(order.spei_details!.agreement, "agreement")} className="shrink-0 px-2.5 py-1 bg-blue-500/15 text-blue-300 rounded text-xs font-semibold hover:bg-blue-500/25 transition-colors cursor-pointer">
                               {copiedField === "agreement" ? t("copied") : "Copiar"}
                             </button>
                           </div>
                         </div>
 
-                        <p className="text-sm text-dark/60">{t("speiBbvaStep2")}</p>
+                        <p className="text-sm text-white/60">{t("speiBbvaStep2")}</p>
 
                         <div>
-                          <div className="text-xs text-dark/40">{t("speiBbvaReferencia")}</div>
+                          <div className="text-xs text-white/40">{t("speiBbvaReferencia")}</div>
                           <div className="flex items-center justify-between mt-0.5">
-                            <span className="font-mono font-bold text-dark text-sm">{order.spei_details.name}</span>
-                            <button type="button" onClick={() => copyToClipboard(order.spei_details!.name, "name")} className="shrink-0 px-2.5 py-1 bg-blue-100 text-blue-700 rounded text-xs font-semibold hover:bg-blue-200 transition-colors cursor-pointer">
+                            <span className="font-mono font-bold text-ink text-sm">{order.spei_details.name}</span>
+                            <button type="button" onClick={() => copyToClipboard(order.spei_details!.name, "name")} className="shrink-0 px-2.5 py-1 bg-blue-500/15 text-blue-300 rounded text-xs font-semibold hover:bg-blue-500/25 transition-colors cursor-pointer">
                               {copiedField === "name" ? t("copied") : "Copiar"}
                             </button>
                           </div>
@@ -318,62 +318,62 @@ export default function ConfirmationPage() {
 
                     {/* Divider */}
                     <div className="flex items-center gap-3">
-                      <div className="flex-1 border-t border-blue-200" />
+                      <div className="flex-1 border-t border-blue-500/25" />
                       <span className="text-xs text-blue-400 font-semibold uppercase">{t("speiOrOtherBank")}</span>
-                      <div className="flex-1 border-t border-blue-200" />
+                      <div className="flex-1 border-t border-blue-500/25" />
                     </div>
 
                     {/* Other banks Section */}
-                    <div className="bg-white rounded-xl p-4">
-                      <div className="font-bold text-dark mb-3">{t("speiOtherBankTitle")}</div>
-                      <p className="text-sm text-dark/60 mb-3">{t("speiOtherBankStep")}</p>
+                    <div className="bg-surface-2 rounded-xl p-4">
+                      <div className="font-bold text-ink mb-3">{t("speiOtherBankTitle")}</div>
+                      <p className="text-sm text-white/60 mb-3">{t("speiOtherBankStep")}</p>
 
                       <div className="space-y-2.5">
                         <div className="flex justify-between text-sm">
-                          <span className="text-dark/50">{t("speiBeneficiary")}</span>
-                          <span className="font-semibold text-dark">CUNPOLLO</span>
+                          <span className="text-white/50">{t("speiBeneficiary")}</span>
+                          <span className="font-semibold text-ink">CUNPOLLO</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-dark/50">{t("speiDestBank")}</span>
-                          <span className="font-semibold text-dark">BBVA Bancomer</span>
+                          <span className="text-white/50">{t("speiDestBank")}</span>
+                          <span className="font-semibold text-ink">BBVA Bancomer</span>
                         </div>
                         <div>
                           <div className="flex justify-between text-sm">
-                            <span className="text-dark/50">{t("speiClabe")}</span>
+                            <span className="text-white/50">{t("speiClabe")}</span>
                           </div>
                           <div className="flex items-center justify-between mt-0.5">
-                            <span className="font-mono font-bold text-dark text-sm">{order.spei_details.clabe}</span>
-                            <button type="button" onClick={() => copyToClipboard(order.spei_details!.clabe, "clabe")} className="shrink-0 px-2.5 py-1 bg-blue-100 text-blue-700 rounded text-xs font-semibold hover:bg-blue-200 transition-colors cursor-pointer">
+                            <span className="font-mono font-bold text-ink text-sm">{order.spei_details.clabe}</span>
+                            <button type="button" onClick={() => copyToClipboard(order.spei_details!.clabe, "clabe")} className="shrink-0 px-2.5 py-1 bg-blue-500/15 text-blue-300 rounded text-xs font-semibold hover:bg-blue-500/25 transition-colors cursor-pointer">
                               {copiedField === "clabe" ? t("copied") : "Copiar"}
                             </button>
                           </div>
                         </div>
                         <div>
                           <div className="flex justify-between text-sm">
-                            <span className="text-dark/50">{t("speiPaymentConcept")}</span>
+                            <span className="text-white/50">{t("speiPaymentConcept")}</span>
                           </div>
                           <div className="flex items-center justify-between mt-0.5">
-                            <span className="font-mono font-bold text-dark text-sm">{order.spei_details.name}</span>
-                            <button type="button" onClick={() => copyToClipboard(order.spei_details!.name, "name2")} className="shrink-0 px-2.5 py-1 bg-blue-100 text-blue-700 rounded text-xs font-semibold hover:bg-blue-200 transition-colors cursor-pointer">
+                            <span className="font-mono font-bold text-ink text-sm">{order.spei_details.name}</span>
+                            <button type="button" onClick={() => copyToClipboard(order.spei_details!.name, "name2")} className="shrink-0 px-2.5 py-1 bg-blue-500/15 text-blue-300 rounded text-xs font-semibold hover:bg-blue-500/25 transition-colors cursor-pointer">
                               {copiedField === "name2" ? t("copied") : "Copiar"}
                             </button>
                           </div>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-dark/50">{t("speiReference")}</span>
-                          <span className="font-semibold text-dark">{order.spei_details.agreement}</span>
+                          <span className="text-white/50">{t("speiReference")}</span>
+                          <span className="font-semibold text-ink">{order.spei_details.agreement}</span>
                         </div>
                       </div>
                     </div>
                   </div>
                 )}
 
-                <div className="mt-4 pt-4 border-t border-blue-200 text-center">
-                  <p className="text-sm text-blue-700">{t("speiInstructionsConfirmation")}</p>
+                <div className="mt-4 pt-4 border-t border-blue-500/25 text-center">
+                  <p className="text-sm text-blue-300">{t("speiInstructionsConfirmation")}</p>
                 </div>
 
                 {/* Polling indicator */}
-                <div className="mt-3 flex items-center justify-center gap-2 text-sm text-blue-600">
+                <div className="mt-3 flex items-center justify-center gap-2 text-sm text-blue-300">
                   <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
@@ -389,13 +389,13 @@ export default function ConfirmationPage() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", damping: 15, stiffness: 200, delay: 0.1 }}
-                className="w-20 h-20 mx-auto mb-6 bg-green-100 rounded-full flex items-center justify-center"
+                className="w-20 h-20 mx-auto mb-6 bg-green-500/15 rounded-full flex items-center justify-center"
               >
                 <motion.svg
                   initial={{ pathLength: 0 }}
                   animate={{ pathLength: 1 }}
                   transition={{ duration: 0.5, delay: 0.3 }}
-                  className="w-10 h-10 text-green-600"
+                  className="w-10 h-10 text-green-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -413,7 +413,7 @@ export default function ConfirmationPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="text-3xl font-bold text-red-700 font-(family-name:--font-heading) mb-2"
+                className="text-3xl font-bold text-ink font-(family-name:--font-heading) mb-2"
               >
                 {order.payment_method === "spei" ? t("speiConfirmed") : t("title")}
               </motion.h1>
@@ -422,7 +422,7 @@ export default function ConfirmationPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="text-dark/50 mb-2"
+                className="text-white/50 mb-2"
               >
                 {t("orderNumber")} #{order.order_number}
               </motion.p>
@@ -431,28 +431,28 @@ export default function ConfirmationPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="bg-red-50 rounded-2xl p-6 my-8"
+                className="bg-red-500/10 rounded-2xl p-6 my-8"
               >
                 <div className="flex items-center justify-center gap-3 mb-2">
                   <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
                     order.order_type === "dine_in"
-                      ? "bg-purple-100 text-purple-800"
-                      : "bg-teal-100 text-teal-800"
+                      ? "bg-purple-500/15 text-purple-300"
+                      : "bg-teal-500/15 text-teal-300"
                   }`}>
                     {order.order_type === "dine_in" ? t("dineIn") : t("pickup")}
                   </span>
                   {order.pickup_time && (
-                    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-amber-100 text-amber-800">
+                    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-amber-500/15 text-amber-300">
                       {t("readyBy")} {order.pickup_time}
                     </span>
                   )}
                   {order.guests && (
-                    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800">
+                    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-500/15 text-blue-300">
                       {order.guests} {t("guests")}
                     </span>
                   )}
                 </div>
-                <p className="text-xl font-bold text-red-700">{t("message")}</p>
+                <p className="text-xl font-bold text-red-300">{t("message")}</p>
               </motion.div>
             </>
           )}
@@ -462,18 +462,18 @@ export default function ConfirmationPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
-            className="bg-gray-50 rounded-xl p-4 mb-6 text-left"
+            className="bg-surface-2 border border-white/10 rounded-xl p-4 mb-6 text-left"
           >
-            <h3 className="font-bold text-dark mb-3">{t("summary")}</h3>
+            <h3 className="font-bold text-ink mb-3">{t("summary")}</h3>
             {order.items.map((item, i) => (
               <div key={i} className="flex justify-between text-sm py-1">
                 <span>{item.name} x{item.quantity}</span>
                 <span>${item.lineTotal}</span>
               </div>
             ))}
-            <div className="border-t border-gray-200 mt-2 pt-2 flex justify-between font-bold">
+            <div className="border-t border-white/10 mt-2 pt-2 flex justify-between font-bold">
               <span>Total</span>
-              <span className="text-red-700">${order.total} MXN</span>
+              <span className="text-gold-400">${order.total} MXN</span>
             </div>
           </motion.div>
 
@@ -486,20 +486,20 @@ export default function ConfirmationPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.75, type: "spring", stiffness: 200 }}
-              className="block bg-gold-500 rounded-2xl p-6 mb-6 hover:bg-gold-600 transition-colors shadow-lg shadow-gold-500/25 group"
+              className="block bg-gold-500 rounded-2xl p-6 mb-6 hover:bg-gold-400 transition-colors shadow-lg shadow-gold-500/25 group"
             >
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center shrink-0">
-                  <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <div className="w-14 h-14 bg-dark/15 rounded-2xl flex items-center justify-center shrink-0">
+                  <svg className="w-8 h-8 text-dark" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                   </svg>
                 </div>
                 <div className="text-left flex-1">
-                  <p className="font-bold text-white text-base">{tRewards("confirmationBanner")}</p>
-                  <p className="text-white/70 text-sm">{tRewards("subtitle")}</p>
+                  <p className="font-bold text-dark text-base">{tRewards("confirmationBanner")}</p>
+                  <p className="text-dark/70 text-sm">{tRewards("subtitle")}</p>
                 </div>
               </div>
-              <div className="mt-4 w-full py-3 bg-white text-gold-600 text-center font-bold rounded-full text-base group-hover:bg-white/90 transition-colors shadow-sm">
+              <div className="mt-4 w-full py-3 bg-dark text-gold-400 text-center font-bold rounded-full text-base group-hover:bg-dark-800 transition-colors shadow-sm">
                 {tRewards("confirmationCta")}
               </div>
             </motion.a>
@@ -512,8 +512,8 @@ export default function ConfirmationPage() {
             transition={{ delay: 0.8 }}
             className="space-y-3 mb-8"
           >
-            <div className="text-sm text-dark/70">
-              <p className="font-semibold text-dark">{t("address")}</p>
+            <div className="text-sm text-white/70">
+              <p className="font-semibold text-ink">{t("address")}</p>
               <p>{addressFull}</p>
             </div>
 
@@ -522,13 +522,13 @@ export default function ConfirmationPage() {
                 href={mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 bg-red-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors text-center"
+                className="flex-1 bg-red-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-red-500 shadow-lg shadow-red-600/25 transition-colors text-center"
               >
                 {t("directions")}
               </a>
               <a
                 href={`tel:${RESTAURANT.phone.replace(/\s/g, "")}`}
-                className="flex-1 bg-gray-100 text-dark px-4 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors text-center"
+                className="flex-1 bg-white/10 text-ink px-4 py-3 rounded-lg font-semibold hover:bg-white/15 transition-colors text-center"
               >
                 {t("call")}
               </a>
@@ -536,7 +536,7 @@ export default function ConfirmationPage() {
             {isPaid && (
               <button
                 onClick={downloadReceipt}
-                className="w-full bg-yellow-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-yellow-600 transition-colors text-center mt-3"
+                className="w-full bg-gold-500 text-dark px-4 py-3 rounded-lg font-semibold hover:bg-gold-400 transition-colors text-center mt-3"
               >
                 {t("downloadReceipt")}
               </button>
@@ -545,7 +545,7 @@ export default function ConfirmationPage() {
 
           <Link
             href="/"
-            className="text-red-600 font-semibold hover:text-red-700 transition-colors"
+            className="text-red-300 font-semibold hover:text-red-400 transition-colors"
           >
             {t("backHome")}
           </Link>

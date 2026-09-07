@@ -32,10 +32,10 @@ export default async function MenuPage({
       <div className="pt-22 sm:pt-24 md:pt-28 pb-12 sm:pb-16">
         <Container>
           <div className="text-center mb-6 sm:mb-8">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-red-600 mb-2 sm:mb-3 font-(family-name:--font-heading)">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-ink mb-2 sm:mb-3 font-(family-name:--font-heading)">
               {t("pageTitle")}
             </h1>
-            <p className="text-base sm:text-lg text-dark/60">{t("pageSubtitle")}</p>
+            <p className="text-base sm:text-lg text-white/60">{t("pageSubtitle")}</p>
           </div>
           <MenuContainer />
         </Container>

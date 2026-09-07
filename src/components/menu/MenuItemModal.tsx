@@ -41,7 +41,7 @@ export default function MenuItemModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/70 backdrop-blur-sm"
           onClick={onClose}
         >
           <motion.div
@@ -50,21 +50,21 @@ export default function MenuItemModal({
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-t-2xl sm:rounded-3xl w-full max-w-lg max-h-[90vh] sm:max-h-[80vh] overflow-y-auto"
+            className="bg-surface-2 rounded-t-2xl sm:rounded-3xl w-full max-w-lg max-h-[90vh] sm:max-h-[80vh] overflow-y-auto"
           >
             {/* Image area */}
-            <div className="bg-gold-500 flex items-center justify-center p-6">
+            <div className="flex items-center justify-center p-6">
               <Image
                 src={item.image}
                 alt={item.name[locale]}
                 width={500}
                 height={500}
-                className="w-full h-auto rounded-xl"
+                className="w-full h-auto rounded-xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.8)]"
                 sizes="(max-width: 640px) 100vw, 512px"
               />
               <button
                 onClick={onClose}
-                className="absolute top-3 right-3 sm:top-4 sm:right-4 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center text-dark hover:bg-white transition-colors cursor-pointer"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center text-ink hover:bg-white/20 transition-colors cursor-pointer"
                 aria-label={t("close")}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,14 +76,14 @@ export default function MenuItemModal({
             {/* Content */}
             <div className="p-4 sm:p-6">
               <div className="flex items-start justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-red-700 font-(family-name:--font-heading)">
+                <h2 className="text-xl sm:text-2xl font-bold text-ink font-(family-name:--font-heading)">
                   {item.name[locale]}
                 </h2>
                 {!item.promo && (
-                  <span className="text-xl sm:text-2xl font-bold text-gold-500 shrink-0">
+                  <span className="text-xl sm:text-2xl font-bold text-gold-400 shrink-0">
                     {hasDiscount ? (
                       <>
-                        <span className="line-through text-dark/30 font-normal text-base sm:text-lg mr-1">${item.price}</span>
+                        <span className="line-through text-white/30 font-normal text-base sm:text-lg mr-1">${item.price}</span>
                         ${effectivePrice}
                       </>
                     ) : (
@@ -101,21 +101,21 @@ export default function MenuItemModal({
                 </div>
               )}
 
-              <h3 className="text-sm font-semibold text-gold-600 uppercase tracking-wider mb-2">
+              <h3 className="text-sm font-semibold text-gold-400 uppercase tracking-wider mb-2">
                 {t("description")}
               </h3>
-              <p className="text-dark/70 leading-relaxed mb-4 sm:mb-6 text-sm sm:text-base">
+              <p className="text-white/70 leading-relaxed mb-4 sm:mb-6 text-sm sm:text-base">
                 {item.description[locale]}
               </p>
 
               {item.promo && (
-                <p className="text-sm font-semibold text-red-600 text-center mt-2">
+                <p className="text-sm font-semibold text-red-300 text-center mt-2">
                   {t("dineInOnly")}
                 </p>
               )}
 
               {!item.promo && (
-                <p className="text-xs sm:text-sm text-dark/30 text-center">
+                <p className="text-xs sm:text-sm text-white/30 text-center">
                   {t("currency")}: MXN
                 </p>
               )}
@@ -125,14 +125,14 @@ export default function MenuItemModal({
                   <div className="flex items-center justify-center gap-4 mb-3">
                     <button
                       onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-dark hover:bg-gray-200 transition-colors cursor-pointer font-bold"
+                      className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-ink hover:bg-white/15 transition-colors cursor-pointer font-bold"
                     >
                       -
                     </button>
                     <span className="text-lg font-bold w-8 text-center">{quantity}</span>
                     <button
                       onClick={() => setQuantity((q) => q + 1)}
-                      className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-dark hover:bg-gray-200 transition-colors cursor-pointer font-bold"
+                      className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-ink hover:bg-white/15 transition-colors cursor-pointer font-bold"
                     >
                       +
                     </button>
