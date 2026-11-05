@@ -157,6 +157,22 @@
     "open": "Open now",
     "closed": "Closed"
   },
+  "posadas": {
+    "kicker": "December at CunPollo",
+    "title": "Host your posada here 🎄",
+    "p1name": "Pollo Fiestero Package",
+    "p1detail": "1 chicken, pasta, mashed potatoes, family soda & dessert",
+    "p2name": "Individual Package",
+    "p2detail": "Arrachera or ribs, house salad, dessert & mezcal cocktail",
+    "p3name": "Enfiestes Package",
+    "p3detail": "Breaded chicken breast with pasta, salad, dessert & soda",
+    "barName": "Open bar (national brands)",
+    "whatsapp": "Book via WhatsApp",
+    "call": "Call Management",
+    "fine": "Valid for groups of 6+ with prior reservation",
+    "close": "Close",
+    "waMessage": "Hi, I'd like info about posadas at CUNPOLLO"
+  },
   "cta": {
     "title": "Order & Pick Up in 20 Min",
     "subtitle": "Place your order online and pick it up hot. No lines, no waiting.",

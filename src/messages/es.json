@@ -157,6 +157,22 @@
     "open": "Abierto ahora",
     "closed": "Cerrado"
   },
+  "posadas": {
+    "kicker": "Diciembre en CunPollo",
+    "title": "Haz tu posada aquí 🎄",
+    "p1name": "Paquete Pollo Fiestero",
+    "p1detail": "1 pollo, pasta, puré, refresco familiar y postre",
+    "p2name": "Paquete Individual",
+    "p2detail": "Arrachera o costilla, ensalada, postre y mezcalita",
+    "p3name": "Paquete Enfiestes",
+    "p3detail": "Pechuga empanizada con pasta, ensalada, postre y refresco",
+    "barName": "Barra libre nacional",
+    "whatsapp": "Reservar por WhatsApp",
+    "call": "Llamar a Gerencia",
+    "fine": "Válido en grupos a partir de 6 personas con reservación previa",
+    "close": "Cerrar",
+    "waMessage": "Hola, quiero informes de las posadas en CUNPOLLO"
+  },
   "cta": {
     "title": "Pide y Recoge en 20 Min",
     "subtitle": "Haz tu pedido en línea y recógelo calientito. Sin filas, sin esperas.",
