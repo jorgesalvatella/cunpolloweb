@@ -31,6 +31,17 @@ export interface WhatsAppTemplate {
 export const WHATSAPP_TEMPLATES: WhatsAppTemplate[] = [
   // --- Marketing templates (selectable) ---
   {
+    label: "Posadas 2026 (card con imagen)",
+    name: "cunpollo_posadas_card_v3",
+    contentSid: "HX102b563df78a06d1cfb07557a21933bb",
+    variableCount: 0,
+    variableLabels: [],
+    autoNameVariable: false,
+    bodyPreview:
+      "Haz tu posada en CUNPOLLO 🎄\n\n1. Paquete Pollo Fiestero — $600\n2. Paquete Individual — $400\n3. Paquete Enfiestes — $290\n\nBarra libre nacional $200: tequila, ron, vodka, mezcal y cerveza.",
+    category: "marketing",
+  },
+  {
     label: "Promo Pickup/Dine-in v4",
     name: "cunpollo_pickup_dinein_v4",
     contentSid: "HXb3db04cf3e01c0b393c3dd37712e375c",
