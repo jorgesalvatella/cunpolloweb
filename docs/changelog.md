@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-11-09 — Fix: aviso al asesor no llegaba (63016 asincrono) + promos en wa_campaign_info
+
+El traspaso a asesor funcionaba pero el aviso nunca llegaba a Gerencia.
+
+**Causa raiz:** el error 63016 (ventana 24h cerrada) es **asincrono** — Twilio acepta el free-form como `queued` y lo marca `undelivered` segundos despues. El fallback a template solo revisaba el codigo de error sincrono del POST, que nunca llega.
+
+**Fix:**
+- `src/lib/twilio.ts` — nuevo `getMessageStatus(messageSid)` (GET Messages/{sid}.json)
+- `src/lib/wa-bot/transfer.ts` — `notifyAdvisor()` consulta el estado real a los 4s/9s; si `undelivered`/`failed` manda el template fallback. Notificacion corre dentro de `after()` de `next/server` (el fire-and-forget podia morir al congelarse la funcion serverless)
+- Webhook: relay en modo human tambien con `after()` + fallback template
+
+**Contenido:**
+- Promos `cunpacks` y `posadas` cargadas en `wa_campaign_info` (Pollo Fiestero $600 = hasta 4 personas; Individual/Enfiestes/barra libre por persona)
+- Popup posadas: "Hasta 4 personas" en Pollo Fiestero + sin `truncate` (responsivo movil)
+
 ## 2026-11-09 — Bot de WhatsApp: deploy a produccion y configuracion Twilio
 
 El bot quedo activo en produccion y verificado E2E (primer mensaje real respondido 16:34 UTC).
