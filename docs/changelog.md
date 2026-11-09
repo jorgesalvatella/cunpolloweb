@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-11-08 — Landing Cunpacks (promo QR lunes a jueves)
+
+Landing page para la promoción de los Cunpacks ($180 MXN, lunes a jueves), pensada para llegar desde un QR en móvil. Muestra la imagen vertical del menú tal cual (3 packs) + botón "Ver menú regular" (→ /menu).
+
+**Archivos nuevos:**
+- `src/app/[locale]/cunpacks/page.tsx` — Landing (server component, metadata + OG image)
+- `public/images/cunpacks/cunpacks-vertical.webp` — Imagen del menú Cunpacks (900x1600)
+- `public/images/cunpacks/cunpacks-card.webp` — Recorte del header del arte para la card en el tab Promociones
+
+**Archivos modificados:**
+- `src/messages/{es,en}.json` — Namespace `cunpacks`
+- `src/app/sitemap.ts` — Agrega `/cunpacks`
+- `src/components/menu/MenuContainer.tsx` — Card "Ver Cunpacks" arriba de los banners de promos + card estilo producto en el grid del tab Promociones (ambas enlazan a la landing)
+
+**Notas:**
+- URL para el QR: `https://cunpollo.com/cunpacks` (middleware redirige a `/es/cunpacks`)
+- Al terminar la promo: eliminar la carpeta de la ruta y la imagen, quitar namespace y entrada del sitemap
+
 ## 2026-09-06 — Rediseño Frontend: Tema Oscuro (solo sitio publico)
 
 Rediseño visual completo del sitio publico a tema oscuro permanente y moderno. **Solo classNames y tokens CSS — cero cambios de funcionalidad.** El admin (`/admin`) conserva su tema claro intacto.

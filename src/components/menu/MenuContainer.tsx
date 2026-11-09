@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { AnimatePresence } from "framer-motion";
 import CategoryTabs from "./CategoryTabs";
@@ -9,10 +10,12 @@ import MenuItemModal from "./MenuItemModal";
 import RewardsBanner from "./RewardsBanner";
 import { useMenu } from "@/context/MenuContext";
 import { useLocale } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import type { MenuItem } from "@/types/menu";
 
 export default function MenuContainer() {
   const t = useTranslations("menu");
+  const tCunpacks = useTranslations("cunpacks");
   const locale = useLocale();
   const { categories, items: allItems, promotions, loading } = useMenu();
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
@@ -40,6 +43,27 @@ export default function MenuContainer() {
   return (
     <div>
       <RewardsBanner />
+
+      {/* Cunpacks promo card */}
+      <Link
+        href="/cunpacks"
+        className="bg-red-600/10 border border-red-500/25 rounded-xl px-4 py-3 flex items-center justify-between gap-3 mb-2 hover:bg-red-600/15 transition-colors"
+      >
+        <div>
+          <p className="font-bold text-red-300 text-sm sm:text-base">{tCunpacks("bannerTitle")}</p>
+          <p className="text-gold-400 text-xs">{tCunpacks("bannerSubtitle")}</p>
+        </div>
+        <svg
+          className="w-5 h-5 text-red-300 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2.5}
+          viewBox="0 0 24 24"
+          aria-hidden
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </Link>
 
       {/* Promotion banners */}
       {promotions.length > 0 && (
@@ -82,6 +106,26 @@ export default function MenuContainer() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 mt-4 sm:mt-6">
+        {activeCategoryId === "promociones" && (
+          <Link href="/cunpacks" className="group rounded-xl sm:rounded-2xl text-left w-full">
+            <Image
+              src="/images/cunpacks/cunpacks-card.webp"
+              alt={tCunpacks("bannerTitle")}
+              width={900}
+              height={520}
+              className="w-full h-auto rounded-xl shadow-[0_16px_40px_-12px_rgba(0,0,0,0.8)] group-hover:shadow-[0_16px_50px_-10px_rgba(232,163,23,0.25)] transition-shadow duration-300"
+              sizes="(max-width: 640px) 50vw, 25vw"
+            />
+            <div className="p-2.5 sm:p-4">
+              <h3 className="font-semibold text-ink text-xs sm:text-sm leading-tight mb-0.5 sm:mb-1">
+                {tCunpacks("bannerTitle")}
+              </h3>
+              <p className="text-[10px] sm:text-xs text-red-300 font-semibold">
+                {tCunpacks("bannerSubtitle")}
+              </p>
+            </div>
+          </Link>
+        )}
         <AnimatePresence mode="popLayout">
           {items.map((item, i) => (
             <MenuItemCard

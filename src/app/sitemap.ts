@@ -6,7 +6,7 @@ export const dynamic = "force-static";
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://cunpollo.com";
 
-  const routes = ["", "/menu"];
+  const routes = ["", "/menu", "/cunpacks"];
 
   return routes.flatMap((route) =>
     locales.map((locale) => ({

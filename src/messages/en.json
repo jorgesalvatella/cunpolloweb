@@ -157,6 +157,15 @@
     "open": "Open now",
     "closed": "Closed"
   },
+  "cunpacks": {
+    "metaTitle": "Cunpacks — Monday to Thursday for $180 | CUNPOLLO",
+    "metaDescription": "The Cunpacks are here: 3 full combos with mini consommé and agua del día for $180 MXN, Monday to Thursday at CUNPOLLO Cancún.",
+    "alt": "The Cunpacks are here, Monday to Thursday for $180 MXN. Pack 1: 2 mini quesadillas, leg and thigh, mini consommé and agua del día. Pack 2: 1 beef huarache, mini consommé and agua del día. Pack 3: 2 tostadas, mini consommé, fried plantains and agua del día. Don't miss out!",
+    "menu": "See regular menu",
+    "bannerTitle": "See Cunpacks",
+    "bannerSubtitle": "Monday to Thursday promo",
+    "fine": "Valid Monday to Thursday. Price in MXN, Cancún location only."
+  },
   "posadas": {
     "kicker": "December at CunPollo",
     "title": "Host your posada here 🎄",

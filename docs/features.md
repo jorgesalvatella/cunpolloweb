@@ -209,6 +209,16 @@
 - **Excluidos**: `cunpollo.com`, `www.cunpollo.com`, `finanzas.cunpollo.com`
 - **Nota**: Para agregar nuevos subdominios, crear registro DNS especifico y agregar excepcion en la Redirect Rule
 
+### Landing Cunpacks (promo QR)
+- **Estado**: Produccion (promo temporal lunes a jueves)
+- **Ruta**: `/cunpacks` (→ `/es/cunpacks` via middleware) — URL para QR: `https://cunpollo.com/cunpacks`
+- **Archivos**: `src/app/[locale]/cunpacks/page.tsx`, `public/images/cunpacks/cunpacks-vertical.webp`
+- **Contenido**: Imagen vertical del menu Cunpacks ($180 MXN, 3 packs) tal cual + boton "Ver menu regular" (→ /menu)
+- **Bilingue**: Namespace `cunpacks` en ES/EN (metadata, alt accesible con el detalle de los packs, CTAs)
+- **Card en menu**: `MenuContainer.tsx` muestra card "Ver Cunpacks / Promocion de lunes a jueves" (roja, siempre visible) arriba de los banners de promociones, enlaza a `/cunpacks`
+- **Card en tab Promociones**: card estilo producto (imagen `cunpacks-card.webp`, header del arte) como primer item del grid cuando la categoria activa es `promociones`, enlaza a `/cunpacks`
+- **Para retirar la promo**: Eliminar ruta + imagen, quitar namespace y entrada en `sitemap.ts`
+
 ## Pendientes / Por Configurar
 
 | Item | Descripcion | Bloqueado por |

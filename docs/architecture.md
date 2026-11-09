@@ -36,6 +36,8 @@ cunpolloweb/
     │   │   ├── menu/
     │   │   │   ├── page.tsx           # Página del menú completo
     │   │   │   └── loading.tsx        # Loading del menú
+    │   │   ├── cunpacks/
+    │   │   │   └── page.tsx           # Landing promo Cunpacks (QR, imagen + CTAs)
     │   │   ├── cart/
     │   │   │   └── page.tsx           # Página del carrito
     │   │   ├── checkout/

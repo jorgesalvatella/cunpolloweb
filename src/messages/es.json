@@ -157,6 +157,15 @@
     "open": "Abierto ahora",
     "closed": "Cerrado"
   },
+  "cunpacks": {
+    "metaTitle": "Cunpacks — de lunes a jueves por $180 | CUNPOLLO",
+    "metaDescription": "Llegaron los Cunpacks: 3 paquetes completos con mini consomé y agua del día por $180 MXN, de lunes a jueves en CUNPOLLO Cancún.",
+    "alt": "Llegaron los Cunpacks, de lunes a jueves por $180 MXN. Pack 1: 2 mini quesadillas, 1 pierna y muslo, 1 mini consomé y agua del día. Pack 2: 1 huarache de bistec, 1 mini consomé y agua del día. Pack 3: 2 tostadas, 1 mini consomé, platanitos fritos y agua del día. ¡No te quedes con el antojo!",
+    "menu": "Ver menú regular",
+    "bannerTitle": "Ver Cunpacks",
+    "bannerSubtitle": "Promoción de lunes a jueves",
+    "fine": "Válido de lunes a jueves. Precio en MXN, solo en sucursal Cancún."
+  },
   "posadas": {
     "kicker": "Diciembre en CunPollo",
     "title": "Haz tu posada aquí 🎄",
