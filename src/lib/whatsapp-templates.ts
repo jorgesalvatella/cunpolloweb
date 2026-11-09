@@ -31,6 +31,17 @@ export interface WhatsAppTemplate {
 export const WHATSAPP_TEMPLATES: WhatsAppTemplate[] = [
   // --- Marketing templates (selectable) ---
   {
+    label: "Cunpacks 2026 (card con imagen + boton web)",
+    name: "cunpollo_cunpacks_card_v1",
+    contentSid: "HXae731b9d7a2aae832a31f9c90bbb0039",
+    variableCount: 0,
+    variableLabels: [],
+    autoNameVariable: false,
+    bodyPreview:
+      "¡Llegaron los Cunpacks a CUNPOLLO! 🔥\n\nComida completa por solo $180: tu platillo + consomé + agua del día. Comes rico, comes bien y quedas satisfecho.\n\n1. Quesadillas con pierna y muslo\n2. Huarache de bistec\n3. Tostadas con platanitos fritos\n\nSolo de lunes a jueves. ¡No te quedes con el antojo!",
+    category: "marketing",
+  },
+  {
     label: "Posadas 2026 (card con imagen)",
     name: "cunpollo_posadas_card_v3",
     contentSid: "HX102b563df78a06d1cfb07557a21933bb",

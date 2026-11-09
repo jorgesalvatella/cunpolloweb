@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-08 — Template WhatsApp Cunpacks
+
+Template `cunpollo_cunpacks_card_v1` (SID `HXae731b9d7a2aae832a31f9c90bbb0039`) creado via Twilio Content API como `whatsapp/card`: imagen 1200x628 en Vercel Blob (`whatsapp/cunpacks-2026.jpeg`), body vendedor sin variables ($180, 3 packs, lunes a jueves), footer con condiciones y boton URL "Ver Cunpacks en web" → `https://cunpollo.com/es/cunpacks`. Sometido a aprobacion Meta (MARKETING). Registrado en `src/lib/whatsapp-templates.ts`.
+
 ## 2026-11-08 — Landing Cunpacks (promo QR lunes a jueves)
 
 Landing page para la promoción de los Cunpacks ($180 MXN, lunes a jueves), pensada para llegar desde un QR en móvil. Muestra la imagen vertical del menú tal cual (3 packs) + botón "Ver menú regular" (→ /menu).
