@@ -220,7 +220,7 @@
 - **Para retirar la promo**: Eliminar ruta + imagen, quitar namespace y entrada en `sitemap.ts`
 
 ### Bot de WhatsApp (Twilio + Claude, Fase 1)
-- **Estado**: Implementado (falta `ANTHROPIC_API_KEY` en Vercel + configurar webhook en Twilio Console)
+- **Estado**: Produccion (verificado E2E 2026-11-09; env vars en Vercel, webhook configurado via Twilio Senders API)
 - **Feature flag**: `FEATURES.WA_BOT_ENABLED` en `src/lib/constants.ts`
 - **Webhook**: `POST /api/webhooks/twilio-whatsapp` — responde TODOS los mensajes entrantes al numero del negocio (+529983871387)
 - **IA**: Claude Haiku 4.5 via Vercel AI SDK (`@ai-sdk/anthropic`), respuesta sincrona TwiML, `stepCountIs(3)`, max 400 tokens

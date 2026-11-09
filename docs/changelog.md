@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-11-09 — Bot de WhatsApp: deploy a produccion y configuracion Twilio
+
+El bot quedo activo en produccion y verificado E2E (primer mensaje real respondido 16:34 UTC).
+
+**Configuracion aplicada:**
+- Env vars en Vercel (Production): `ANTHROPIC_API_KEY`, `WHATSAPP_ADVISOR_PHONE` + redeploy
+- Webhook de Twilio configurado via Senders v2 API (no Console): `POST https://messaging.twilio.com/v2/Channels/Senders/XEb799a6663a5d4156ddea18fdf282aa18` con `webhook.callback_url = https://cunpollo.com/api/webhooks/twilio-whatsapp`
+
+**Hallazgos (debugging):**
+- El webhook entrante de WhatsApp vive en el **Sender** (Senders v2 API) — no en el numero (`IncomingPhoneNumbers.sms_url`, que apunta al demo) ni en Messaging Services (no hay ninguno). Apuntaba al n8n eliminado (`automatizacion.cunpollo.com`), causando error 11200 en todos los mensajes entrantes desde que se elimino n8n
+- La propagacion del cambio de webhook tarda ~1 min (un mensaje que llego en ese intervalo aun fue al URL viejo)
+- Los avisos free-form al asesor fallan con 63016 hasta que el asesor le escriba al numero del negocio (ventana 24h); mientras, opera el fallback con template `order_confirmed`
+- Errores de webhooks entrantes se diagnostican con `GET https://monitor.twilio.com/v1/Alerts` (error 11200) y `GET /2010-04-01/.../Messages.json` (direction=inbound)
+
+**Pendiente operativo:**
+- Que Gerencia (+529984283677) le escriba "hola" al numero del negocio para abrir su ventana de 24h
+- Cargar promos vigentes en `wa_campaign_info` (slugs `cunpacks`, `posadas`)
+
 ## 2026-11-09 — Bot de WhatsApp con Twilio + Claude (Fase 1)
 
 Chatbot que responde todos los mensajes entrantes al WhatsApp del negocio usando Claude Haiku 4.5 con datos reales (menu, promos, knowledge base desde Supabase). Detecta intencion de compra y transfiere a un asesor humano (Gerencia) que atiende desde su WhatsApp con comandos `#`. Fase 1 no toma pedidos ni cobra.

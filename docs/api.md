@@ -676,4 +676,12 @@ Webhook que recibe TODOS los mensajes entrantes al numero de WhatsApp del negoci
 
 **Errores:** cualquier excepcion responde TwiML con mensaje fallback (telefono del negocio).
 
-**Configurar en Twilio Console:** Messaging > WhatsApp Sender > "When a message comes in" → `https://cunpollo.com/api/webhooks/twilio-whatsapp` (POST).
+**Configuracion del webhook en Twilio** (ya aplicada 2026-11-09): el webhook de mensajes entrantes vive en el WhatsApp Sender (Senders v2 API), NO en el numero telefonico ni en un Messaging Service. Se configuro via API:
+
+```
+POST https://messaging.twilio.com/v2/Channels/Senders/XEb799a6663a5d4156ddea18fdf282aa18
+Content-Type: application/json
+{ "webhook": { "callback_url": "https://cunpollo.com/api/webhooks/twilio-whatsapp", "callback_method": "POST" } }
+```
+
+Sender SID del numero de produccion (+5219983871387): `XEb799a6663a5d4156ddea18fdf282aa18`. Equivalente en Console: Messaging > Senders > WhatsApp Senders > "When a message comes in". El cambio tarda ~1 min en propagar.
