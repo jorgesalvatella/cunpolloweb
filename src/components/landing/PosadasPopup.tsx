@@ -149,7 +149,7 @@ export default function PosadasPopup() {
                   >
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-ink">{p.name}</p>
-                      <p className="text-xs text-ink/50 truncate">{p.detail}</p>
+                      <p className="text-xs text-ink/50">{p.detail}</p>
                     </div>
                     <span className="text-lg font-bold text-gold-400 shrink-0">{p.price}</span>
                   </li>
