@@ -1,3 +1,4 @@
+import { after } from "next/server";
 import { FEATURES, RESTAURANT } from "@/lib/constants";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { validateTwilioSignature } from "@/lib/wa-bot/signature";
@@ -98,8 +99,21 @@ export async function POST(request: Request) {
     // Modo human: reenviar al asesor, sin respuesta automática al cliente
     if (mode === "human") {
       const name = conversation.profile_name || "Cliente";
-      notifyAdvisor(`${name} (${last10(from)}): ${userContent}`).catch((err) => {
-        console.error("[WA Bot] Error reenviando mensaje al asesor:", err);
+      const digits = last10(from);
+      // Vars sin saltos de línea (error 21656); fallback si ventana 24h cerrada
+      const fallbackVars = {
+        "1": `ASESOR - Mensaje de ${name}`,
+        "2": digits,
+        "3": userContent.slice(0, 300),
+        "4": "Cliente en modo asesor",
+        "5": `Responde #${digits} <mensaje>`,
+      };
+      after(async () => {
+        try {
+          await notifyAdvisor(`${name} (${digits}): ${userContent}`, fallbackVars);
+        } catch (err) {
+          console.error("[WA Bot] Error reenviando mensaje al asesor:", err);
+        }
       });
       return twiml();
     }

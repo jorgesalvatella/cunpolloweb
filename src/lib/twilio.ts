@@ -109,6 +109,29 @@ export async function sendWhatsAppMessage(
   }
 }
 
+/**
+ * Fetch current status of a sent message. Needed because errors like 63016
+ * (24h window closed) arrive asynchronously: the API accepts the message as
+ * "queued" and marks it undelivered seconds later.
+ */
+export async function getMessageStatus(
+  messageSid: string
+): Promise<{ status: string; errorCode: number | null } | null> {
+  if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) return null;
+
+  const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages/${messageSid}.json`;
+  const auth = Buffer.from(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`).toString("base64");
+
+  try {
+    const res = await fetch(url, { headers: { Authorization: `Basic ${auth}` } });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return { status: data.status, errorCode: data.error_code ?? null };
+  } catch {
+    return null;
+  }
+}
+
 export function formatPhone(phone: string): string {
   const cleaned = phone.replace(/[\s\-()]/g, "");
   if (cleaned.startsWith("whatsapp:")) return cleaned;

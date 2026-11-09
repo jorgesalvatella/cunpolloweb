@@ -1,4 +1,10 @@
-import { sendWhatsAppMessage, sendWhatsAppTemplate, formatPhone } from "@/lib/twilio";
+import { after } from "next/server";
+import {
+  sendWhatsAppMessage,
+  sendWhatsAppTemplate,
+  getMessageStatus,
+  formatPhone,
+} from "@/lib/twilio";
 import { RESTAURANT } from "@/lib/constants";
 import { appendMessage, setMode, type WaConversation } from "./conversation";
 
@@ -13,9 +19,14 @@ const CLIENT_TRANSFER_MESSAGE =
   RESTAURANT.phone +
   ".";
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 /**
  * Notifica al asesor por WhatsApp. Intenta mensaje free-form; si la ventana
  * de 24h está cerrada (error 63016), cae a template order_confirmed.
+ *
+ * OJO: 63016 es asíncrono — Twilio acepta el mensaje como "queued" y lo marca
+ * undelivered segundos después, por eso hay que consultar el estado final.
  */
 export async function notifyAdvisor(
   body: string,
@@ -28,8 +39,22 @@ export async function notifyAdvisor(
 
   const result = await sendWhatsAppMessage(formatPhone(ADVISOR_PHONE), body);
 
-  if (!result.success && result.errorCode === 63016 && templateFallbackVars) {
-    console.warn("[WA Bot] Ventana 24h cerrada con asesor, usando template fallback");
+  let failed = !result.success;
+  if (result.success && result.messageSid) {
+    for (const wait of [4000, 5000]) {
+      await sleep(wait);
+      const st = await getMessageStatus(result.messageSid);
+      if (!st) break;
+      if (st.status === "undelivered" || st.status === "failed") {
+        failed = true;
+        break;
+      }
+      if (st.status === "delivered" || st.status === "read") break;
+    }
+  }
+
+  if (failed && templateFallbackVars) {
+    console.warn("[WA Bot] Free-form al asesor no entregado (ventana 24h cerrada), usando template fallback");
     await sendWhatsAppTemplate(
       formatPhone(ADVISOR_PHONE),
       FALLBACK_TEMPLATE_SID,
@@ -76,9 +101,14 @@ export async function transferToAdvisor(params: {
     "5": "Responde #<numero> <mensaje>",
   };
 
-  // No bloquear la respuesta al cliente si la notificacion falla
-  notifyAdvisor(advisorBody, fallbackVars).catch((err) => {
-    console.error("[WA Bot] Error notificando al asesor:", err);
+  // after(): corre tras responder al cliente sin que Vercel congele la función
+  // (fire-and-forget puede morir antes de completar en serverless)
+  after(async () => {
+    try {
+      await notifyAdvisor(advisorBody, fallbackVars);
+    } catch (err) {
+      console.error("[WA Bot] Error notificando al asesor:", err);
+    }
   });
 
   return CLIENT_TRANSFER_MESSAGE;
