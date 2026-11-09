@@ -6,6 +6,7 @@ export const FEATURES = {
   REWARDS_ENABLED: true,
   CHAT_ENABLED: true,
   POSADAS_POPUP: true,
+  WA_BOT_ENABLED: true,
 } as const;
 
 export const REWARDS_URL = "https://app.tagocard.com/enroll/cunpollo";

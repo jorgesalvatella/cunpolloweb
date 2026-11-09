@@ -9,7 +9,9 @@ cunpolloweb/
 ├── next.config.ts                     # Config Next.js (sin static export)
 ├── package.json                       # Dependencias (pnpm)
 ├── supabase/
-│   └── schema.sql                     # Schema de base de datos
+│   ├── schema.sql                     # Schema de base de datos
+│   └── migrations/
+│       └── 20261109_wa_bot_schema.sql # Tablas del bot de WhatsApp (referencia)
 ├── docs/                              # Documentación del proyecto
 │   ├── architecture.md                # (este archivo)
 │   ├── features.md                    # Features y su estado
@@ -71,8 +73,10 @@ cunpolloweb/
     │       ├── menu/
     │       │   └── route.ts               # GET: public menu data (categories, items, promotions)
     │       ├── webhooks/
-    │       │   └── openpay/
-    │       │       └── route.ts           # POST: webhook de Openpay (3DS completados, pagos fallidos)
+    │       │   ├── openpay/
+    │       │   │   └── route.ts           # POST: webhook de Openpay (3DS completados, pagos fallidos)
+    │       │   └── twilio-whatsapp/
+    │       │       └── route.ts           # POST: webhook bot WhatsApp (Claude Haiku + traspaso a asesor)
     │       └── admin/
     │           ├── login/
     │           │   └── route.ts       # POST: auth con usuario+contraseña, devuelve rol
@@ -179,6 +183,14 @@ cunpolloweb/
     │   │   ├── system-prompt.ts     # System prompt del chatbot (personalidad + info negocio)
     │   │   ├── tools.ts             # AI tools (function calling): search_menu, add_to_cart, etc.
     │   │   └── session.ts           # Persistencia de sesiones de chat en Supabase
+    │   ├── wa-bot/
+    │   │   ├── signature.ts         # Validacion X-Twilio-Signature (HMAC-SHA1, sin SDK)
+    │   │   ├── conversation.ts      # CRUD wa_conversations/wa_messages + timeout 2h modo human
+    │   │   ├── campaign-context.ts  # Resuelve campana (ButtonPayload / quoted reply / envio reciente)
+    │   │   ├── system-prompt.ts     # Prompt WhatsApp (tono, reglas, contexto de campana)
+    │   │   ├── agent.ts             # generateText con Claude Haiku 4.5 + tools (reusa chat/tools.ts)
+    │   │   ├── transfer.ts          # Traspaso a asesor (notifica via WhatsApp, fallback template)
+    │   │   └── advisor-commands.ts  # Comandos del asesor: #<num> <msg> y #fin <num>
     │   ├── menu-data.ts               # Server-side menu data from Supabase (DB fetchers + helpers)
     │   ├── rate-limit.ts              # In-memory rate limiter (sliding window)
     │   ├── audit-log.ts               # Audit log utility para acciones admin
@@ -213,6 +225,13 @@ cunpolloweb/
   /admin → GET /api/admin/orders → Supabase SELECT
   OrderCard → PATCH /api/admin/orders/[id] → Supabase UPDATE → WhatsApp notify (fire-and-forget)
   Supabase Realtime → auto-refresh dashboard
+
+[Bot WhatsApp]
+  Cliente WhatsApp → Twilio → POST /api/webhooks/twilio-whatsapp → valida firma
+    From = asesor → advisor-commands (#relay / #fin) → TwiML confirmacion
+    mode = human → reenvia mensaje al asesor (REST) → TwiML vacio
+    mode = bot → campaign-context + Claude Haiku (tools menu/promos/knowledge) → TwiML <Message>
+      tool transferir_a_asesor o boton :comprar → transfer.ts → mode=human + notifica asesor
 
 [Vistas Especializadas]
   /admin/cocina → GET /api/admin/orders (paid+preparing) → Supabase Realtime → EMPEZAR/LISTO

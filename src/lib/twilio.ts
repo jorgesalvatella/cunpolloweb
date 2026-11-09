@@ -48,6 +48,67 @@ async function sendWhatsApp(to: string, body: string): Promise<void> {
   }
 }
 
+/**
+ * Send a free-form WhatsApp message (Body, not template).
+ * Only works inside the 24h customer service window — outside it Twilio
+ * returns error code 63016 (caller can fall back to a template).
+ */
+export async function sendWhatsAppMessage(
+  to: string,
+  body: string
+): Promise<{ success: boolean; error?: string; errorCode?: number; messageSid?: string }> {
+  if (!isConfigured()) {
+    return { success: false, error: "Twilio not configured" };
+  }
+
+  const formattedTo = formatPhone(to);
+  const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
+  const auth = Buffer.from(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`).toString("base64");
+
+  const params = new URLSearchParams({
+    From: TWILIO_WHATSAPP_FROM,
+    To: formattedTo,
+    Body: body,
+  });
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${auth}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: params.toString(),
+  });
+
+  const responseBody = await res.text();
+
+  if (!res.ok) {
+    let errorCode: number | undefined;
+    try {
+      errorCode = JSON.parse(responseBody).code;
+    } catch {
+      // not JSON
+    }
+    console.error(`[Twilio] Free-form send error to ${formattedTo}: ${res.status} ${responseBody}`);
+    return { success: false, error: `${res.status}: ${responseBody}`, errorCode };
+  }
+
+  try {
+    const data = JSON.parse(responseBody);
+    if (data.status === "failed" || data.status === "undelivered") {
+      return {
+        success: false,
+        error: `Twilio status: ${data.status} (code: ${data.error_code})`,
+        errorCode: data.error_code ?? undefined,
+        messageSid: data.sid,
+      };
+    }
+    return { success: true, messageSid: data.sid };
+  } catch {
+    return { success: true };
+  }
+}
+
 export function formatPhone(phone: string): string {
   const cleaned = phone.replace(/[\s\-()]/g, "");
   if (cleaned.startsWith("whatsapp:")) return cleaned;

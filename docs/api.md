@@ -636,6 +636,8 @@ Crea y envia una campana (requiere cookie admin).
 
 Si `contactIds` no se envia, se envia a todos los contactos activos.
 
+Cada envio individual se registra en la tabla `campaign_sends` (con `message_sid`), usada por el bot de WhatsApp para asociar respuestas entrantes con la campana.
+
 **Response 200:**
 ```json
 {
@@ -645,3 +647,33 @@ Si `contactIds` no se envia, se envia a todos los contactos activos.
   "status": "completed"
 }
 ```
+
+---
+
+## Bot de WhatsApp (Twilio)
+
+### `POST /api/webhooks/twilio-whatsapp`
+Webhook que recibe TODOS los mensajes entrantes al numero de WhatsApp del negocio (+529983871387). Responde con TwiML (`text/xml`).
+
+**Autenticacion:** Valida el header `X-Twilio-Signature` (HMAC-SHA1 con `TWILIO_AUTH_TOKEN` sobre la URL del webhook + params ordenados). Firma invalida → `403`. La URL de validacion es `TWILIO_WEBHOOK_URL` (default `https://cunpollo.com/api/webhooks/twilio-whatsapp`).
+
+**Feature flag:** `FEATURES.WA_BOT_ENABLED` — si esta off, responde TwiML vacio.
+
+**Rate limit:** 20 mensajes/min por telefono (si se excede, TwiML vacio).
+
+**Routing:**
+1. **Mensaje del asesor** (`WHATSAPP_ADVISOR_PHONE`): se interpreta como comando:
+   - `#<numero> <mensaje>` — reenvia el mensaje al cliente (relay)
+   - `#fin <numero>` — devuelve la conversacion al bot y avisa al cliente
+   - Otro texto — responde con ayuda de comandos
+2. **Conversacion en modo `human`**: reenvia el texto del cliente al asesor, TwiML vacio (el bot no responde). Timeout lazy: tras 2h de inactividad vuelve a modo `bot`.
+3. **Modo `bot`**:
+   - `ButtonPayload` `<campana>:comprar` → traspaso directo a asesor (sin IA)
+   - Texto normal / `<campana>:info` → Claude Haiku 4.5 (Vercel AI SDK) con tools `search_menu`, `get_categories`, `get_promotions`, `search_knowledge` y `transferir_a_asesor`. Contexto de campana resuelto via ButtonPayload, quoted reply (`OriginalRepliedMessageSid` → `campaign_sends`) o ultimo envio de campana <7 dias; info editable en `wa_campaign_info`.
+   - Si el modelo invoca `transferir_a_asesor` → marca `mode='human'`, notifica al asesor (free-form; fallback template `order_confirmed` si error 63016) y confirma al cliente.
+
+**Persistencia:** `wa_conversations` (una por telefono) y `wa_messages` (historial, contexto de 12 mensajes).
+
+**Errores:** cualquier excepcion responde TwiML con mensaje fallback (telefono del negocio).
+
+**Configurar en Twilio Console:** Messaging > WhatsApp Sender > "When a message comes in" → `https://cunpollo.com/api/webhooks/twilio-whatsapp` (POST).

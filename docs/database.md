@@ -237,6 +237,76 @@ Sesiones de chat del chatbot IA, para analytics y persistencia.
 
 ---
 
+## Tabla: `wa_conversations`
+
+Conversaciones del bot de WhatsApp (una por telefono). Migracion `wa_bot_schema` (2026-11-09, `supabase/migrations/20261109_wa_bot_schema.sql`).
+
+| Columna | Tipo | Default | Descripcion |
+|---------|------|---------|-------------|
+| `id` | UUID | `gen_random_uuid()` | PK |
+| `phone` | TEXT | NOT NULL, UNIQUE | E.164 sin prefijo `whatsapp:` (ej. `+5219981234567`) |
+| `profile_name` | TEXT | NULL | Nombre de perfil WhatsApp del cliente |
+| `mode` | TEXT | `'bot'` | `bot` o `human` (atendido por asesor) |
+| `campaign_id` | UUID | NULL | FK a `campaigns` si se resolvio contexto de campana |
+| `transfer_reason` | TEXT | NULL | Motivo del ultimo traspaso a asesor |
+| `transferred_at` | TIMESTAMPTZ | NULL | Fecha del ultimo traspaso |
+| `last_message_at` | TIMESTAMPTZ | `now()` | Ultimo mensaje (usado para timeout 2h de modo human) |
+| `created_at` / `updated_at` | TIMESTAMPTZ | `now()` | — |
+
+**RLS:** habilitado sin policies (solo service role)
+
+## Tabla: `wa_messages`
+
+Historial append-only de mensajes del bot (contexto de 12 mensajes + metricas).
+
+| Columna | Tipo | Default | Descripcion |
+|---------|------|---------|-------------|
+| `id` | UUID | `gen_random_uuid()` | PK |
+| `conversation_id` | UUID | NOT NULL | FK a `wa_conversations` (cascade) |
+| `role` | TEXT | NOT NULL | `user`, `assistant`, `advisor` o `system` |
+| `content` | TEXT | NOT NULL | Texto del mensaje |
+| `message_sid` | TEXT | NULL | SID de Twilio |
+| `button_payload` | TEXT | NULL | Payload de quick reply (ej. `cunpacks:comprar`) |
+| `created_at` | TIMESTAMPTZ | `now()` | — |
+
+**Indice:** `(conversation_id, created_at)`
+**RLS:** habilitado sin policies (solo service role)
+
+## Tabla: `campaign_sends`
+
+Envio individual de campana por destinatario (antes solo se guardaban agregados en `campaigns`).
+
+| Columna | Tipo | Default | Descripcion |
+|---------|------|---------|-------------|
+| `id` | UUID | `gen_random_uuid()` | PK |
+| `campaign_id` | UUID | NOT NULL | FK a `campaigns` (cascade) |
+| `contact_id` | UUID | NULL | FK a `contacts` |
+| `phone` | TEXT | NOT NULL | Telefono del destinatario |
+| `message_sid` | TEXT | NULL | SID del mensaje Twilio (para asociar quoted replies) |
+| `status` | TEXT | `'sent'` | `sent` o `failed` |
+| `error` | TEXT | NULL | Error de envio si fallo |
+| `created_at` | TIMESTAMPTZ | `now()` | — |
+
+**Indices:** `(phone, created_at desc)`, `(message_sid)`
+**RLS:** habilitado sin policies (solo service role)
+
+## Tabla: `wa_campaign_info`
+
+Info de promos/campanas editable sin codigo — se inyecta al prompt del bot de WhatsApp.
+
+| Columna | Tipo | Default | Descripcion |
+|---------|------|---------|-------------|
+| `id` | UUID | `gen_random_uuid()` | PK |
+| `slug` | TEXT | NOT NULL, UNIQUE | ej. `cunpacks`, `posadas` (debe aparecer en el `template_name` de la campana para hacer match) |
+| `title` | TEXT | NOT NULL | Titulo de la promo |
+| `details` | TEXT | NOT NULL | Texto libre (precios, condiciones) que lee el bot |
+| `active` | BOOLEAN | `true` | Solo las activas se inyectan |
+| `created_at` / `updated_at` | TIMESTAMPTZ | `now()` | — |
+
+**RLS:** habilitado sin policies (solo service role)
+
+---
+
 ## Como aplicar (referencia)
 Schema ya aplicado en producción. Para un proyecto nuevo:
 1. Ir al SQL Editor en el dashboard de Supabase

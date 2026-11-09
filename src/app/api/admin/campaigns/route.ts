@@ -130,6 +130,20 @@ export async function POST(request: Request) {
       console.error(`[Campaign ${campaign.id}] ${contact.phone}: ${result.error}`);
       errors.push(result.error || "Error de envio");
     }
+
+    // Registrar envio por destinatario (usado por el bot de WhatsApp para
+    // asociar respuestas entrantes con la campana)
+    const { error: sendError } = await supabase.from("campaign_sends").insert({
+      campaign_id: campaign.id,
+      contact_id: contact.id,
+      phone: contact.phone,
+      message_sid: result.messageSid || null,
+      status: result.success ? "sent" : "failed",
+      error: result.success ? null : result.error || "Error de envio",
+    });
+    if (sendError) {
+      console.error(`[Campaign ${campaign.id}] Error registrando envio:`, sendError.message);
+    }
   }
 
   // Update campaign stats

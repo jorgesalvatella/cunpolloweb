@@ -44,6 +44,14 @@ Archivo de referencia: `.env.example`
 |----------|------|-------------|---------------|
 | `GOOGLE_GENERATIVE_AI_API_KEY` | Secret | API key de Google Gemini | Google AI Studio > API Keys |
 
+## Bot de WhatsApp (Twilio + Claude)
+
+| Variable | Tipo | Descripcion | Donde obtener |
+|----------|------|-------------|---------------|
+| `ANTHROPIC_API_KEY` | Secret | API key de Anthropic (Claude Haiku 4.5) | console.anthropic.com > API Keys |
+| `WHATSAPP_ADVISOR_PHONE` | Server | Telefono del asesor humano que recibe traspasos | `+529984283677` (Gerencia) |
+| `TWILIO_WEBHOOK_URL` | Server | (Opcional) URL exacta para validar firma Twilio si difiere de produccion | Default: `https://cunpollo.com/api/webhooks/twilio-whatsapp` |
+
 ## Vercel Blob Storage
 
 | Variable | Tipo | Descripcion | Donde obtener |

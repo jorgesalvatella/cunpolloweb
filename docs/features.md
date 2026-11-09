@@ -219,6 +219,20 @@
 - **Card en tab Promociones**: card estilo producto (imagen `cunpacks-card.webp`, header del arte) como primer item del grid cuando la categoria activa es `promociones`, enlaza a `/cunpacks`
 - **Para retirar la promo**: Eliminar ruta + imagen, quitar namespace y entrada en `sitemap.ts`
 
+### Bot de WhatsApp (Twilio + Claude, Fase 1)
+- **Estado**: Implementado (falta `ANTHROPIC_API_KEY` en Vercel + configurar webhook en Twilio Console)
+- **Feature flag**: `FEATURES.WA_BOT_ENABLED` en `src/lib/constants.ts`
+- **Webhook**: `POST /api/webhooks/twilio-whatsapp` — responde TODOS los mensajes entrantes al numero del negocio (+529983871387)
+- **IA**: Claude Haiku 4.5 via Vercel AI SDK (`@ai-sdk/anthropic`), respuesta sincrona TwiML, `stepCountIs(3)`, max 400 tokens
+- **Tools**: reusa `search_menu`, `get_categories`, `get_promotions`, `search_knowledge` del chatbot web + tool nuevo `transferir_a_asesor` — nunca inventa precios
+- **Contexto de campana**: ButtonPayload (`campana:accion`), quoted reply (`campaign_sends.message_sid`) o ultimo envio <7 dias; detalles editables sin codigo en tabla `wa_campaign_info` (slug debe aparecer en el template_name de la campana)
+- **Traspaso a asesor**: intencion de compra (tool) o boton `:comprar` → `mode='human'`, notifica a Gerencia (`WHATSAPP_ADVISOR_PHONE=+529984283677`) via mensaje free-form (fallback template `order_confirmed` si error 63016)
+- **Comandos del asesor** (desde su propio WhatsApp): `#<numero> <mensaje>` relay al cliente, `#fin <numero>` devuelve al bot. Timeout: 2h de inactividad en modo human → vuelve al bot
+- **Persistencia**: `wa_conversations`, `wa_messages` (historial 12 mensajes como contexto)
+- **Seguridad**: validacion `X-Twilio-Signature` (HMAC-SHA1 sin SDK), rate limit 20/min por telefono
+- **Fase 1 NO**: no toma pedidos ni cobra. Fase 2 (diseno): carrito + links OpenPay reutilizando `add_to_cart` de `src/lib/chat/tools.ts`
+- **Archivos**: `src/lib/wa-bot/*`, `src/app/api/webhooks/twilio-whatsapp/route.ts`
+
 ## Pendientes / Por Configurar
 
 | Item | Descripcion | Bloqueado por |

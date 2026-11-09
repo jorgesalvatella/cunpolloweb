@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-11-09 — Bot de WhatsApp con Twilio + Claude (Fase 1)
+
+Chatbot que responde todos los mensajes entrantes al WhatsApp del negocio usando Claude Haiku 4.5 con datos reales (menu, promos, knowledge base desde Supabase). Detecta intencion de compra y transfiere a un asesor humano (Gerencia) que atiende desde su WhatsApp con comandos `#`. Fase 1 no toma pedidos ni cobra.
+
+**Archivos nuevos:**
+- `src/app/api/webhooks/twilio-whatsapp/route.ts` — Webhook (firma Twilio, routing asesor/human/bot, TwiML)
+- `src/lib/wa-bot/signature.ts` — Validacion X-Twilio-Signature (HMAC-SHA1, sin SDK twilio)
+- `src/lib/wa-bot/conversation.ts` — CRUD `wa_conversations`/`wa_messages` + timeout 2h
+- `src/lib/wa-bot/campaign-context.ts` — Contexto de campana (ButtonPayload / quoted reply / envio reciente)
+- `src/lib/wa-bot/system-prompt.ts` — Prompt WhatsApp con info de campanas (`wa_campaign_info`)
+- `src/lib/wa-bot/agent.ts` — Claude Haiku 4.5 + tools reutilizados del chat web + `transferir_a_asesor`
+- `src/lib/wa-bot/transfer.ts` — Traspaso a asesor con fallback template (error 63016)
+- `src/lib/wa-bot/advisor-commands.ts` — Comandos `#<num> <msg>` y `#fin <num>`
+- `supabase/migrations/20261109_wa_bot_schema.sql` — 4 tablas: `wa_conversations`, `wa_messages`, `campaign_sends`, `wa_campaign_info` (aplicada via MCP)
+
+**Archivos modificados:**
+- `src/lib/twilio.ts` — `sendWhatsAppMessage()` free-form con codigo de error Twilio
+- `src/app/api/admin/campaigns/route.ts` — Registra cada envio en `campaign_sends` (con `message_sid`)
+- `src/lib/constants.ts` — `FEATURES.WA_BOT_ENABLED`
+- `package.json` — `@ai-sdk/anthropic@^3` (v3 para compatibilidad con `ai` v6)
+
+**Pendiente de configuracion:**
+- `ANTHROPIC_API_KEY` en `.env.local` y Vercel; `WHATSAPP_ADVISOR_PHONE=+529984283677` en Vercel
+- Twilio Console → WhatsApp Sender → "When a message comes in" → `https://cunpollo.com/api/webhooks/twilio-whatsapp` (POST)
+- Cargar promos en `wa_campaign_info` (ej. slug `cunpacks`, `posadas`)
+
 ## 2026-11-08 — Template WhatsApp Cunpacks
 
 Template `cunpollo_cunpacks_card_v1` (SID `HXae731b9d7a2aae832a31f9c90bbb0039`) creado via Twilio Content API como `whatsapp/card`: imagen 1200x628 en Vercel Blob (`whatsapp/cunpacks-2026.jpeg`), body vendedor sin variables ($180, 3 packs, lunes a jueves), footer con condiciones y boton URL "Ver Cunpacks en web" → `https://cunpollo.com/es/cunpacks`. Sometido a aprobacion Meta (MARKETING). Registrado en `src/lib/whatsapp-templates.ts`.
