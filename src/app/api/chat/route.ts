@@ -1,4 +1,4 @@
-import { google } from "@ai-sdk/google";
+import { anthropic } from "@ai-sdk/anthropic";
 import { streamText, stepCountIs, convertToModelMessages } from "ai";
 import { getSystemPrompt } from "@/lib/chat/system-prompt";
 import { getChatTools } from "@/lib/chat/tools";
@@ -49,7 +49,8 @@ export async function POST(req: Request) {
   const modelMessages = await convertToModelMessages(messages);
 
   const result = streamText({
-    model: google("gemini-2.5-flash"),
+    model: anthropic("claude-haiku-4-5"),
+    maxOutputTokens: 800,
     system: getSystemPrompt(validLocale),
     messages: modelMessages,
     tools: getChatTools(validLocale),

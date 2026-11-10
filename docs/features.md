@@ -172,7 +172,7 @@
 ### Chatbot IA (Asistente de Compra)
 - **Estado**: Produccion
 - **Feature flag**: `FEATURES.CHAT_ENABLED` en `src/lib/constants.ts` (actualmente `true`)
-- **AI Provider**: Google Gemini 2.5 Flash via Vercel AI SDK (`ai` + `@ai-sdk/google`)
+- **AI Provider**: Claude Haiku 4.5 via Vercel AI SDK (`ai` + `@ai-sdk/anthropic`) — mismo "cerebro" que el bot de WhatsApp (antes Google Gemini 2.5 Flash, migrado 2026-11-09)
 - **Streaming**: Respuestas en tiempo real via `streamText()` + `toUIMessageStreamResponse()`
 - **Widget**: `src/components/chat/ChatWidget.tsx` — mascota animada bottom-left con tagline "Te ayudo a pedir!" (reemplaza WhatsApp)
 - **Componentes**: `ChatMessage.tsx`, `ChatProductCard.tsx`, `ChatInput.tsx`

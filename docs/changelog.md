@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-11-09 — Chat web migrado a Claude Haiku 4.5 (swap Gemini → Haiku)
+
+El chatbot del sitio web ahora usa el mismo modelo que el bot de WhatsApp, unificando el "cerebro" de ambos canales.
+
+**Cambios:**
+- `src/app/api/chat/route.ts` — `google("gemini-2.5-flash")` → `anthropic("claude-haiku-4-5")` + `maxOutputTokens: 800`. Todo lo demas intacto (streaming, tools, rate limit, persistencia)
+- `pnpm remove @ai-sdk/google` — dependencia eliminada
+- `GOOGLE_GENERATIVE_AI_API_KEY` eliminada de `.env.local` y Vercel (ya no se usa)
+- Usa `ANTHROPIC_API_KEY` ya configurada en Vercel (compartida con el bot de WhatsApp)
+
 ## 2026-11-09 — Fix: aviso al asesor no llegaba (63016 asincrono) + promos en wa_campaign_info
 
 El traspaso a asesor funcionaba pero el aviso nunca llegaba a Gerencia.

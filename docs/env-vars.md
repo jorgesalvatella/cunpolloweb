@@ -38,17 +38,11 @@ Archivo de referencia: `.env.example`
 | `OPENPAY_WEBHOOK_TOKEN` | Secret | Token para verificar webhooks de Openpay | Generar: `openssl rand -hex 32` |
 | `CRON_SECRET` | Secret | Token para autenticar cron jobs de Vercel | Generar: `openssl rand -hex 32` |
 
-## Chatbot IA (Gemini)
-
-| Variable | Tipo | Descripcion | Donde obtener |
-|----------|------|-------------|---------------|
-| `GOOGLE_GENERATIVE_AI_API_KEY` | Secret | API key de Google Gemini | Google AI Studio > API Keys |
-
 ## Bot de WhatsApp (Twilio + Claude)
 
 | Variable | Tipo | Descripcion | Donde obtener |
 |----------|------|-------------|---------------|
-| `ANTHROPIC_API_KEY` | Secret | API key de Anthropic (Claude Haiku 4.5) | console.anthropic.com > API Keys |
+| `ANTHROPIC_API_KEY` | Secret | API key de Anthropic (Claude Haiku 4.5) — tambien la usa el chat web (`/api/chat`) | console.anthropic.com > API Keys |
 | `WHATSAPP_ADVISOR_PHONE` | Server | Telefono del asesor humano que recibe traspasos | `+529984283677` (Gerencia) |
 | `TWILIO_WEBHOOK_URL` | Server | (Opcional) URL exacta para validar firma Twilio si difiere de produccion | Default: `https://cunpollo.com/api/webhooks/twilio-whatsapp` |
 
