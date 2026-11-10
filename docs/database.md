@@ -271,6 +271,7 @@ Historial append-only de mensajes del bot (contexto de 12 mensajes + metricas).
 
 **Indice:** `(conversation_id, created_at)`
 **RLS:** habilitado sin policies (solo service role)
+**Retencion:** 30 dias — cron diario `/api/cron/purge-wa-messages` borra mensajes mas viejos (las filas de `wa_conversations` se conservan)
 
 ## Tabla: `campaign_sends`
 

@@ -282,6 +282,78 @@ Elimina una campana (requiere cookie admin).
 
 ---
 
+## Conversaciones WhatsApp (Admin)
+
+### `GET /api/admin/conversations`
+Lista conversaciones del bot WhatsApp (`wa_conversations`) con conteo de mensajes embebido. Requiere cookie admin. Solo lectura.
+
+**Query params (lista):**
+- `days` — `1` | `7` | `30` (default 30). Filtra por `last_message_at` reciente
+- `transferred=true` — solo conversaciones que pidieron asesor (`transferred_at IS NOT NULL`)
+
+Orden: `last_message_at` DESC, limit 200.
+
+**Response 200 (lista):**
+```json
+[
+  {
+    "id": "uuid",
+    "phone": "whatsapp:+52998...",
+    "profile_name": "Juan",
+    "mode": "bot",
+    "transfer_reason": "quiere facturar",
+    "transferred_at": "2026-11-09T...",
+    "last_message_at": "2026-11-10T...",
+    "wa_messages": [{ "count": 14 }]
+  }
+]
+```
+
+### `GET /api/admin/conversations?id=uuid-...`
+Detalle: mensajes de una conversación (`wa_messages`), orden cronológico ASC, limit 500.
+
+**Response 200 (detalle):**
+```json
+[
+  { "role": "user", "content": "hola", "button_payload": null, "created_at": "..." }
+]
+```
+Roles: `user` (cliente), `assistant` (bot), `advisor` (asesor), `system` (eventos).
+
+---
+
+## Templates WhatsApp (Admin)
+
+### `GET /api/admin/templates`
+Lista templates de marketing sincronizados en vivo desde Twilio Content API (`ContentAndApprovals`), mezclados con metadata local de `src/lib/whatsapp-templates.ts` (label en espanol, bodyPreview, autoNameVariable, broken flag). Solo lectura contra Twilio. Cache 5 min (`next.revalidate`).
+
+**Fallback:** Si Twilio falla o no hay credenciales, regresa el registro local (`source: "local"`).
+
+**Response 200:**
+```json
+{
+  "source": "twilio",
+  "templates": [
+    {
+      "label": "Posadas 2026 (card con imagen)",
+      "name": "cunpollo_posadas_card_v3",
+      "contentSid": "HX...",
+      "variableCount": 0,
+      "variableLabels": [],
+      "autoNameVariable": false,
+      "bodyPreview": "...",
+      "category": "marketing",
+      "approvalStatus": "approved"
+    }
+  ],
+  "allTemplateNames": ["cunpollo_posadas_card_v3", "order_confirmed", "..."]
+}
+```
+
+**Filtros:** Solo templates MARKETING aprobados por Meta y no marcados `broken` localmente. `allTemplateNames` incluye todos (para el indicador de slug-match en campanas).
+
+---
+
 ## Cron Jobs
 
 ### `GET /api/cron/timeout-orders`
@@ -307,6 +379,15 @@ Verifica ordenes en `processing` o `pending_3ds` por mas de 30 minutos. Para cad
 - `marked_failed` — Openpay reporto pago fallido
 - `timeout_cancelled` — Sin respuesta despues de 30 min, cancelado
 - `timeout_no_ref` — Sin referencia de pago, cancelado
+
+### `GET /api/cron/purge-wa-messages`
+Borra mensajes de `wa_messages` con mas de 30 dias (retencion de logs del bot WhatsApp). NO borra `wa_conversations` (conservan registro del cliente, transfer_reason y fechas).
+
+**Autenticacion:** `Authorization: Bearer <CRON_SECRET>` o `?token=<CRON_SECRET>`
+
+**Frecuencia:** Diario a las 10:00 UTC (configurado en `vercel.json`)
+
+**Response 200:** `{ "ok": true, "deleted": 42 }`
 
 ---
 

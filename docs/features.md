@@ -116,18 +116,31 @@
 ### Hub WhatsApp Promociones (Admin)
 - **Estado**: Implementado
 - **Ruta**: `/admin` > Tab "WhatsApp"
-- **Componentes**: `WhatsAppHub`, `ContactList`, `SendPromo`, `CampaignHistory`
+- **Componentes**: `WhatsAppHub`, `ContactList`, `SendPromo`, `CampaignHistory`, `ConversationLogs`
 - **Tablas**: `contacts` (contactos WhatsApp), `campaigns` (historial de envios)
-- **Template Registry**: `src/lib/whatsapp-templates.ts` — registro hardcodeado de templates con metadata (label, SID, variables, preview, broken flag)
+- **Template Registry**: `src/lib/whatsapp-templates.ts` — registro local de templates con metadata (label, SID, variables, preview, broken flag). Sirve como override de UX y fallback
+- **Sincronizacion con Twilio**: `GET /api/admin/templates` lee templates en vivo de Twilio Content API (solo lectura) y los mezcla con la metadata local. Templates nuevos en Twilio aparecen automaticamente en el selector; si la API falla, se usa el registro local (badge "Lista local" vs "Sincronizado con Twilio")
 - **Funcionalidad**:
   - Agregar contactos manualmente o importar de pedidos existentes
-  - **Selector de template**: Dropdown con templates marketing disponibles (reemplaza inputs manuales de SID/nombre/JSON)
+  - **Selector de template**: Dropdown con templates marketing aprobados por Meta, sincronizados en vivo desde Twilio
   - **Variables dinamicas**: Inputs auto-generados segun el template seleccionado. Variable {{1}} (nombre) se llena automaticamente por contacto
   - **Vista previa en vivo**: Body del template con variables reemplazadas en tiempo real
   - Seleccionar contactos especificos o enviar a todos
   - Historial de campanas con stats (enviados/fallidos)
   - Templates rotos marcados como `broken` en el registry (no aparecen en selector)
 - **API**: `/api/admin/contacts` (GET, POST, DELETE), `/api/admin/campaigns` (GET, POST)
+
+### Logs de Conversaciones WhatsApp (Admin)
+- **Estado**: Implementado
+- **Ruta**: `/admin` > Tab "WhatsApp" > Sub-tab "Conversaciones"
+- **Componente**: `ConversationLogs`
+- **Tablas**: `wa_conversations`, `wa_messages` (solo lectura)
+- **Funcionalidad**:
+  - Lista de conversaciones del bot WhatsApp con filtro por dias (Hoy / 7 / 30), toggle "Solo con asesor solicitado" y busqueda por nombre/telefono (client-side)
+  - Badges por conversacion: "Pidio asesor" (ambar, con motivo y fecha), "Con asesor ahora" (verde, mode=human) o "Bot" (gris), contador de mensajes y ultima actividad relativa
+  - Expandir conversacion → hilo estilo chat: cliente (verde, derecha), bot (gris, izquierda), asesor (azul, etiquetado), system (centrado italico)
+- **Retencion**: Cron diario `/api/cron/purge-wa-messages` borra `wa_messages` de mas de 30 dias; `wa_conversations` se conserva
+- **API**: `GET /api/admin/conversations` (lista + detalle via `?id=`)
 
 ### Gestion de Telefonos Admin (Notificaciones)
 - **Estado**: Implementado

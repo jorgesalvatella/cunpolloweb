@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/timeout-orders",
       "schedule": "0 22 * * *"
+    },
+    {
+      "path": "/api/cron/purge-wa-messages",
+      "schedule": "0 10 * * *"
     }
   ]
 }

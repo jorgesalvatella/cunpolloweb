@@ -5,8 +5,9 @@ import ContactList from "./ContactList";
 import SendPromo from "./SendPromo";
 import CampaignHistory from "./CampaignHistory";
 import AdminPhonesManager from "./AdminPhonesManager";
+import ConversationLogs from "./ConversationLogs";
 
-const tabs = ["Notificaciones", "Contactos", "Enviar Promo", "Historial"];
+const tabs = ["Notificaciones", "Contactos", "Enviar Promo", "Historial", "Conversaciones"];
 
 export default function WhatsAppHub() {
   const [activeTab, setActiveTab] = useState(0);
@@ -33,6 +34,7 @@ export default function WhatsAppHub() {
       {activeTab === 1 && <ContactList />}
       {activeTab === 2 && <SendPromo />}
       {activeTab === 3 && <CampaignHistory />}
+      {activeTab === 4 && <ConversationLogs />}
     </div>
   );
 }

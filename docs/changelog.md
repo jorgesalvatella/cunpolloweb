@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-11-10 — Logs de conversaciones WhatsApp en el admin
+
+Nuevo sub-tab "Conversaciones" en Admin > WhatsApp para auditar las conversaciones del bot sin entrar a SQL.
+
+**API nueva:** `GET /api/admin/conversations` — lista `wa_conversations` con conteo de mensajes (filtros `days=1|7|30` y `transferred=true`), o detalle de mensajes con `?id=<uuid>`. Solo lectura.
+
+**UI nueva:** `ConversationLogs.tsx` — filtros por dias, toggle "Solo con asesor solicitado", busqueda por nombre/telefono. Cada card muestra badges (Pidio asesor con motivo/fecha, Con asesor ahora / Bot) y al expandir carga el hilo estilo chat (cliente verde, bot gris, asesor azul, system centrado).
+
+**Retencion:** cron nuevo `GET /api/cron/purge-wa-messages` (diario 10:00 UTC en `vercel.json`) borra `wa_messages` de mas de 30 dias; `wa_conversations` se conserva (registro del cliente, transfer_reason, fechas).
+
+Sin cambios en el bot ni en el schema — solo lectura de lo que ya se escribe.
+
+---
+
+## 2026-11-10 — Sincronizacion de templates WhatsApp con Twilio (hibrida)
+
+El selector de templates de "Enviar Promo" y las campanas del Bot IA ahora se sincronizan en vivo con Twilio/Meta.
+
+**API nueva:** `GET /api/admin/templates` — lee `ContentAndApprovals` de Twilio Content API (solo lectura, cache 5 min). Mezcla con metadata local de `whatsapp-templates.ts` (labels en espanol, bodyPreview, autoNameVariable, broken flags). Fallback total al registro local si Twilio falla.
+
+**SendPromo:** carga templates desde la API al montar (estado inicial = registro local, cero regresion). Badge "Sincronizado con Twilio" / "Lista local". Templates nuevos aprobados en Meta aparecen solos sin tocar codigo.
+
+**CampaignInfoManager:** indicador de slug-match — badge verde "Template: <nombre>" si algun template de Twilio contiene el slug, badge ambar "Sin template vinculado" si no. Hint en vivo al escribir el slug en el formulario.
+
+Verificado contra Twilio real: 14 templates (9 marketing aprobados), coinciden 1:1 con el registro local.
+
+---
+
 ## 2026-11-10 — Admin Bot IA: canal por entrada, imagenes y UI de campanas
 
 El tab "Bot IA" del admin ahora es el centro unico para alimentar ambos bots (web + WhatsApp).

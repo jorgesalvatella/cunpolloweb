@@ -72,6 +72,11 @@ cunpolloweb/
     │       │   └── route.ts               # POST: streaming chatbot IA (Gemini 2.0 Flash)
     │       ├── menu/
     │       │   └── route.ts               # GET: public menu data (categories, items, promotions)
+    │       ├── cron/
+    │       │   ├── timeout-orders/
+    │       │   │   └── route.ts           # GET: resuelve ordenes atoradas en processing/pending_3ds
+    │       │   └── purge-wa-messages/
+    │       │       └── route.ts           # GET: borra wa_messages > 30 dias (retencion de logs)
     │       ├── webhooks/
     │       │   ├── openpay/
     │       │   │   └── route.ts           # POST: webhook de Openpay (3DS completados, pagos fallidos)
@@ -106,8 +111,12 @@ cunpolloweb/
     │           │   └── route.ts       # GET/POST: historial/enviar campana
     │           ├── knowledge/
     │           │   └── route.ts       # GET/POST/PUT/DELETE: CRUD base de conocimiento bot IA
-    │           └── campaign-info/
-    │               └── route.ts       # GET/POST/PUT/DELETE: CRUD campanas de temporada
+    │           ├── campaign-info/
+    │           │   └── route.ts       # GET/POST/PUT/DELETE: CRUD campanas de temporada
+    │           ├── conversations/
+    │           │   └── route.ts       # GET: logs de conversaciones bot WhatsApp (lista + detalle)
+    │           └── templates/
+    │               └── route.ts       # GET: templates WhatsApp en vivo desde Twilio Content API (merge con registro local)
     ├── components/
     │   ├── layout/
     │   │   ├── Header.tsx             # Navbar (logo, nav, cart icon, lang switcher)
@@ -139,6 +148,7 @@ cunpolloweb/
     │   │   ├── ContactList.tsx        # Lista/CRUD de contactos WhatsApp
     │   │   ├── SendPromo.tsx          # Formulario para enviar promos via template
     │   │   ├── CampaignHistory.tsx    # Historial de campanas enviadas
+    │   │   ├── ConversationLogs.tsx   # Logs de conversaciones del bot WhatsApp (filtros + hilo)
     │   │   ├── MenuManager.tsx        # Gestion de menu: editar precio, disponibilidad, descuentos (Realtime)
     │   │   ├── PromotionsManager.tsx  # CRUD de promociones de orden (crear, editar, activar, eliminar)
     │   │   ├── AdminPhonesManager.tsx # CRUD de telefonos admin para notificaciones WhatsApp
