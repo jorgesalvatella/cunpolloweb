@@ -12,14 +12,16 @@ interface Contact {
   phone: string;
 }
 
-const templates = getSelectableTemplates();
+const localTemplates = getSelectableTemplates();
 
 export default function SendPromo() {
+  const [templates, setTemplates] = useState<WhatsAppTemplate[]>(localTemplates);
+  const [templateSource, setTemplateSource] = useState<"local" | "twilio">("local");
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [sendAll, setSendAll] = useState(true);
   const [selectedTemplate, setSelectedTemplate] =
-    useState<WhatsAppTemplate | null>(templates[0] ?? null);
+    useState<WhatsAppTemplate | null>(localTemplates[0] ?? null);
   const [variableValues, setVariableValues] = useState<Record<string, string>>(
     {}
   );
@@ -36,6 +38,24 @@ export default function SendPromo() {
     fetch("/api/admin/contacts?active=true")
       .then((res) => res.json())
       .then(setContacts)
+      .catch(() => {});
+  }, []);
+
+  // Load templates live from Twilio (falls back to local registry on failure)
+  useEffect(() => {
+    fetch("/api/admin/templates")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!data?.templates?.length) return;
+        setTemplates(data.templates);
+        setTemplateSource(data.source === "twilio" ? "twilio" : "local");
+        setSelectedTemplate((prev) => {
+          const stillThere = data.templates.find(
+            (t: WhatsAppTemplate) => t.contentSid === prev?.contentSid
+          );
+          return stillThere ?? data.templates[0] ?? null;
+        });
+      })
       .catch(() => {});
   }, []);
 
@@ -137,9 +157,27 @@ export default function SendPromo() {
     <div className="space-y-4 max-w-2xl">
       {/* Template selector */}
       <div>
-        <label className="block text-sm font-medium text-dark/70 mb-1">
-          Template
-        </label>
+        <div className="flex items-center justify-between mb-1">
+          <label className="block text-sm font-medium text-dark/70">
+            Template
+          </label>
+          <span
+            className={`text-[11px] rounded-full px-2 py-0.5 ${
+              templateSource === "twilio"
+                ? "bg-green-100 text-green-700"
+                : "bg-gray-100 text-gray-500"
+            }`}
+            title={
+              templateSource === "twilio"
+                ? "Lista sincronizada en vivo desde Twilio/Meta"
+                : "Usando lista local (sin conexion a Twilio)"
+            }
+          >
+            {templateSource === "twilio"
+              ? "Sincronizado con Twilio"
+              : "Lista local"}
+          </span>
+        </div>
         <select
           value={selectedTemplate?.contentSid ?? ""}
           onChange={(e) => {

@@ -40,6 +40,7 @@ export default function CampaignInfoManager() {
   const [saving, setSaving] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [templateNames, setTemplateNames] = useState<string[]>([]);
 
   const fetchEntries = useCallback(async () => {
     try {
@@ -52,6 +53,20 @@ export default function CampaignInfoManager() {
   useEffect(() => {
     fetchEntries();
   }, [fetchEntries]);
+
+  // Template names from Twilio (for slug match indicator)
+  useEffect(() => {
+    fetch("/api/admin/templates")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.allTemplateNames) setTemplateNames(data.allTemplateNames);
+      })
+      .catch(() => {});
+  }, []);
+
+  function matchedTemplate(slug: string): string | null {
+    return templateNames.find((n) => n.includes(slug)) || null;
+  }
 
   function resetForm() {
     setForm({ slug: "", title: "", details: "", channel: "all", image_url: "" });
@@ -187,6 +202,19 @@ export default function CampaignInfoManager() {
                 ))}
               </select>
             </div>
+            {form.slug.trim() && templateNames.length > 0 && (
+              <p className="text-xs -mt-1">
+                {matchedTemplate(form.slug.trim()) ? (
+                  <span className="text-green-600">
+                    Coincide con template: {matchedTemplate(form.slug.trim())}
+                  </span>
+                ) : (
+                  <span className="text-amber-600">
+                    Ningun template de Twilio contiene este slug (ok si la campana es solo informativa)
+                  </span>
+                )}
+              </p>
+            )}
             <input
               type="text"
               placeholder="Titulo (ej: Posadas CUNPOLLO 2026)"
@@ -278,6 +306,22 @@ export default function CampaignInfoManager() {
                     <span className={`text-xs rounded-full px-2 py-0.5 ${CHANNEL_BADGE[entry.channel]?.cls || "bg-gray-100 text-gray-600"}`}>
                       {CHANNEL_BADGE[entry.channel]?.label || entry.channel}
                     </span>
+                    {templateNames.length > 0 &&
+                      (matchedTemplate(entry.slug) ? (
+                        <span
+                          className="text-xs rounded-full px-2 py-0.5 bg-green-100 text-green-700"
+                          title={`Vinculada al template: ${matchedTemplate(entry.slug)}`}
+                        >
+                          Template: {matchedTemplate(entry.slug)}
+                        </span>
+                      ) : (
+                        <span
+                          className="text-xs rounded-full px-2 py-0.5 bg-amber-100 text-amber-700"
+                          title="Ningun template de Twilio contiene este slug — el bot no vinculara esta campana a envios de WhatsApp"
+                        >
+                          Sin template vinculado
+                        </span>
+                      ))}
                   </div>
                   <div className="flex gap-3">
                     {entry.image_url && (
