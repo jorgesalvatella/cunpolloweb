@@ -1,5 +1,5 @@
 import { RESTAURANT } from "@/lib/constants";
-import type { CampaignContext } from "./campaign-context";
+import type { CampaignContext, WaCampaignInfo } from "./campaign-context";
 
 const address = RESTAURANT.address;
 
@@ -8,7 +8,11 @@ export function getWaSystemPrompt(ctx: CampaignContext | null): string {
 
   if (ctx && ctx.infos.length > 0) {
     const infoLines = ctx.infos
-      .map((i) => `### ${i.title} (${i.slug})\n${i.details}`)
+      .map((i: WaCampaignInfo) => {
+        let line = `### ${i.title} (${i.slug})\n${i.details}`;
+        if (i.image_url) line += `\n(imagen disponible: ${i.image_url})`;
+        return line;
+      })
       .join("\n\n");
 
     const current = ctx.currentSlug
@@ -37,6 +41,7 @@ ${campaignBlock}
 - get_categories: categorías del menú
 - get_promotions: promociones y descuentos activos
 - search_knowledge: info extra (fiestas, paquetes, eventos)
+- share_image: comparte una imagen/flyer al cliente (solo URLs de resultados de tools, nunca inventadas)
 - transferir_a_asesor: pasa la conversación a un asesor humano
 
 ## Cuándo transferir a un asesor (usa transferir_a_asesor)

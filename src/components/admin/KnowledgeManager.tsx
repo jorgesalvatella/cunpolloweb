@@ -7,6 +7,8 @@ type KnowledgeEntry = {
   title: string;
   content: string;
   category: string;
+  channel: string;
+  image_url: string | null;
   active: boolean;
   created_at: string;
   updated_at: string;
@@ -21,6 +23,18 @@ const CATEGORIES = [
   "servicios",
 ];
 
+const CHANNEL_OPTIONS = [
+  { value: "all", label: "Ambos" },
+  { value: "web", label: "Solo web" },
+  { value: "whatsapp", label: "Solo WhatsApp" },
+];
+
+const CHANNEL_BADGE: Record<string, { label: string; cls: string }> = {
+  all: { label: "Ambos", cls: "bg-blue-100 text-blue-700" },
+  web: { label: "Web", cls: "bg-purple-100 text-purple-700" },
+  whatsapp: { label: "WhatsApp", cls: "bg-green-100 text-green-700" },
+};
+
 export default function KnowledgeManager() {
   const [entries, setEntries] = useState<KnowledgeEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,9 +44,12 @@ export default function KnowledgeManager() {
     title: "",
     content: "",
     category: "general",
+    channel: "all",
+    image_url: "",
   });
   const [saving, setSaving] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const fetchEntries = useCallback(async () => {
     try {
@@ -49,7 +66,7 @@ export default function KnowledgeManager() {
   }, [fetchEntries]);
 
   function resetForm() {
-    setForm({ title: "", content: "", category: "general" });
+    setForm({ title: "", content: "", category: "general", channel: "all", image_url: "" });
     setEditingId(null);
     setShowForm(false);
   }
@@ -59,9 +76,28 @@ export default function KnowledgeManager() {
       title: entry.title,
       content: entry.content,
       category: entry.category,
+      channel: entry.channel || "all",
+      image_url: entry.image_url || "",
     });
     setEditingId(entry.id);
     setShowForm(true);
+  }
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("folder", "bot");
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      if (res.ok) {
+        const { url } = await res.json();
+        setForm((f) => ({ ...f, image_url: url }));
+      }
+    } catch {}
+    setUploading(false);
   }
 
   async function handleSave() {
@@ -69,17 +105,21 @@ export default function KnowledgeManager() {
     setSaving(true);
 
     try {
+      const payload = {
+        ...form,
+        image_url: form.image_url || null,
+      };
       if (editingId) {
         await fetch("/api/admin/knowledge", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: editingId, ...form }),
+          body: JSON.stringify({ id: editingId, ...payload }),
         });
       } else {
         await fetch("/api/admin/knowledge", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
+          body: JSON.stringify(payload),
         });
       }
       resetForm();
@@ -158,6 +198,17 @@ export default function KnowledgeManager() {
                   </option>
                 ))}
               </select>
+              <select
+                value={form.channel}
+                onChange={(e) => setForm({ ...form, channel: e.target.value })}
+                className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-400"
+              >
+                {CHANNEL_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
             </div>
             <textarea
               placeholder="Contenido completo que el bot puede usar para responder preguntas. Incluye precios, horarios, condiciones, etc."
@@ -166,6 +217,36 @@ export default function KnowledgeManager() {
               rows={6}
               className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-400 resize-y"
             />
+            <div>
+              <label className="text-xs text-gray-500 block mb-1">
+                Imagen (opcional — el bot la puede compartir)
+              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="text-sm"
+                  disabled={uploading}
+                />
+                {uploading && <span className="text-xs text-gray-400">Subiendo...</span>}
+              </div>
+              {form.image_url && (
+                <div className="mt-2 flex items-center gap-3">
+                  <img
+                    src={form.image_url}
+                    alt="Preview"
+                    className="w-20 h-20 object-cover rounded-lg border"
+                  />
+                  <button
+                    onClick={() => setForm({ ...form, image_url: "" })}
+                    className="text-xs text-red-600 hover:text-red-800"
+                  >
+                    Quitar imagen
+                  </button>
+                </div>
+              )}
+            </div>
             <div className="flex gap-2 justify-end">
               <button
                 onClick={resetForm}
@@ -208,17 +289,29 @@ export default function KnowledgeManager() {
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <h3 className="font-semibold text-gray-800 text-sm">
                       {entry.title}
                     </h3>
                     <span className="text-xs bg-gray-200 text-gray-600 rounded-full px-2 py-0.5">
                       {entry.category}
                     </span>
+                    <span className={`text-xs rounded-full px-2 py-0.5 ${CHANNEL_BADGE[entry.channel]?.cls || "bg-gray-100 text-gray-600"}`}>
+                      {CHANNEL_BADGE[entry.channel]?.label || entry.channel}
+                    </span>
                   </div>
-                  <p className="text-sm text-gray-600 whitespace-pre-wrap line-clamp-3">
-                    {entry.content}
-                  </p>
+                  <div className="flex gap-3">
+                    {entry.image_url && (
+                      <img
+                        src={entry.image_url}
+                        alt=""
+                        className="w-16 h-16 object-cover rounded-lg border flex-shrink-0"
+                      />
+                    )}
+                    <p className="text-sm text-gray-600 whitespace-pre-wrap line-clamp-3">
+                      {entry.content}
+                    </p>
+                  </div>
                   <p className="text-xs text-gray-400 mt-1">
                     {new Date(entry.updated_at).toLocaleDateString("es-MX", {
                       day: "numeric",

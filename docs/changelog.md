@@ -1,5 +1,37 @@
 # Changelog
 
+## 2026-11-10 — Admin Bot IA: canal por entrada, imagenes y UI de campanas
+
+El tab "Bot IA" del admin ahora es el centro unico para alimentar ambos bots (web + WhatsApp).
+
+**DB migration (`bot_channel_image`):**
+- `bot_knowledge`: columnas `channel` (all/web/whatsapp) e `image_url`
+- `wa_campaign_info`: columnas `channel` (all/web/whatsapp) e `image_url`
+
+**Admin UI:**
+- Sub-tabs "Conocimiento" / "Campanas" dentro de Bot IA (`BotIAHub.tsx`)
+- `KnowledgeManager`: select de canal (Ambos/Solo web/Solo WhatsApp), upload de imagen, badges de canal en lista
+- `CampaignInfoManager` (nuevo): CRUD de campanas de temporada con canal, imagen/flyer, slug, toggle activo
+- Upload de imagenes usa carpeta `bot/` en Vercel Blob (param `folder` en `/api/admin/upload`)
+
+**Tools compartidos (`src/lib/chat/tools.ts`):**
+- `getChatTools(locale, channel)`: filtra `bot_knowledge` y `wa_campaign_info` por canal
+- `search_knowledge` y `get_promotions` incluyen `image_url` en resultados
+- Nuevo tool `share_image`: comparte imagen al cliente (solo URLs de tool results)
+
+**Chat web:**
+- `ChatMessage.tsx` renderiza imagenes de `share_image` como `<img>` inline (rounded + shadow)
+
+**Bot WhatsApp:**
+- `agent.ts`: override de `share_image` que captura URL → `BotReply.mediaUrl`
+- `route.ts`: `twiml(message, mediaUrl)` agrega `<Media>` al TwiML cuando hay imagen
+- `campaign-context.ts`: filtra por `channel in ('all','whatsapp')`, selecciona `image_url`
+- `system-prompt.ts`: muestra `(imagen disponible: <url>)` para campanas con imagen
+
+**API nueva:** `GET/POST/PUT/DELETE /api/admin/campaign-info`
+
+---
+
 ## 2026-11-09 — Chat web ahora conoce campañas de temporada (posadas, cunpacks)
 
 El chat web no sabia de posadas ni cunpacks: esa info vive en `wa_campaign_info` y solo el bot de WhatsApp la inyectaba a su prompt.

@@ -12,6 +12,7 @@ export const FALLBACK_REPLY = `Ups, tuve un problema para responderte. Escríben
 export interface BotReply {
   reply: string;
   transfer: { motivo: string } | null;
+  mediaUrl: string | null;
 }
 
 function toModelMessages(history: WaMessage[]) {
@@ -35,13 +36,28 @@ export async function generateBotReply(params: {
   const { history, campaignContext } = params;
 
   let transferMotivo: string | null = null;
+  let sharedMediaUrl: string | null = null;
 
-  const webTools = getChatTools("es");
+  const sharedTools = getChatTools("es", "whatsapp");
   const tools = {
-    search_menu: webTools.search_menu,
-    get_categories: webTools.get_categories,
-    get_promotions: webTools.get_promotions,
-    search_knowledge: webTools.search_knowledge,
+    search_menu: sharedTools.search_menu,
+    get_categories: sharedTools.get_categories,
+    get_promotions: sharedTools.get_promotions,
+    search_knowledge: sharedTools.search_knowledge,
+    share_image: tool({
+      description:
+        "Share an image with the customer (flyer, product photo, etc.). ONLY use URLs that came from tool results (menu items, knowledge base, campaigns). Never invent URLs.",
+      inputSchema: zodSchema(
+        z.object({
+          url: z.string().describe("Image URL from a previous tool result"),
+          caption: z.string().optional().describe("Optional short caption for the image"),
+        })
+      ),
+      execute: async ({ url, caption }: { url: string; caption?: string }) => {
+        sharedMediaUrl = url;
+        return { ok: true, note: caption ? `Image shared: ${caption}` : "Image shared." };
+      },
+    }),
     transferir_a_asesor: tool({
       description:
         "Transfiere la conversación a un asesor humano. Úsala cuando el cliente quiere comprar, apartar, pagar, cotizar una fiesta o pide hablar con una persona.",
@@ -70,13 +86,13 @@ export async function generateBotReply(params: {
     });
 
     if (transferMotivo) {
-      return { reply: "", transfer: { motivo: transferMotivo } };
+      return { reply: "", transfer: { motivo: transferMotivo }, mediaUrl: null };
     }
 
     const reply = result.text.trim();
-    return { reply: reply || FALLBACK_REPLY, transfer: null };
+    return { reply: reply || FALLBACK_REPLY, transfer: null, mediaUrl: sharedMediaUrl };
   } catch (err) {
     console.error("[WA Bot] Error generando respuesta:", err);
-    return { reply: FALLBACK_REPLY, transfer: null };
+    return { reply: FALLBACK_REPLY, transfer: null, mediaUrl: null };
   }
 }

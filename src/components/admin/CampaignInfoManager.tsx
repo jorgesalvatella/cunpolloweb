@@ -1,0 +1,339 @@
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+
+type CampaignEntry = {
+  id: string;
+  slug: string;
+  title: string;
+  details: string;
+  channel: string;
+  image_url: string | null;
+  active: boolean;
+  created_at: string;
+};
+
+const CHANNEL_OPTIONS = [
+  { value: "all", label: "Ambos" },
+  { value: "web", label: "Solo web" },
+  { value: "whatsapp", label: "Solo WhatsApp" },
+];
+
+const CHANNEL_BADGE: Record<string, { label: string; cls: string }> = {
+  all: { label: "Ambos", cls: "bg-blue-100 text-blue-700" },
+  web: { label: "Web", cls: "bg-purple-100 text-purple-700" },
+  whatsapp: { label: "WhatsApp", cls: "bg-green-100 text-green-700" },
+};
+
+export default function CampaignInfoManager() {
+  const [entries, setEntries] = useState<CampaignEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    slug: "",
+    title: "",
+    details: "",
+    channel: "all",
+    image_url: "",
+  });
+  const [saving, setSaving] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const fetchEntries = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/campaign-info");
+      if (res.ok) setEntries(await res.json());
+    } catch {}
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    fetchEntries();
+  }, [fetchEntries]);
+
+  function resetForm() {
+    setForm({ slug: "", title: "", details: "", channel: "all", image_url: "" });
+    setEditingId(null);
+    setShowForm(false);
+  }
+
+  function startEdit(entry: CampaignEntry) {
+    setForm({
+      slug: entry.slug,
+      title: entry.title,
+      details: entry.details,
+      channel: entry.channel,
+      image_url: entry.image_url || "",
+    });
+    setEditingId(entry.id);
+    setShowForm(true);
+  }
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("folder", "bot");
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      if (res.ok) {
+        const { url } = await res.json();
+        setForm((f) => ({ ...f, image_url: url }));
+      }
+    } catch {}
+    setUploading(false);
+  }
+
+  async function handleSave() {
+    if (!form.slug.trim() || !form.title.trim() || !form.details.trim()) return;
+    setSaving(true);
+    try {
+      const payload = {
+        ...form,
+        image_url: form.image_url || null,
+      };
+      if (editingId) {
+        await fetch("/api/admin/campaign-info", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: editingId, ...payload }),
+        });
+      } else {
+        await fetch("/api/admin/campaign-info", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
+      resetForm();
+      fetchEntries();
+    } catch {}
+    setSaving(false);
+  }
+
+  async function handleToggle(entry: CampaignEntry) {
+    await fetch("/api/admin/campaign-info", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: entry.id, active: !entry.active }),
+    });
+    fetchEntries();
+  }
+
+  async function handleDelete(id: string) {
+    if (deleteConfirm !== id) {
+      setDeleteConfirm(id);
+      return;
+    }
+    await fetch(`/api/admin/campaign-info?id=${id}`, { method: "DELETE" });
+    setDeleteConfirm(null);
+    fetchEntries();
+  }
+
+  if (loading) {
+    return <div className="text-center py-8 text-gray-400">Cargando...</div>;
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-lg font-bold text-gray-800">
+            Campanas de Temporada
+          </h2>
+          <p className="text-sm text-gray-500">
+            Info de campanas vigentes (posadas, cunpacks, etc.) que los bots pueden compartir.
+          </p>
+          <p className="text-xs text-amber-600 mt-1">
+            El slug debe coincidir con el template_name de la campana en WhatsApp para el match automatico.
+          </p>
+        </div>
+        <button
+          onClick={() => {
+            resetForm();
+            setShowForm(true);
+          }}
+          className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
+        >
+          + Agregar
+        </button>
+      </div>
+
+      {showForm && (
+        <div className="bg-gray-50 border rounded-xl p-4 mb-4">
+          <div className="grid gap-3">
+            <div className="flex gap-3">
+              <input
+                type="text"
+                placeholder="Slug (ej: posadas, cunpacks)"
+                value={form.slug}
+                onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-400"
+                disabled={!!editingId}
+              />
+              <select
+                value={form.channel}
+                onChange={(e) => setForm({ ...form, channel: e.target.value })}
+                className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-400"
+              >
+                {CHANNEL_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <input
+              type="text"
+              placeholder="Titulo (ej: Posadas CUNPOLLO 2026)"
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-400"
+            />
+            <textarea
+              placeholder="Detalles completos: paquetes, precios, condiciones, fechas..."
+              value={form.details}
+              onChange={(e) => setForm({ ...form, details: e.target.value })}
+              rows={6}
+              className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-400 resize-y"
+            />
+            <div>
+              <label className="text-xs text-gray-500 block mb-1">
+                Imagen / Flyer (opcional)
+              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="text-sm"
+                  disabled={uploading}
+                />
+                {uploading && <span className="text-xs text-gray-400">Subiendo...</span>}
+              </div>
+              {form.image_url && (
+                <div className="mt-2 flex items-center gap-3">
+                  <img
+                    src={form.image_url}
+                    alt="Preview"
+                    className="w-20 h-20 object-cover rounded-lg border"
+                  />
+                  <button
+                    onClick={() => setForm({ ...form, image_url: "" })}
+                    className="text-xs text-red-600 hover:text-red-800"
+                  >
+                    Quitar imagen
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={resetForm}
+                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={saving || !form.slug.trim() || !form.title.trim() || !form.details.trim()}
+                className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 disabled:opacity-50 transition-colors"
+              >
+                {saving ? "Guardando..." : editingId ? "Actualizar" : "Guardar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {entries.length === 0 ? (
+        <div className="text-center py-12 text-gray-400">
+          <p className="text-lg mb-2">Sin campanas</p>
+          <p className="text-sm">
+            Agrega info de campanas de temporada para que los bots las compartan con los clientes.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {entries.map((entry) => (
+            <div
+              key={entry.id}
+              className={`border rounded-xl p-4 ${
+                entry.active ? "bg-white" : "bg-gray-50 opacity-60"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <h3 className="font-semibold text-gray-800 text-sm">
+                      {entry.title}
+                    </h3>
+                    <span className="text-xs bg-gray-200 text-gray-600 rounded-full px-2 py-0.5">
+                      {entry.slug}
+                    </span>
+                    <span className={`text-xs rounded-full px-2 py-0.5 ${CHANNEL_BADGE[entry.channel]?.cls || "bg-gray-100 text-gray-600"}`}>
+                      {CHANNEL_BADGE[entry.channel]?.label || entry.channel}
+                    </span>
+                  </div>
+                  <div className="flex gap-3">
+                    {entry.image_url && (
+                      <img
+                        src={entry.image_url}
+                        alt=""
+                        className="w-16 h-16 object-cover rounded-lg border flex-shrink-0"
+                      />
+                    )}
+                    <p className="text-sm text-gray-600 whitespace-pre-wrap line-clamp-3">
+                      {entry.details}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <button
+                    onClick={() => handleToggle(entry)}
+                    className={`w-10 h-5 rounded-full transition-colors relative ${
+                      entry.active ? "bg-green-500" : "bg-gray-300"
+                    }`}
+                    title={entry.active ? "Desactivar" : "Activar"}
+                  >
+                    <span
+                      className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+                        entry.active ? "left-5" : "left-0.5"
+                      }`}
+                    />
+                  </button>
+                  <button
+                    onClick={() => startEdit(entry)}
+                    className="text-gray-400 hover:text-blue-600 transition-colors"
+                    title="Editar"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => handleDelete(entry.id)}
+                    className={`text-sm transition-colors ${
+                      deleteConfirm === entry.id
+                        ? "text-red-600 font-bold"
+                        : "text-gray-400 hover:text-red-600"
+                    }`}
+                    title={deleteConfirm === entry.id ? "Click de nuevo para confirmar" : "Eliminar"}
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     maxOutputTokens: 800,
     system: getSystemPrompt(validLocale),
     messages: modelMessages,
-    tools: getChatTools(validLocale),
+    tools: getChatTools(validLocale, "web"),
     stopWhen: stepCountIs(5),
     onFinish: async ({ text }) => {
       if (sessionId && text) {

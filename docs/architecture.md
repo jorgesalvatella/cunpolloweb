@@ -104,8 +104,10 @@ cunpolloweb/
     │           │   └── route.ts       # GET/POST/PUT/DELETE: CRUD telefonos admin notificaciones
     │           ├── campaigns/
     │           │   └── route.ts       # GET/POST: historial/enviar campana
-    │           └── knowledge/
-    │               └── route.ts       # GET/POST/PUT/DELETE: CRUD base de conocimiento bot IA
+    │           ├── knowledge/
+    │           │   └── route.ts       # GET/POST/PUT/DELETE: CRUD base de conocimiento bot IA
+    │           └── campaign-info/
+    │               └── route.ts       # GET/POST/PUT/DELETE: CRUD campanas de temporada
     ├── components/
     │   ├── layout/
     │   │   ├── Header.tsx             # Navbar (logo, nav, cart icon, lang switcher)
@@ -140,7 +142,9 @@ cunpolloweb/
     │   │   ├── MenuManager.tsx        # Gestion de menu: editar precio, disponibilidad, descuentos (Realtime)
     │   │   ├── PromotionsManager.tsx  # CRUD de promociones de orden (crear, editar, activar, eliminar)
     │   │   ├── AdminPhonesManager.tsx # CRUD de telefonos admin para notificaciones WhatsApp
-    │   │   └── KnowledgeManager.tsx  # CRUD base de conocimiento del bot IA
+    │   │   ├── KnowledgeManager.tsx  # CRUD base de conocimiento del bot IA (canal + imagen)
+    │   │   ├── CampaignInfoManager.tsx # CRUD campanas de temporada (canal + imagen)
+    │   │   └── BotIAHub.tsx           # Hub Bot IA con sub-tabs: Conocimiento / Campanas
     │   ├── ui/
     │   │   ├── Button.tsx             # Botón reutilizable
     │   │   ├── Container.tsx          # Container con max-width

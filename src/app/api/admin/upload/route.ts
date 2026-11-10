@@ -30,6 +30,10 @@ export async function POST(request: Request) {
     .webp({ quality: 80 })
     .toBuffer();
 
+  // Folder: "menu" (default) or "bot"
+  const folderParam = (formData.get("folder") as string) || "menu";
+  const folder = folderParam === "bot" ? "bot" : "menu";
+
   // Generate clean filename
   const slug = file.name
     .replace(/\.[^.]+$/, "")
@@ -38,7 +42,7 @@ export async function POST(request: Request) {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
-  const filename = `menu/${slug}-${Date.now()}.webp`;
+  const filename = `${folder}/${slug}-${Date.now()}.webp`;
 
   const blob = await put(filename, optimized, {
     access: "public",

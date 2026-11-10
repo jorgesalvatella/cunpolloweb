@@ -187,11 +187,20 @@
 - **Persistencia**: Sesiones guardadas en Supabase (`chat_sessions`) para analytics
 - **Quick replies**: Chips sugeridos ("Ver el menu", "Hay promociones?", "Horario y ubicacion")
 - **Integracion con carrito**: Bot puede agregar/remover items del carrito via tool calling
-- **Base de conocimiento**: Tabla `bot_knowledge` en Supabase, gestionable desde Admin > Tab "Bot IA"
+- **Base de conocimiento**: Tabla `bot_knowledge` en Supabase, gestionable desde Admin > Tab "Bot IA" > "Conocimiento"
   - Agregar/editar/eliminar entradas de texto (titulo + contenido + categoria)
   - Categorias: general, fiestas, eventos, mundial, temporada, servicios
+  - **Canal por entrada**: cada entrada puede aplicar a Ambos / Solo web / Solo WhatsApp
+  - **Imagen opcional**: upload de imagen/flyer que el bot puede compartir via tool `share_image`
   - El bot consulta esta tabla via tool `search_knowledge` cuando le preguntan sobre temas fuera del menu
   - Casos de uso: paquetes de fiestas, calendario del mundial, eventos especiales, info de temporada
+- **Campanas de temporada**: Tabla `wa_campaign_info` gestionable desde Admin > Tab "Bot IA" > "Campanas"
+  - CRUD completo (slug, titulo, detalles, canal, imagen, activo)
+  - Antes solo editable por SQL, ahora con UI en admin
+  - Canal por campana (Ambos / Solo web / Solo WhatsApp)
+  - Imagen/flyer opcional que el bot comparte al cliente
+- **Tool `share_image`**: comparte imagen al cliente (web: `<img>` inline; WhatsApp: TwiML `<Media>`)
+  - Solo usa URLs que vengan de resultados de otros tools, nunca inventa URLs
 - **Mascota**: Pollito CunPollo (224px) con animacion bounce, tagline rojo "Te ayudo a pedir!" debajo
 - **Avatar**: `https://igwu4bqzucdjjkup.public.blob.vercel-storage.com/Public/botsitocunpollo.png`
 - **Nota**: WhatsApp Twilio sigue activo para notificaciones de pedidos (no reemplazado)
@@ -224,8 +233,9 @@
 - **Feature flag**: `FEATURES.WA_BOT_ENABLED` en `src/lib/constants.ts`
 - **Webhook**: `POST /api/webhooks/twilio-whatsapp` — responde TODOS los mensajes entrantes al numero del negocio (+529983871387)
 - **IA**: Claude Haiku 4.5 via Vercel AI SDK (`@ai-sdk/anthropic`), respuesta sincrona TwiML, `stepCountIs(3)`, max 400 tokens
-- **Tools**: reusa `search_menu`, `get_categories`, `get_promotions`, `search_knowledge` del chatbot web + tool nuevo `transferir_a_asesor` — nunca inventa precios
-- **Contexto de campana**: ButtonPayload (`campana:accion`), quoted reply (`campaign_sends.message_sid`) o ultimo envio <7 dias; detalles editables sin codigo en tabla `wa_campaign_info` (slug debe aparecer en el template_name de la campana)
+- **Tools**: reusa `search_menu`, `get_categories`, `get_promotions`, `search_knowledge` del chatbot web + tools `share_image` (con override que captura URL para TwiML `<Media>`) y `transferir_a_asesor` — nunca inventa precios
+- **Imagenes via WhatsApp**: cuando el bot llama `share_image`, la URL se inyecta como `<Media>` en la respuesta TwiML, Twilio la descarga y la envia al cliente como imagen
+- **Contexto de campana**: ButtonPayload (`campana:accion`), quoted reply (`campaign_sends.message_sid`) o ultimo envio <7 dias; detalles editables desde Admin > Bot IA > Campanas en tabla `wa_campaign_info` (slug debe aparecer en el template_name de la campana). Filtrado por canal `all` o `whatsapp`
 - **Traspaso a asesor**: intencion de compra (tool) o boton `:comprar` → `mode='human'`, notifica a Gerencia (`WHATSAPP_ADVISOR_PHONE=+529984283677`) via mensaje free-form (fallback template `order_confirmed` si error 63016)
 - **Comandos del asesor** (desde su propio WhatsApp): `#<numero> <mensaje>` relay al cliente, `#fin <numero>` devuelve al bot. Timeout: 2h de inactividad en modo human → vuelve al bot
 - **Persistencia**: `wa_conversations`, `wa_messages` (historial 12 mensajes como contexto)

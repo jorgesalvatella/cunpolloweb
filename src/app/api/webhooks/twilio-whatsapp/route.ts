@@ -31,8 +31,13 @@ function escapeXml(text: string): string {
     .replace(/'/g, "&apos;");
 }
 
-function twiml(message?: string): Response {
-  const inner = message ? `<Message>${escapeXml(message)}</Message>` : "";
+function twiml(message?: string, mediaUrl?: string | null): Response {
+  let inner = "";
+  if (message || mediaUrl) {
+    const body = message ? escapeXml(message) : "";
+    const media = mediaUrl ? `<Media>${escapeXml(mediaUrl)}</Media>` : "";
+    inner = `<Message>${body}${media}</Message>`;
+  }
   return new Response(
     `<?xml version="1.0" encoding="UTF-8"?><Response>${inner}</Response>`,
     { headers: { "Content-Type": "text/xml" } }
@@ -142,7 +147,7 @@ export async function POST(request: Request) {
     }
 
     const history = await getRecentMessages(conversation.id, 12);
-    const { reply, transfer } = await generateBotReply({ history, campaignContext });
+    const { reply, transfer, mediaUrl } = await generateBotReply({ history, campaignContext });
 
     if (transfer) {
       const transferReply = await transferToAdvisor({
@@ -156,7 +161,7 @@ export async function POST(request: Request) {
     }
 
     await appendMessage(conversation.id, "assistant", reply);
-    return twiml(reply);
+    return twiml(reply, mediaUrl);
   } catch (err) {
     console.error("[WA Bot] Error en webhook:", err);
     return twiml(

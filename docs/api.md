@@ -239,6 +239,49 @@ Procesa un reembolso via Openpay API (requiere cookie admin).
 
 ---
 
+## Campanas de Temporada (Admin)
+
+### `GET /api/admin/campaign-info`
+Lista todas las campanas de temporada (requiere cookie admin).
+
+**Response 200:** Array de campanas ordenadas por `created_at` DESC.
+
+---
+
+### `POST /api/admin/campaign-info`
+Crea una nueva campana de temporada (requiere cookie admin).
+
+**Request:**
+```json
+{
+  "slug": "posadas",
+  "title": "Posadas CUNPOLLO 2026",
+  "details": "Paquete Fiestero $600...",
+  "channel": "all",
+  "image_url": "https://..."
+}
+```
+
+**Campos requeridos:** `slug`, `title`, `details`
+**Response 201:** Campana creada
+
+---
+
+### `PUT /api/admin/campaign-info`
+Actualiza una campana (requiere cookie admin).
+
+**Request:** `{ "id": "uuid-...", "details": "Nuevo texto", "active": false }`
+**Response 200:** Campana actualizada
+
+---
+
+### `DELETE /api/admin/campaign-info?id=uuid-...`
+Elimina una campana (requiere cookie admin).
+
+**Response 200:** `{ "ok": true }`
+
+---
+
 ## Cron Jobs
 
 ### `GET /api/cron/timeout-orders`
@@ -290,8 +333,10 @@ Streaming de respuestas del chatbot IA via Vercel AI SDK + Google Gemini 2.0 Fla
 **Tools disponibles:**
 - `search_menu` — Busca items del menu por nombre/categoria
 - `get_categories` — Lista categorias activas
-- `get_promotions` — Promociones vigentes
+- `get_promotions` — Promociones vigentes + campanas de temporada (filtradas por canal)
 - `add_to_cart` / `remove_from_cart` — Retorna acciones que el frontend ejecuta
+- `share_image` — Comparte imagen/flyer al cliente (solo URLs de tool results)
+- `search_knowledge` — Busca en `bot_knowledge` + `wa_campaign_info` (filtradas por canal, incluye `image_url`)
 
 **Rate limit:** 20 requests por minuto por IP
 
@@ -452,12 +497,12 @@ Elimina un item del menu (requiere cookie admin).
 ### `POST /api/admin/upload`
 Sube una imagen al Vercel Blob Storage (requiere cookie admin). La imagen se optimiza automaticamente.
 
-**Request:** `multipart/form-data` con campo `file` (imagen)
+**Request:** `multipart/form-data` con campo `file` (imagen) y campo opcional `folder` (`"menu"` o `"bot"`, default `"menu"`)
 **Procesamiento:**
 - Valida tipo de archivo (solo imagenes) y tamano (max 10MB)
 - Redimensiona a max 1620x1080px (sin deformar, sin agrandar)
 - Convierte a WebP con calidad 80
-- Sube a Vercel Blob Storage en carpeta `menu/`
+- Sube a Vercel Blob Storage en carpeta `menu/` o `bot/` segun el parametro `folder`
 
 **Response 200:**
 ```json

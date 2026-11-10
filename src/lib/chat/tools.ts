@@ -26,7 +26,7 @@ function formatItem(item: MenuItem, locale: "es" | "en") {
   };
 }
 
-export function getChatTools(locale: "es" | "en") {
+export function getChatTools(locale: "es" | "en", channel: "web" | "whatsapp" = "web") {
   return {
     search_menu: tool({
       description:
@@ -115,8 +115,9 @@ export function getChatTools(locale: "es" | "en") {
           getActivePromotions(orderType),
           supabase
             .from("wa_campaign_info")
-            .select("slug, title, details")
-            .eq("active", true),
+            .select("slug, title, details, image_url")
+            .eq("active", true)
+            .in("channel", ["all", channel]),
         ]);
         return {
           discounts: promos.map((p) => ({
@@ -131,6 +132,7 @@ export function getChatTools(locale: "es" | "en") {
           seasonalPromotions: (campaigns || []).map((c) => ({
             title: c.title,
             details: c.details,
+            ...(c.image_url ? { image_url: c.image_url } : {}),
           })),
         };
       },
@@ -165,6 +167,20 @@ export function getChatTools(locale: "es" | "en") {
       },
     }),
 
+    share_image: tool({
+      description:
+        "Share an image with the customer (flyer, product photo, etc.). ONLY use URLs that came from tool results (menu items, knowledge base, campaigns). Never invent URLs.",
+      inputSchema: zodSchema(
+        z.object({
+          url: z.string().url().describe("Image URL from a previous tool result"),
+          caption: z.string().optional().describe("Optional short caption for the image"),
+        })
+      ),
+      execute: async ({ url, caption }: { url: string; caption?: string }) => {
+        return { action: "shareImage", url, caption: caption || null };
+      },
+    }),
+
     search_knowledge: tool({
       description:
         "Search the knowledge base for extra info like events, party packages, World Cup schedule, seasonal specials, or anything not in the menu. Use this when the customer asks about something beyond the regular menu and FAQs.",
@@ -180,20 +196,28 @@ export function getChatTools(locale: "es" | "en") {
         const [{ data: knowledge, error }, { data: campaigns }] = await Promise.all([
           supabase
             .from("bot_knowledge")
-            .select("title, content, category")
-            .eq("active", true),
+            .select("title, content, category, image_url")
+            .eq("active", true)
+            .in("channel", ["all", channel]),
           supabase
             .from("wa_campaign_info")
-            .select("slug, title, details")
-            .eq("active", true),
+            .select("slug, title, details, image_url")
+            .eq("active", true)
+            .in("channel", ["all", channel]),
         ]);
 
         const data = [
-          ...(knowledge || []),
+          ...(knowledge || []).map((k) => ({
+            title: k.title,
+            content: k.content,
+            category: k.category,
+            image_url: k.image_url as string | null,
+          })),
           ...(campaigns || []).map((c) => ({
             title: c.title,
             content: c.details,
             category: c.slug,
+            image_url: c.image_url as string | null,
           })),
         ];
 
@@ -209,24 +233,18 @@ export function getChatTools(locale: "es" | "en") {
             entry.category.toLowerCase().includes(q)
         );
 
+        const format = (e: (typeof data)[number]) => ({
+          title: e.title,
+          content: e.content,
+          category: e.category,
+          ...(e.image_url ? { image_url: e.image_url } : {}),
+        });
+
         if (matches.length === 0) {
-          // Return all entries as fallback (the AI can pick what's relevant)
-          return {
-            results: data.slice(0, 5).map((e) => ({
-              title: e.title,
-              content: e.content,
-              category: e.category,
-            })),
-          };
+          return { results: data.slice(0, 5).map(format) };
         }
 
-        return {
-          results: matches.slice(0, 5).map((e) => ({
-            title: e.title,
-            content: e.content,
-            category: e.category,
-          })),
-        };
+        return { results: matches.slice(0, 5).map(format) };
       },
     }),
   };

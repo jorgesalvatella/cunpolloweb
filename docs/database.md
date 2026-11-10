@@ -290,6 +290,26 @@ Envio individual de campana por destinatario (antes solo se guardaban agregados 
 **Indices:** `(phone, created_at desc)`, `(message_sid)`
 **RLS:** habilitado sin policies (solo service role)
 
+## Tabla: `bot_knowledge`
+
+Base de conocimiento del chatbot IA — entradas de texto (y opcionalmente imagen) que el bot consulta via tool `search_knowledge`.
+
+| Columna | Tipo | Default | Descripcion |
+|---------|------|---------|-------------|
+| `id` | UUID | `gen_random_uuid()` | PK |
+| `title` | TEXT | NOT NULL | Titulo de la entrada (ej. "Paquetes de Fiestas Infantiles") |
+| `content` | TEXT | NOT NULL | Contenido completo que el bot lee |
+| `category` | TEXT | `'general'` | Categoria: general, fiestas, eventos, mundial, temporada, servicios |
+| `channel` | TEXT | `'all'` | Canal: `all`, `web`, `whatsapp` |
+| `image_url` | TEXT | NULL | URL de imagen asociada (Vercel Blob, carpeta `bot/`) |
+| `active` | BOOLEAN | `true` | Solo las activas se consultan |
+| `created_at` / `updated_at` | TIMESTAMPTZ | `now()` | — |
+
+**RLS:** habilitado sin policies (solo service role)
+**Admin UI:** `/admin` > Tab "Bot IA" > Sub-tab "Conocimiento"
+
+---
+
 ## Tabla: `wa_campaign_info`
 
 Info de promos/campanas editable sin codigo — se inyecta al prompt del bot de WhatsApp.
@@ -300,10 +320,13 @@ Info de promos/campanas editable sin codigo — se inyecta al prompt del bot de 
 | `slug` | TEXT | NOT NULL, UNIQUE | ej. `cunpacks`, `posadas` (debe aparecer en el `template_name` de la campana para hacer match) |
 | `title` | TEXT | NOT NULL | Titulo de la promo |
 | `details` | TEXT | NOT NULL | Texto libre (precios, condiciones) que lee el bot |
+| `channel` | TEXT | `'all'` | Canal: `all`, `web`, `whatsapp` |
+| `image_url` | TEXT | NULL | URL de imagen/flyer (Vercel Blob) |
 | `active` | BOOLEAN | `true` | Solo las activas se inyectan |
 | `created_at` / `updated_at` | TIMESTAMPTZ | `now()` | — |
 
 **RLS:** habilitado sin policies (solo service role)
+**Admin UI:** `/admin` > Tab "Bot IA" > Sub-tab "Campanas"
 
 ---
 

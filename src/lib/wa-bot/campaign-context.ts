@@ -4,6 +4,7 @@ export interface WaCampaignInfo {
   slug: string;
   title: string;
   details: string;
+  image_url?: string | null;
 }
 
 export interface CampaignContext {
@@ -17,12 +18,13 @@ export interface CampaignContext {
 
 const RECENT_SEND_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 
-async function getActiveCampaignInfos(): Promise<WaCampaignInfo[]> {
+export async function getActiveCampaignInfos(): Promise<WaCampaignInfo[]> {
   const supabase = getSupabaseAdmin();
   const { data } = await supabase
     .from("wa_campaign_info")
-    .select("slug, title, details")
-    .eq("active", true);
+    .select("slug, title, details, image_url")
+    .eq("active", true)
+    .in("channel", ["all", "whatsapp"]);
   return (data as WaCampaignInfo[]) || [];
 }
 

@@ -21,6 +21,11 @@ type CartAction = {
   itemName: string;
 };
 
+type SharedImage = {
+  url: string;
+  caption: string | null;
+};
+
 type ChatMessageProps = {
   message: UIMessage;
   onAddToCart: (menuItemId: string, quantity: number) => void;
@@ -48,10 +53,11 @@ function renderText(text: string) {
 export default function ChatMessage({ message, onAddToCart }: ChatMessageProps) {
   const isUser = message.role === "user";
 
-  // Extract text, products, and cart actions from parts
+  // Extract text, products, cart actions, and shared images from parts
   const textParts: string[] = [];
   const products: ProductItem[] = [];
   const actions: CartAction[] = [];
+  const images: SharedImage[] = [];
 
   for (const part of message.parts) {
     if (part.type === "text" && part.text) {
@@ -70,13 +76,17 @@ export default function ChatMessage({ message, onAddToCart }: ChatMessageProps) 
       if (output.action === "addToCart" || output.action === "removeFromCart") {
         actions.push(output as unknown as CartAction);
       }
+      // Shared images
+      if (output.action === "shareImage" && typeof output.url === "string") {
+        images.push({ url: output.url, caption: (output.caption as string) || null });
+      }
     }
   }
 
   const text = textParts.join("");
 
   // Don't render empty assistant messages
-  if (!isUser && !text && products.length === 0 && actions.length === 0) {
+  if (!isUser && !text && products.length === 0 && actions.length === 0 && images.length === 0) {
     return null;
   }
 
@@ -106,6 +116,19 @@ export default function ChatMessage({ message, onAddToCart }: ChatMessageProps) 
             ))}
           </div>
         )}
+
+        {images.map((img, i) => (
+          <div key={`img-${i}`} className="mt-2">
+            <img
+              src={img.url}
+              alt={img.caption || "Imagen compartida"}
+              className="rounded-lg shadow-lg shadow-black/50 max-w-full"
+            />
+            {img.caption && (
+              <p className="text-xs text-white/50 mt-1">{img.caption}</p>
+            )}
+          </div>
+        ))}
 
         {actions.map((action, i) => (
           <div

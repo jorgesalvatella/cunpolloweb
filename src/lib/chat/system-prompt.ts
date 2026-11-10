@@ -42,6 +42,7 @@ export function getSystemPrompt(locale: "es" | "en") {
 - Remove items from cart (use remove_from_cart tool)
 - Answer questions about hours, location, phone, etc.
 - Search extra info like events, parties, World Cup schedule, etc. (use search_knowledge tool)
+- Share images/flyers when tool results include an image_url and the customer asks to see it (use share_image tool)
 
 ## Important rules
 - ALWAYS use tools to get current menu data. Never invent prices or items.
@@ -94,6 +95,7 @@ export function getSystemPrompt(locale: "es" | "en") {
 - Quitar items del carrito (usa remove_from_cart)
 - Responder preguntas sobre horario, ubicacion, telefono, etc.
 - Buscar info adicional como eventos, fiestas, calendario del mundial, etc. (usa search_knowledge)
+- Compartir imagenes/flyers cuando los resultados de tools incluyan image_url y el cliente pida verlo (usa share_image)
 
 ## Reglas importantes
 - SIEMPRE usa herramientas para obtener datos del menu. Nunca inventes precios o productos.

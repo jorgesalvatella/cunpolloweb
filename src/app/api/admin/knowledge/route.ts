@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { title, content, category } = body;
+  const { title, content, category, channel, image_url } = body;
 
   if (!title || !content) {
     return NextResponse.json(
@@ -42,6 +42,8 @@ export async function POST(req: Request) {
       title,
       content,
       category: category || "general",
+      channel: channel || "all",
+      image_url: image_url || null,
     })
     .select()
     .single();
