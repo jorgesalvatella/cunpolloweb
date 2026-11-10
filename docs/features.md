@@ -178,7 +178,7 @@
 - **Componentes**: `ChatMessage.tsx`, `ChatProductCard.tsx`, `ChatInput.tsx`
 - **API**: `POST /api/chat` — streaming con rate limit (20 req/min por IP)
 - **RAG via Function Calling** (no vector DB):
-  - `search_menu` — busca items del menu en Supabase
+  - `search_menu` — busca items del menu en Supabase (scoring por palabras: nombre/tags +3, descripcion +1, normaliza acentos; los `tags` de `menu_items` sirven como etiquetas semanticas, ej. "Pollo entero" en los pollos de $352)
   - `get_categories` — lista categorias activas
   - `get_promotions` — promociones vigentes
   - `add_to_cart` / `remove_from_cart` — acciones que el frontend intercepta y aplica al CartContext

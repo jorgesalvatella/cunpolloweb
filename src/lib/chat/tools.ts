@@ -39,30 +39,51 @@ export function getChatTools(locale: "es" | "en") {
       ),
       execute: async ({ query, category }: { query: string; category?: string }) => {
         const items = await getMenuItemsFromDB();
-        const q = query.toLowerCase();
 
-        let filtered = items.filter((item) => {
-          if (item.promo) return false;
-          const nameMatch =
-            item.name.es.toLowerCase().includes(q) ||
-            item.name.en.toLowerCase().includes(q);
-          const descMatch =
-            item.description.es.toLowerCase().includes(q) ||
-            item.description.en.toLowerCase().includes(q);
-          return nameMatch || descMatch;
-        });
+        const normalize = (s: string) =>
+          s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        // Split into meaningful words (skip short connectors: de, el, la, con...)
+        const words = normalize(query)
+          .split(/[^a-z0-9ñ]+/)
+          .filter((w) => w.length >= 3);
 
+        let candidates = items.filter((item) => !item.promo);
         if (category) {
-          filtered = filtered.filter((item) => item.categoryId === category);
+          candidates = candidates.filter((item) => item.categoryId === category);
         }
 
-        if (filtered.length === 0) {
-          filtered = items.filter((item) => !item.promo);
+        // Score: name matches weigh more than description; more words matched = higher
+        const scored = candidates
+          .map((item) => {
+            // Tags weigh like the name (e.g. "Pollo entero" tag on whole chickens)
+            const name = normalize(
+              `${item.name.es} ${item.name.en} ${item.tags.join(" ")}`
+            );
+            const desc = normalize(`${item.description.es} ${item.description.en}`);
+            let score = 0;
+            for (const w of words) {
+              if (name.includes(w)) score += 3;
+              else if (desc.includes(w)) score += 1;
+            }
+            return { item, score };
+          })
+          .filter((s) => s.score > 0)
+          .sort((a, b) => b.score - a.score);
+
+        if (scored.length === 0) {
+          // No match: return full menu so the AI can suggest, but flag it
+          return {
+            matched: false,
+            note: "No items matched the query. Full menu returned — suggest the closest options.",
+            items: candidates.slice(0, 15).map((item) => formatItem(item, locale)),
+            total: candidates.length,
+          };
         }
 
         return {
-          items: filtered.slice(0, 10).map((item) => formatItem(item, locale)),
-          total: filtered.length,
+          matched: true,
+          items: scored.slice(0, 10).map((s) => formatItem(s.item, locale)),
+          total: scored.length,
         };
       },
     }),

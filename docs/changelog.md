@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-11-09 — Fix: search_menu con scoring por palabras + tag "Pollo entero"
+
+"cuanto cuesta el pollo entero?" devolvia bebidas: la busqueda hacia substring de la frase completa y al no matchear nada caia a un fallback que regresaba TODO el menu (los primeros 10 eran refrescos).
+
+**Fix en `src/lib/chat/tools.ts` (`search_menu`, compartido por chat web y bot WhatsApp):**
+- Tokeniza el query en palabras (>= 3 letras), normaliza acentos
+- Scoring: palabra en nombre o tags +3, en descripcion +1; ordena por score
+- Tags pesan como el nombre — sirven como etiquetas semanticas para el bot
+- Fallback sin matches ahora regresa `matched: false` + nota para que la IA sugiera
+
+**Datos:** tag `Pollo entero` agregado en `menu_items.tags` a `pollo-caribeno`, `cun-pollo`, `pollo-grill` ($352). Los tags se muestran como chips en el sitio y son editables; la etiqueta sobrevive cambios de precio/descripcion.
+
 ## 2026-11-09 — Chat web migrado a Claude Haiku 4.5 (swap Gemini → Haiku)
 
 El chatbot del sitio web ahora usa el mismo modelo que el bot de WhatsApp, unificando el "cerebro" de ambos canales.
