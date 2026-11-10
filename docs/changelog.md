@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-09 — Chat web ahora conoce campañas de temporada (posadas, cunpacks)
+
+El chat web no sabia de posadas ni cunpacks: esa info vive en `wa_campaign_info` y solo el bot de WhatsApp la inyectaba a su prompt.
+
+**Fix en `src/lib/chat/tools.ts` (tools compartidos):**
+- `get_promotions` ahora regresa `{discounts, seasonalPromotions}` — descuentos de `promotions` + campañas activas de `wa_campaign_info`
+- `search_knowledge` tambien busca en `wa_campaign_info` (title/details/slug) ademas de `bot_knowledge`
+- Una sola fuente de verdad: las campañas se editan en `wa_campaign_info` y ambos canales (web + WhatsApp) las ven
+
 ## 2026-11-09 — Fix: search_menu con scoring por palabras + tag "Pollo entero"
 
 "cuanto cuesta el pollo entero?" devolvia bebidas: la busqueda hacia substring de la frase completa y al no matchear nada caia a un fallback que regresaba TODO el menu (los primeros 10 eran refrescos).

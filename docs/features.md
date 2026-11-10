@@ -180,7 +180,7 @@
 - **RAG via Function Calling** (no vector DB):
   - `search_menu` — busca items del menu en Supabase (scoring por palabras: nombre/tags +3, descripcion +1, normaliza acentos; los `tags` de `menu_items` sirven como etiquetas semanticas, ej. "Pollo entero" en los pollos de $352)
   - `get_categories` — lista categorias activas
-  - `get_promotions` — promociones vigentes
+  - `get_promotions` — descuentos de `promotions` + campañas de temporada de `wa_campaign_info` (posadas, cunpacks); `search_knowledge` tambien busca en ambas tablas
   - `add_to_cart` / `remove_from_cart` — acciones que el frontend intercepta y aplica al CartContext
 - **System prompt**: Info del negocio (horario, ubicacion, telefono) + personalidad de marca
 - **Bilingue**: Detecta idioma del usuario y responde en el mismo idioma

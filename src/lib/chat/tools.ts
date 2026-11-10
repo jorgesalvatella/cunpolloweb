@@ -103,23 +103,36 @@ export function getChatTools(locale: "es" | "en") {
 
     get_promotions: tool({
       description:
-        "Get active promotions and discounts. Use this when the customer asks about deals, offers, or promotions.",
+        "Get active promotions, discounts, and seasonal campaigns (e.g. party packages, special menus). Use this when the customer asks about deals, offers, promotions, or seasonal events.",
       inputSchema: zodSchema(
         z.object({
           orderType: z.enum(["pickup", "dine_in"]).optional().describe("Filter by order type"),
         })
       ),
       execute: async ({ orderType }: { orderType?: "pickup" | "dine_in" }) => {
-        const promos = await getActivePromotions(orderType);
-        return promos.map((p) => ({
-          id: p.id,
-          name: p.name,
-          description: locale === "es" ? p.descriptionEs : p.descriptionEn,
-          discountType: p.discountType,
-          discountValue: p.discountValue,
-          targetOrderType: p.targetOrderType,
-          minOrderAmount: p.minOrderAmount,
-        }));
+        const supabase = getSupabaseAdmin();
+        const [promos, { data: campaigns }] = await Promise.all([
+          getActivePromotions(orderType),
+          supabase
+            .from("wa_campaign_info")
+            .select("slug, title, details")
+            .eq("active", true),
+        ]);
+        return {
+          discounts: promos.map((p) => ({
+            id: p.id,
+            name: p.name,
+            description: locale === "es" ? p.descriptionEs : p.descriptionEn,
+            discountType: p.discountType,
+            discountValue: p.discountValue,
+            targetOrderType: p.targetOrderType,
+            minOrderAmount: p.minOrderAmount,
+          })),
+          seasonalPromotions: (campaigns || []).map((c) => ({
+            title: c.title,
+            details: c.details,
+          })),
+        };
       },
     }),
 
@@ -164,12 +177,27 @@ export function getChatTools(locale: "es" | "en") {
         const supabase = getSupabaseAdmin();
         const q = query.toLowerCase();
 
-        const { data, error } = await supabase
-          .from("bot_knowledge")
-          .select("title, content, category")
-          .eq("active", true);
+        const [{ data: knowledge, error }, { data: campaigns }] = await Promise.all([
+          supabase
+            .from("bot_knowledge")
+            .select("title, content, category")
+            .eq("active", true),
+          supabase
+            .from("wa_campaign_info")
+            .select("slug, title, details")
+            .eq("active", true),
+        ]);
 
-        if (error || !data || data.length === 0) {
+        const data = [
+          ...(knowledge || []),
+          ...(campaigns || []).map((c) => ({
+            title: c.title,
+            content: c.details,
+            category: c.slug,
+          })),
+        ];
+
+        if (error || data.length === 0) {
           return { results: [], message: "No extra information available on this topic." };
         }
 
