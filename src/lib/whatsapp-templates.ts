@@ -31,6 +31,17 @@ export interface WhatsAppTemplate {
 export const WHATSAPP_TEMPLATES: WhatsAppTemplate[] = [
   // --- Marketing templates (selectable) ---
   {
+    label: "Buen Fin 2026 (card con imagen)",
+    name: "cunpollo_buenfin_card_v1",
+    contentSid: "HXa12a4e23b1b4e4eff8664b07f5baf5e2",
+    variableCount: 0,
+    variableLabels: [],
+    autoNameVariable: false,
+    bodyPreview:
+      "¡Llegó El Buen Fin a CUNPOLLO! 🔥\n\n20% de descuento en el TOTAL de tu cuenta.\n\nSolo 16 y 17 de noviembre. Ven con la familia, disfruta el área de juegos más grande de Cancún y deja que el pollo salve tu día.\n\nTe esperamos de 1:00 a 9:00 pm.",
+    category: "marketing",
+  },
+  {
     label: "Cunpacks 2026 (card con imagen + boton web)",
     name: "cunpollo_cunpacks_card_v1",
     contentSid: "HXae731b9d7a2aae832a31f9c90bbb0039",

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-12 — Template WhatsApp Buen Fin 2026 + campana del bot
+
+Template `cunpollo_buenfin_card_v1` (SID `HXa12a4e23b1b4e4eff8664b07f5baf5e2`) creado via Twilio Content API como `whatsapp/card`: imagen 1200x628 en Vercel Blob (`whatsapp/buen-fin-2026.jpeg`), body vendedor sin variables (20% de descuento en el total, solo 16 y 17 de noviembre), footer con condiciones y boton PHONE_NUMBER "Llamar a Gerencia" → +529984283677. Sometido a aprobacion Meta (MARKETING). Registrado en `src/lib/whatsapp-templates.ts`.
+
+Campana del bot en `wa_campaign_info`: slug `buenfin` (match con el nombre del template), canal `all` (web + WhatsApp), con imagen del flyer. Los bots responden dudas sobre la promo sin cambios de codigo.
+
 ## 2026-11-10 — Logs de conversaciones WhatsApp en el admin
 
 Nuevo sub-tab "Conversaciones" en Admin > WhatsApp para auditar las conversaciones del bot sin entrar a SQL.
