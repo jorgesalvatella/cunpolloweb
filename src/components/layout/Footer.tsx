@@ -134,6 +134,7 @@ export default function Footer() {
             </Link>
           </div>
           <p>&copy; {new Date().getFullYear()} CUNPOLLO. {t("rights")}</p>
+          <p>CUNPOLLO es operado por Conejos Creciendo S. de R.L. de C.V. &middot; RFC CCR230608NB5</p>
         </div>
       </Container>
     </footer>
